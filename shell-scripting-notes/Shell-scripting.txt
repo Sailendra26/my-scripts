@@ -1,6 +1,17 @@
 SESSION-14:
 -----------
 
+Why Scripting?
+
+Automation goals: Speed and Accuracy
+
+1. Speed
+2. Accuracy, no human errors
+3. Consistency
+4. Scalability, can work for infinite number of servers
+5. Documentaion. What happened including history
+6. Reusability.
+
 What is Git? (simple)
 
 Git is a tool that helps you save versions of your code and track changes so you can go back anytime.
@@ -52,3 +63,7 @@ Changes are now saved in the local repo.
 *)git push origin main
 
 Changes are now sent to GitHub.
+
+#!/bin/bash -> Shebang
+
+it should be the first line in shell script, it is the interpret to check the syntax of the script and execute them
