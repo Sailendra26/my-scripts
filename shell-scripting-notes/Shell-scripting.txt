@@ -26,6 +26,21 @@ Why Git is used:
 Basic Git + GitHub Workflow:
 -----------------------------
 
+git clone vs git pull
+=====================
+clone -> use when downloading the code for the first time
+pull -> just to pull the latest changes
+
+STEPS:
+-------
+
+*)git clone https://github.com/yourname/my-scripts.git
+*)git status
+*)git add hello.sh (or git add . to add all files)
+*)git commit -m "Add hello script"
+*)git push origin main
+
+
 1)Create a repository in GitHub
 
 Example: create repo named "my-scripts".This is the remote repository.
