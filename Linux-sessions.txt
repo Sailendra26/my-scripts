@@ -1,0 +1,1014 @@
+Session -02:
+------------
+
+Keys:
+------
+
+SSH keys - Public key and Private Key
+
+SSH - Secure Shell
+
+Client-Server Architecture :
+----------------------------
+
+*)Whoever provide the service they are called as servers
+
+Example: 
+--------
+
+Lawyers - Server
+Public - Client
+
+facebook.com - server 
+Browser(chrome, edge etc..) - client
+
+##)Ways companies connect to Linux machines today
+
+1) AWS SSM Session Manager (very common now) because No SSH, No port 22, No keys
+
+a) SSM Session Manager does not require inbound rules because the EC2 instance initiates an outbound connection to AWS over HTTPS, 
+and access is controlled using IAM, not security groups.
+
+2) SSH with key pair (still very common) --> 
+
+Using tools like Git Bash / MobaXterm / PuTTY
+Port 22 open (restricted)
+Keys rotated periodically
+
+*)Linux is server, how to connect?
+
+we need client software - Putty, Mobaxterm, Gitbash, Windows-cmd etc..
+
+Gitbash is one of the SSH clients and a mini linux in windows.
+usually when we open Gitbash, it will open in user directory.In Gitbash, you can run basic linux commands, not completely.
+
+Example: C:\users\<your-lap-username>
+
+#)Key-pair:
+------------
+
+*)A key pair is a set of public and private keys used for secure SSH authentication.
+
+Private key → stays with you, never shared
+Public key → stored on EC2 (authorized_keys). this will be stored in the ec2-user home directory as hidden file.
+
+*)SSH inbound rule allows incoming connections on port 22 so that users can remotely log in to the EC2 instance.
+
+Generate Public key and Private key :
+---------------------------------------
+
+Syntax : 
+--------
+
+*)ssh-keygen -f filename
+
+Open gitbash --> go to the directory in which you want to generate the keys and then give below command
+
+Eg: go to cd /E/Devops/
+
+ssh-keygen -f daws-86s --> when you execute this command, a public key and private key will be generated and available in the directory 
+                             in which directory you executed this command in Gitbash.
+							 
+Import public key instead of creating a new key-pair in AWS at the time of instance creation:
+----------------------------------------------------------------------------------------------
+
+open EC2-service --> click 'key pairs' --> click 'actions' and then click 'import key pair' --> give key-pair name and 
+under 'key pair file' browse and select the public-key -->click 'import key pair'.
+
+Firewall : Incoming and Outgoing
+---------
+
+Security groups : Inbound and Outbound Traffic
+-----------------
+
+
+*)Security groups are used to control the Inbound traffic( i.e which ip-addresses you want to allow in ) and Outbound traffic .
+  we will take care of mostly inbound traffic in Security Groups and bit Outbound traffic.
+
+*)The default security group has no inbound rules and allows all outbound traffic, which is sufficient for SSM(AWS Systems Manager - AWS console login) 
+  because the EC2 instance initiates the connection to AWS.
+
+Compare to SSH (to fix it in your mind) :
+
+SSH - Login : 
+-------------
+
+*)SSH is used to connect to a Linux server from our laptop using tools like GiBash, MobaXterm and Putty etc.
+
+How it works:
+
+1)Connection starts from our laptop
+2)Uses port 22
+3)Uses key pair authentication
+4)Private key stays on laptop ( with us )
+5)Public key is on server
+
+Inbound Rule:
+
+SSH | TCP | 22 | My IP (or) 0.0.0.0/0
+
+
+SSM( AWS Systems manager - Session Manager ): AWS console login  
+---------------------------------------------
+
+*) SSM Session Manager is used to connect to EC2 Linux server from AWS Console.
+
+How it works:
+
+1)Connection starts from EC2 to AWS
+2)Uses HTTPS (port 443) outbound
+3)Uses IAM permissions
+4)Does not use SSH
+5)Does not use port 22
+6)Does not use key pair
+
+Inbound Rule:
+
+1)No inbound rule is required for SSM 
+2)Even if an SSH (port 22) inbound rule exists,SSM connection(AWS console login) will still work.
+3)SSH rule is ignored by Session Manager
+
+IMP**) Important clarity:
+
+1)SSH inbound rule is only for SSH login
+2)AWS Console (Session Manager) login does not depend on it.
+
+
+
+
+Connect to the Linux instance through Gitbash:
+-----------------------------------------------
+
+ec2-user - this is default user you see when you launch a Linux-instance.
+
+*)While you are connecting to Linux instance through Gitbash,If you are giving private-key-file name( Relative path ) directly 
+then make sure that you must be there in the directory where your private-key-file is present,so then only you can connect.
+
+
+Syntax-1: ssh -i <private-key-file-name> ec2-user@public-ip of instance
+---------
+
+*)Example :  ssh -i daws-86s ec2-user@54.236.216.69
+
+*)Relative Path - daws-86s/ 
+
+*)If you are giving complete path( Absolute Path ) of private-key-file while you are connecting to Linux instance through Gitbash then you can be in any 
+directory,still you can connect.
+
+
+Syntax-2: ssh -i <complete path of private-key-file> ec2-user@public-ip of instance
+---------
+
+*)Example: ssh -i "/E/Devops/daws-86s/daws-86s" ec2-user@54.236.216.69
+
+*)Absolute Path - /E/Devops/daws-86s/daws-86s 
+
+Session - 03:
+--------------
+
+ 
+*) pwd ( print or present working directory ) - to know which directory we are in.
+
+*) $ - If you are at ' $ ' symbol, it means you are a normal user 
+
+*) # - If you are at ' # ' symbol, it means you are a Root user
+
+*) ls( short list ) --> it will list the files and folders 
+
+*) ls -l --> it will list the files and folders with details( owner name and Group name, size, permissions, Last modified Date & Time ) of files and folders 
+   in an alphabetical order.
+
+*) ls -lr --> it will show you all the files and folders in reverse alphabetical order.
+
+*) ls -lt --> it will show you the latest files on top 
+
+*) ls -ltr --> it will show you the oldest files on top
+
+*) cp <source> <destination>  --> helps to copy the file 
+
+*) mv file1 devops/  --> cut and copy 
+
+*) mv file-1 file-2 --> we can rename the file as well 
+
+*) grep <word> <file-name>  --> we can search the word in a file 
+
+*) grep -i <word> <file-name>  --> it will ignore the case sensitive of the word and show you the word in a file.
+
+*) grep -n <word> <file-name>  --> it will show you in which line the word is present.
+
+*) grep -c <word> <file-name>  --> it will show you count of the word that how many times the word is repeating in a file 
+
+*) wget <url> --> helps to download a file or image or etc.. from internet
+
+*) curl <url> --> it will dispaly the information of the URL on the screen itself without downloading.
+
+IMP**) 
+-------
+
+*)CUT:
+
+The cut command is used to extract sections of text from each line in a file or input.
+
+You can extract by:
+
+1)Bytes/Characters
+
+2)Fields (columns)
+
+Main options:
+--------------
+
+-c → select characters
+
+-f → select fields(columns) with delimiter
+
+-d → specify delimiter ( Seperator )
+
+1. Extract characters by "Range":
+--------------------------------
+
+If " file.txt " has below content
+
+hello
+world
+linux
+
+*)cut -c1-3 file.txt ( file name )
+
+Explanation:
+------------
+
+-c = characters
+
+1-3 = take characters from position 1 to 3 (inclusive).
+
+file.txt = file name
+
+Output:
+-------
+
+hel
+wor
+lin
+
+it prints first 3 characters from each line.
+
+2. Extract specific characters:
+--------------------------------
+
+If " file.txt " has below content
+
+hello
+world
+linux
+
+*)cut -c2,4 file.txt( file name )
+
+Output:
+-------
+el
+ol
+iu
+
+3. Extract fields with delimiter ( Seperator ):
+------------------------------------------------
+
+Delimiter ( Seperator ) is nothing but which seperates the words or sentences.
+
+Here delimiter ( Seperator ) is " comma( , ) " 
+
+name,age,city
+ravi,25,hyd
+sita,30,delhi
+
+*)cut -d, -f1 data.csv ( file name )
+
+#) Explanation:
+---------------
+
+
+Step 1: -d,
+-----------
+
+-d means delimiter( separator ).
+
+Here we tell cut that the delimiter (separator) between fields is a comma (,).
+
+So the line is split into:
+
+Field 1 → name
+
+Field 2 → age
+
+Field 3 → city
+
+Output:
+-------
+
+Extracted first field.
+
+name
+ravi
+sita
+
+*) cut -d, -f2 data.csv ( file name )
+
+
+Output:
+-------
+
+Extracted second field.
+
+age
+25
+30
+
+
+4. Extract Multiple fields:
+---------------------------
+
+Suppose your data.csv file has this content:
+
+name,age,city
+ravi,25,hyd
+sita,30,delhi
+
+*)cut -d, -f1,3 data.csv
+
+#)Explanation:
+---------------
+
+Step 1: -d,
+-----------
+
+-d means delimiter( separator ).
+
+Here we tell cut that the delimiter (separator) between fields is a comma (,).
+
+So the line is split into:
+
+Field 1 → name
+
+Field 2 → age
+
+Field 3 → city
+
+Step 2: -f1,3
+--------------
+
+-f means fields (columns).
+
+-f1,3 means: select field 1 and field 3.
+
+That ignores field 2 (age).
+
+Output:
+--------
+
+*)Only the 1st and 3rd columns are shown, separated by the delimiter (,).
+
+name,city
+ravi,hyd
+sita,delhi
+
+So basically:
+-------------
+
+-d, = split using comma
+
+-f1,3 = take only field 1 and field 3
+
+
+Session - 05:
+--------------
+
+Package Management:
+-------------------
+
+Package management is the process of installing, updating, removing, and managing software packages in a Linux system.
+It ensures that the required software and its dependencies are properly maintained for the system to run applications smoothly
+
+
+Package:
+---------
+
+A package is a software program in Linux.
+Example: Apache (httpd), Nginx, Python, Git, Docker — anni packages.
+
+Package = software + its files + dependencies.
+
+In Linux, DNF, YUM, and APT etc.. are package managers.
+Package manager ante software install, update, remove, upgrade cheyyadaniki use chese tool.
+
+1.) dnf install httpd -y
+
+Meaning: Installs the Apache web server.
+
+2.) dnf update httpd -y
+
+Meaning: Updates Apache to the latest available version.
+
+3.) dnf remove httpd -y
+
+Meaning: Completely removes Apache from the system.
+
+4.) dnf list installed httpd
+
+Meaning: Shows only installed version of httpd.If it is not installed → it won’t show anything.
+
+5.) dnf list available httpd 
+
+Meaning: shows both installed and available versions of the httpd package
+
+6.) dnf list httpd
+
+Meaning: shows both installed and available versions of the httpd package
+
+7.) dnf info httpd
+
+Meaning: gives complete details about the httpd package, including version, repository, size, summary, and description.
+It is used to verify package details before installation or upgrade in real-time environments.
+
+8.) Syntax: dnf search <keyword>
+
+Ans)Used to search for a package when you don’t know the exact name.
+
+Example: dnf search http
+
+9.) Syntax: dnf deplist <package>
+
+Ans) Shows dependencies of a package.
+
+Example: dnf deplist httpd
+
+Service Management:
+--------------------
+
+systemctl is the command used to manage the running state of services.
+
+After installing software, it must run as a service in background.
+
+Example:
+httpd → Apache service
+nginx → Nginx service
+docker → Docker service
+jenkins → Jenkins service
+
+1.) systemctl status httpd
+
+Checks the Service status - it will check whether the service is running or failed.
+
+Real-time use:
+
+Application team says:
+"Website down!"
+
+First thing a DevOps engineer checks is service status.
+
+Output lo telustundi:
+
+✔️ Running
+✔️ Dead
+✔️ Failed
+✔️ Disabled
+
+2.) systemctl start httpd
+
+To start the Service when it is not running
+
+Real-time use:
+
+Eg: “Apache down”
+
+3.) systemctl stop httpd - Used to stop the Service
+
+Real-time use:
+
+While deploying new version, you stop service before replacing files.
+
+4.) systemctl restart httpd - Used to restart the Service
+
+Real-time use:
+
+🔹 After changing configuration
+🔹 After installing module/plugin
+🔹 Most common fix in production
+
+Developer says:
+"I modified httpd.conf… restart once."
+
+5.) systemctl enable httpd
+
+Service will Auto-start after Server reboot.
+
+Example : Web server || Docker || Monitoring agents
+
+6.) systemctl disable httpd
+
+Used when you don’t want service to auto-start on reboot.
+
+7.) journalctl -u httpd - To view Logs
+
+Real-time use: When service keeps failing, logs are here.
+
+Example:
+Syntax error, permission issue, port conflict, etc.
+
+8.) systemctl reload httpd
+
+Ans) It tells Apache to re-read the configuration file without stopping the service.
+     It reloads the configuration without stopping the service, ensuring zero downtime.
+The service continues running → users will not feel any downtime.
+
+Difference between Reload Vs Restart:
+--------------------------------------
+
+🔻 Restart (restart)
+
+• Stops the service
+• Starts it again
+→ Small downtime
+
+🔹 Reload (reload)
+
+• Does NOT stop the service
+• Just re-reads the configuration
+→ Zero downtime
+
+That's the main difference.
+
+#)Session - 06:
+---------------
+
+*)Process Management : 
+-------------------------
+
+A process is a running program in Linux.
+
+Example:
+nginx, java app, python script → all run as processes.
+
+See running processes with PS Command: 
+--------------------------------------
+
+*)ps → lists the processes running in current terminal.
+*)ps aux → it's a picture, shows all the running processes with CPU and memory usage.(most used in interview)
+
+
+
+What happens:
+
+*)It shows running processes at that exact moment
+*)After it prints the output → command ends
+*)If a new process starts 1 minute later, ps will NOT show it
+
+TOP COMMAND:
+-------------
+
+*) top --> it's a live video, shows all running processes with CPU and memory usage continuously until you quit from it. 
+   To quit use " q " then you will go back to the Linux prompt.
+
+What happens:
+
+*)It shows running processes continuously
+*)Screen refreshes every few seconds
+*)New processes appear automatically
+*)Stopped processes disappear automatically
+*)It keeps running until you press q.
+
+KILL COMMAND:
+-------------
+
+1) kill sends signals to processes using PID, commonly used to stop or terminate processes.
+
+SYNTAX: kill PID 
+
+Eg-1) kill 1234
+
+2) kill -9 PID - this is for force kill the process if normal kill doesn't work. 
+
+TYPES OF PROCESSES:
+-------------------
+
+We have two types of processes are :
+
+1) Foreground Process:
+
+*)It Runs on the terminal, Takes keyboard control and You cannot type another command until it finishes. You stop it with " Ctrl + C "
+  
+*****)So Basically, any linux command that runs on the terminal is "Foreground Process".
+
+Eg-1: sleep 100 --> The systsem sleeps for 100 seconds. It runs on terminal that is why Terminal is blocked so You must wait or Ctrl+C.
+Eg-2: ping google.com 
+Eg-3: dnf install httpd
+
+
+
+2) Background process:
+
+*)Runs behind the terminal so Terminal is free to use. It Started using " & "
+
+WHY YOU USE " & "?
+
+ANS: To run a command in the background so the terminal remains usable.
+
+Eg-1: sleep 100 & --> It runs behind terminal that is why Terminal is free
+Eg-2: cp /data /backup &
+Eg-3: scripts with &
+
+
+JOBS COMMAND:
+--------------
+
+Job ( built-in command ) = Shell-level thing (created and tracked by your terminal)
+
+Any command started with " & " or stopped with " Ctrl+Z " becomes a job because the shell starts tracking it.
+
+*) jobs --> when you type this command in your teminal, it lists background and stopped jobs started from the current terminal.
+
+Eg-1 : dnf install nginx -y &
+
+when you type the above command it runs in background as you have used " & " and it consider as a job by the shell.
+
+fg and bg( built-in commands) : 
+
+*) fg brings a background or stopped job back to the foreground in the current shell.
+*) bg resumes a stopped job and runs it in the background in the current shell. It works only on stopped jobs.
+
+*)Network Management Commands :
+-------------------------------
+
+*) ip addr --> ip addr is used to view IP address and network interface details on a Linux server.
+
+*) ip route ---> ip route shows the default route and gateway used for outbound network traffic.
+                 i.e . ip route shows where the server sends traffic first when going outside.
+				 
+*) ping ip address or server-name --> It tests the connectivity b/w two servers ( from the current server to a destination server ).
+
+*) ss or netstat :
+------------------
+
+*)ss or netstat are used to check open ports and the processes using those ports on a Linux system.
+
+*) ss -lntp --> 
+
+-l → shows listening ports
+-n → shows numeric IPs and port numbers
+-t → shows TCP ports only
+-p → shows process name and PID using the port
+
+*) traceroute ip-address or server-name --> It shows the step-by-step(hops) path from your server to the destination server.
+
+
+
+CURL COMMAND --> curl is used to send a request to a URL and see the response. Sends a request and Prints the response on terminal.
+
+Eg-1: curl https://example.com
+
+Response: HTTP/1.1 200 OK
+
+WGET COMMAND --> wget is used to download files from a URL using the command line.
+
+Eg-1: wget https://example.com/file.zip
+
+TELNET --> telnet is used to check whether a specific port on a remote server is reachable or not.
+
+Eg-1 : telnet 12.34.16.10 80
+
+
+##)SESSION -09:
+---------------
+
+AWS Route 53:
+-------------
+
+*)Route → it routes internet traffic to the correct place
+*)53 → it works on port 53
+👉 So Route 53 simply means: a service that routes DNS traffic using port 53.
+
+*) Route 53 is an AWS DNS ( Domain Name System ) service that helps to connect a website to the correct IP server,
+   When an user or someone search a domain name, Route 53 tells where that request should go.
+   
+#)What is a Hosted Zone:
+-------------------------
+
+*)A hosted zone is a place where it contains all DNS records of a domain including name server records that define which DNS service manages the domain..
+  For one domain, all records are managed in a single hosted zone.
+
+#)Types of Hosted Zones : 
+--------------------------
+
+1.)Public Hosted Zone : Used when the application or website should be accessible from the internet.
+-----------------------
+
+Example: 
+
+*)You have a website www.myshop.com and you want the world to access your application
+  In this case, you create a public hosted zone so users from anywhere can access the application.
+
+2.)Private Hosted Zone: Used when the application should be accessible only inside a VPC.
+-----------------------
+
+Example:
+
+*)You have an internal application like internal.mycompany.com that should be accessed only by servers inside a VPC.
+  In this case, you create a private hosted zone, and it works only within that VPC.
+
+#)DNS Record Types – Definition with Example :
+----------------------------------------------
+
+1.) A Record :
+
+*)An A record connects a domain name to an IPv4 address.
+
+Example: If your server IP is 54.20.10.5, when an user hit app.example.com connects to the 54.20.10.5 
+
+2.) AAAA Record :
+
+*)An AAAA record connects a domain name to an IPv6 address.
+
+Example: If your server has an IPv6 address, you use an AAAA record to point the domain to that IPv6 address.
+
+3.) CNAME Record :
+
+*)A CNAME record connects one domain name to another domain name.
+
+Example: www.example.com → myapp.alb.amazonaws.com. Here, www.example.com points to another domain, not an IP.
+
+4. ) MX Record :
+
+*)An MX record decides where emails of a domain should be delivered.
+
+Example: Emails sent to @example.com are routed to the company mail server using an MX record.
+
+5. ) TXT Record : 
+
+*)A TXT record is used to store verification or security-related information.
+
+Example: A TXT record is added to verify domain ownership for email or security setup.
+
+
+
+**IMP****)
+
+#)Making an application available to the public: 
+------------------------------------------------
+
+If you want users on the internet to access your application, you must use a domain name.
+
+1)Buy a Domain (from a Domain Registrar):
+------------------------------------------
+
+A domain registrar is a place where you buy domain names like ( google.com, facebook.com, amazon.com ).
+
+Common Domain Registrars:
+
+*)GoDaddy
+*)Namecheap
+*)Hostinger
+*)Domain.com
+
+You can choose any registrar based on cost and service.
+
+2)Purchase a Domain (example: Hostinger):
+-----------------------------------------
+
+Steps:
+
+1)Open Hostinger
+2)Go to Domains → Get a Domain
+3)Enter the desired domain name
+4)Select domain type (.com, .in, .org, etc.) so For practice, you selected .fun --> Complete the purchase
+
+👉 Domain purchase is done.
+
+3)Give DNS authority to AWS (Route 53):
+---------------------------------------
+
+Now, DNS management should be done in AWS Route 53.
+
+Steps:
+
+1)Open AWS Route 53
+2)Go to Hosted Zones
+3)Create a Public Hosted Zone
+4)Enter your domain name
+5)Public hosted zone is selected because the application should be accessible from the internet
+6)Create the hosted zone
+
+AWS will generate 4 Name Servers (NS records).
+
+4)Update Name Servers in Hostinger :
+------------------------------------
+
+Steps:
+
+1)Go to Hostinger → DNS / Nameservers
+2)Choose Change Nameservers
+3)Select Change Nameservers
+4)Remove Hostinger default nameservers
+5)Paste the 4 AWS Name Servers
+6)Save changes
+
+👉 From now on, DNS is managed by AWS Route 53.
+
+5)Create A Records (after servers are ready):
+----------------------------------------------
+
+*)Assume you have 3 servers: (All servers are already set up with required software/code)
+
+
+A)Frontend server
+B)Backend server
+C)Database server
+
+A)Database (internal access only):
+
+1)Go to Route 53 → Hosted Zone → Create record
+2)Record name: database
+3)Record type: A
+4)Value: Private IP of database server
+5)Create record
+
+B)Backend (internal access):
+
+1)Go to Hosted Zone → Create record
+2)Record name: backend
+3)Record type: A
+4)Value: Private IP of backend server
+5)Create record
+
+(Used only by backend, not public users)
+
+C)Frontend (public access):
+
+*)This is what users access from the internet.
+
+1)Go to Hosted Zone → Create record
+2)Record name: leave blank for root domain ( because public always use " devopsmegham.fun " this Domain)
+3)Record type: A
+4)Value: Public IP of frontend server
+5)Create record
+
+#)Final Result:
+
+1)DNS is managed by AWS Route 53
+2)Internal services use private IPs
+3)Users access the application using the public domain
+4)Application is now accessible from the internet
+
+
+*****IMP****)Common interview questions that lead to this explanation:
+
+How do you configure DNS in AWS?”
+How do you expose an application to the internet using Route 53?”
+How do you connect a domain to AWS?”
+How do you manage DNS for your application in AWS?”
+Explain how Route 53 is used in your project.”
+
+HIGH-LEVEL ANSWER FROM YOUR END TO THE INTERVIEWER:
+---------------------------------------------------
+
+First, I purchase a domain from a registrar like Hostinger or GoDaddy.
+Then I create a public hosted zone in AWS Route 53 for that domain.
+AWS gives me name servers, which I update in the registrar so DNS is managed by Route 53.
+After that, I create DNS records like A records to point the domain or subdomains to the required IP addresses
+
+##)One-Line Memory Trick: Domain → Route 53 → Records
+
+
+##)SESSION - 10:
+----------------
+
+#)HTTP Methods:
+---------------
+
+*)HTTP methods are actions that a client(Browser - Chrome, Edge, Mobile, Postman) uses to tell the server what to do with data.
+
+1)What is a Client?
+
+*)A client is anything that sends a request to a server.
+
+| Method     | What it does | Meaning                      |
+| ---------- | ------------ | ---------------------------- |
+| **GET**    | Reads data   | Used to fetch data           |
+| **POST**   | Creates data | Used to send new data        |
+| **PUT**    | Updates data | Used to modify existing data |
+| **DELETE** | Removes data | Used to delete data          |
+
+
+#)HTTP Status Codes:
+---------------------
+
+1)What are Status Codes?
+
+*)Status codes are numbers sent by the server to tell whether the request was successful or not.
+
+| Code Range | Meaning                           |
+| ---------- | --------------------------------- |
+| **2XX**    | Request successful                |
+| **3XX**    | Request successful but redirected |
+| **4XX**    | Client made a mistake             |
+| **5XX**    | Server has a problem              |
+
+
+Important Status Codes:
+------------------------
+
+*)200 → OK
+*)400 → Bad request
+*)401 → Unauthorized
+*)403 → Forbidden
+*)404 → Not found
+*)500 → Server error
+
+*)4xx codes → client mistake
+*)5xx codes → server problem
+
+1)2XX – Success:
+
+*)200 OK
+*)The request was successful and data was returned.
+
+2)3XX – Redirection:
+
+*)The request is successful, but the client is redirected to another place.
+  Example: website moved to a new URL.
+
+3)4XX – Client Errors:
+
+*)400 – Bad Request
+*)The data sent by the client is wrong.
+
+*)401 – Unauthorized
+*)Username or password is missing or wrong.
+
+*)403 – Forbidden
+*)You are logged in but you are not allowed to access it.
+
+*)404 – Not Found
+*)The requested page or resource does not exist.
+
+4)5XX – Server Errors:
+
+*)500 – Internal Server Error
+*)Something went wrong inside the server.
+
+*)503 – Service Unavailable
+*)Server is down or overloaded.
+
+*)504 – Gateway Timeout
+*)Server did not get a response from backend servers in time.
+
+#)Inode, Soft Link, Hard Link – 2-Minute Revision Notes:
+---------------------------------------------------------
+
+**)Commnads for memory trick:
+
+*)Soft link → ln -s
+*)Hard link → ln
+
+
+1)Inode:
+
+*)An inode is a number where Linux keeps all the information about a file, like where it is stored, its permissions, and its owner.
+*)File name is just a label; Inode is the real file.
+
+*)ls -li --> it shows the file details(permissions, size, owner, etc.) including inode number.
+*)ls -l --> it shows the file details(permissions, size, owner, etc.)
+
+
+2)Soft Link (Symlink):
+
+*)A soft link (symlink) is a file that stores the path of actual file and points to that file, just like a shortcut. 
+  If the original file is removed, the link still exists but it will not work.
+*)Soft link has a different inode and the original file has different inode.
+
+*)Syntax: ln -s original-file-path softlink-name
+ 
+Examples: 
+
+1)ln -s file1.txt link1.txt --> link1.txt becomes a shortcut to file1.txt.
+2)ln -s /home/user/file1.txt mylink.txt --> mylink.txt points to /home/user/file1.txt.
+
+
+3)Hard Link:
+
+*)A hard link is another name for the same file that points to the same inode on disk, 
+  The file will be deleted only when all the hard links of a file are removed.
+*)It uses the same inode for the all hardlink files and for the original file.
+
+*)Syntax: ln original-file-path hardlink-name
+
+Examples: 
+
+1)ln file1.txt hardlink1.txt --> Both file1.txt and hardlink1.txt refer to the same file.
+
+2)ln /home/user/file1.txt hardlink2.txt --> hardlink2.txt is another name for /home/user/file1.txt.
+
+
+###)Main Difference to remember:
+
+1)Soft link → points to file name
+2)Hard link → points to inode
+

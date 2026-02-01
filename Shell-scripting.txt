@@ -1,0 +1,54 @@
+SESSION-14:
+-----------
+
+What is Git? (simple)
+
+Git is a tool that helps you save versions of your code and track changes so you can go back anytime.
+
+Why Git is used:
+
+1)To track who changed what
+2)To go back to older versions
+3)To work with a team safely
+4)To avoid losing code
+
+Basic Git + GitHub Workflow:
+-----------------------------
+
+1)Create a repository in GitHub
+
+Example: create repo named "my-scripts".This is the remote repository.
+
+2)Clone the repository to your system
+
+*)git clone https://github.com/yourname/my-scripts.git
+
+*)A folder "my-scripts" is created on your system. This is your local repository.
+
+3)Go inside the project folder and create a file
+
+*)cd my-scripts
+*)Create file: hello.sh
+*)echo "Hello DevOps"
+
+4)Check file status
+
+*)git status
+
+Shows hello.sh as untracked.
+
+5)Add file to staging area
+
+*)git add hello.sh (or git add . to add all files)
+
+6)Commit to local repository
+
+*)git commit -m "Add hello script"
+
+Changes are now saved in the local repo.
+
+7)Push to GitHub (remote repository)
+
+*)git push origin main
+
+Changes are now sent to GitHub.

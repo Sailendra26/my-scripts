@@ -1,0 +1,208 @@
+SDLC(Software Development Lifecycle) :
+
+SDLC:
+------
+
+Business
+Requirements gathering
+Planning and Designing
+Implementation
+Deployment
+Testing
+Release into public
+
+
+Maintanance
+
+Waterfall:
+-----------
+
+School Management System :
+---------------------------
+
+Stakeholders --> Who is part of the system
+Teachers --> Students --> Parents --> Staff (Principal) --> Investors and Management Government
+Grand Final
+100 years ago 
+
+28 Students -> they don't read from DAY-1
+Teachers -> they don't teach from DAY-1
+Parents -> They worry from DAY-1
+
+20-30% -pass percentage
+why 70% failed
+
+Problems:
+----------
+1. only exam time
+2. teachers wont ark to study seriously
+
+Changes that school management done to improve the pass percentage:
+--------------------------------------------------------------------
+
+UNIT Tests I, II, III, IV
+Quarterly, Half yearly, Pre-Final
+
+20-30% - fail percentage
+
+80% - pass percentage
+
+still to make it 100 % pass percentage the management have done Changes few more changes in exams:
+---------------------------------------------------------------------------------------------------
+
+Slip/Daily tests
+
+365 days
+200 days
+150 slip tests
+
+95% - pass percentage 
+
+Gurukul school - Waterfall
+Unit Tests - Agile
+Daily slip tests - Devops
+
+Waterfall:
+-----------
+
+Assume that your company got a project from a X-client and the project deadline is 2 years. so developers will not take it that seriously
+thinking that they have lot of time and testers they cannot do anything until development part is done. Before one year to the deadline 
+they may start the development and after six months they give code to the testers for testing, Testers found some defects in coding 
+and told the developers and the deadline is arrived and they deployed the project with few defects and the business is not 
+satisfied with the final Product as it was not implemented as per Business Expectations.
+
+also if there are any changes business wnats make in the current plan they cannot do any changes once the plan was submitted to the company.
+
+**IMP**
+--------
+
+*)Old traditional model of software development
+
+*)Work happens step by step (sequentially)
+
+Requirement → Design → Development → Testing → Operations
+
+*)Each team works in silos (separately)
+
+   Developers write code and hand it over to testers only after everything is done
+   Testers test after full build is ready
+   After testing is complete, it goes to Operations for deployment
+
+Problems:
+---------
+
+*)If issues are found late in testing, it becomes costly and slow to fix
+
+*)No collaboration between Dev, Test, and Ops, Teams (dev, test, ops) work in silos (separately)
+
+*)Delivery is very slow
+
+*)Next phase starts only after the previous one finishes
+
+
+
+Agile:
+-------
+
+after all the poor process in waterfall , they brought in new method which is Agile-Method.
+it's Sprint basis now then here you no need to develop everything in at a time, you need to develop what is required first and
+you will develop the second feature and it goes on step by step. in this process the work started from day one and everything will be 
+monitored by the business and can address the issues quickly and we can develop the good product in the release time.
+
+and also if any changes business wants make in a project they can do because we are developing one feature after one.
+
+Example:
+
+Sign up Login
+Product Management 
+Order Management
+Payment
+Shipping delivery
+Reviews
+
+Sprint -1 :
+-------------
+
+1)Sign up Login
+
+If there is anything pending in Sprint-1 and it will be moved to Backlog 
+
+Sprint -2:
+-------------
+
+You will have to complete the sprint-1 pending work as well as current feature 
+
+2)Product Management 
+
+
+still there are few issues in Agile to adopt this technolgy
+
+**IMP**
+---------
+
+*)Introduced to make development faster and adaptive
+
+*)Work happens in small iterations (sprints)
+
+    Developers and testers work closely from the beginning
+    Testing is done parallelly in each sprint
+
+*)Continuous feedback from customers and stakeholders
+
+But still a major gap existed:
+------------------------------
+
+*)Ops team was separate, they only got the product after testing was done.
+*)Caused delays in deployment and production issues.
+
+Devops:
+--------
+
+DevOps is a culture and is a process that removes the gap between development, testing, and operations teams. 
+Instead of working separately like in older models, all three teams work together from the beginning. 
+DevOps focuses on collaboration and automation using CI/CD pipelines to build, test, and deploy code quickly. 
+Testers perform continuous testing from the start and the operations team gets involved early to set up infrastructure and monitoring. 
+This approach enables faster deployments, early bug detection, continuous delivery of features, better product quality, 
+and strong teamwork between Dev, Test, and Ops.
+
+Earlier in Waterfall, developers wrote code for months, testers waited till the end, and ops deployed manually — so everything was delayed. 
+Agile solved the dev and tester delay by delivering in small sprints, but ops delay was still there because deployment was manual. 
+DevOps fixed that by automating build, test, and deployment, and by making dev, test, and ops work together — so software can go live the same day.
+
+
+ Developers (Dev)
+   - Write code and commit changes
+        ↓
+⚙️ CI/CD Pipeline
+   - Automatically build, test, and package code
+        ↓
+📦 Deploy to Staging
+   - Staging is a copy of production used for final testing
+        ↓
+🔍 Continuous Testing + Feedback (Testers)
+   - Testers test and give quick feedback to Dev to fix bugs
+        ↓
+🧑‍💼 Operations (Ops)
+   - Deploy to production, monitor app, and give feedback
+        ↓
+🔁 Feedback Loop
+   - Continuous improvement by Dev, Test, and Ops together
+
+
+Devops is a process of developing, building, deploying and testing on the same day that can actually improve co-ordination between all the teams,
+So for better productivity and to reduce human errors we use multiple tools like CI/CD(jenkins), Configuration management to achieve this process.
+
+Earlier in Waterfall, developers wrote code for months, testers waited till the end, and ops deployed manually — so everything was delayed. 
+Agile solved the dev and tester delay by delivering in small sprints, but ops delay was still there because deployment was manual. 
+DevOps fixed that by automating build, test, and deployment, and by making dev, test, and ops work together — so software can go live the same day.
+
+What is DevSecOps?
+
+*)It is an improved version of DevOps.
+*)In DevOps, security was mostly checked at the end, which caused delays if issues were found late.
+*)DevSecOps brings the Security team into the DevOps process from the start.
+*)Security is built into every stage — from coding to deployment
+*)Developers, testers, operations, and security all work together from the beginning
+*)Automated security checks are added in CI/CD pipelines.
+*)Fix security issues early before going to production.
+

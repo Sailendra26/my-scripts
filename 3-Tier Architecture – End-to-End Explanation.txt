@@ -1,0 +1,128 @@
+##)2-Tier Architecture:
+-----------------------
+
+In 2-tier architecture, the frontend and backend logic run on the client side, and the client directly connects to the database.
+
+
+2-Tier = Client + Database
+
+Client(desktop / laptop) = Frontend + Backend
+Database = DB server
+
+
+#)3-Tier Architecture – End-to-End Explanation:
+-----------------------------------------------
+
+#)What is 3-Tier Architecture?
+
+*)3-Tier architecture is a structure where the Application is divided into three separate layers to improve scalability, security, and maintainability.
+
+The three layers are:
+
+1)Presentation Layer
+2)Application Layer
+3)Database Layer
+
+1)Presentation Layer (Frontend Layer):
+--------------------------------------
+
+*)Purpose: This layer handles user interaction.
+
+#)What it does:
+
+*)Receives requests from users
+*)Displays UI and responses
+*)Forwards requests to the backend
+
+#)AWS components used:
+
+*)Route 53 for DNS
+*)CloudFront for fast content delivery
+*)Application Load Balancer (ALB)
+
+#)DevOps responsibilities:
+
+*)Configure the load balancer
+*)Enable HTTPS using certificates
+*)Deploy frontend applications
+*)Ensure high availability
+
+2)Application Layer (Backend Layer):
+--------------------------------------
+
+*)Purpose:This layer contains the core business logic.
+
+#)What it does:
+
+*)Processes user requests
+*)Performs validations and calculations
+*)Communicate with the database
+
+#)AWS components used:
+
+*)EC2 instances with Auto Scaling (or) containers using ECS or EKS
+
+#)DevOps responsibilities:
+
+*)Provision servers using automation
+*)Build CI/CD pipelines
+*)Manage deployments with zero downtime
+*)Configure auto scaling
+*)Monitor application logs and performance
+
+3)Database Layer:
+------------------
+
+*)Purpose: This layer stores application data securely.
+
+#)What it does:
+
+*)Stores user and transaction data
+*)Serves data only to the backend
+
+#)AWS components used:
+
+*)Amazon RDS (MySQL, PostgreSQL, etc.) Or DynamoDB
+
+#)DevOps responsibilities:
+
+*)Create and manage databases
+*)Configure backups and recovery
+*)Control access and security
+*)Monitor database health
+
+##)Provision means creating and making the infrastructure ready to use.
+
+
+#)Load Balancer:
+-----------------
+
+*)The load balancer receives user requests and distributes the traffic across multiple application servers. This helps improve availability, performance
+
+#)Real placement in 3-Tier architecture:
+-----------------------------------------
+
+*)User (Browser / Client)
+*)User types the URL and sends a request.
+
+1)Load Balancer (ALB):
+
+*)This is the entry point to the backend
+*)It receives traffic from users
+*)It distributes requests to multiple application servers
+
+2)Application Servers (Backend):
+
+*)Process the request
+*)Talk to the database
+
+3)Database:
+
+*)Stores and returns data
+
+**IMP**)Interview Summary (Strong One-Liner):
+---------------------------------------------
+
+“In a 3-tier architecture, the application is separated into presentation, application, and database layers. 
+DevOps teams handle infrastructure automation, CI/CD, monitoring, scaling, and production stability to keep the application running smoothly.”
+
