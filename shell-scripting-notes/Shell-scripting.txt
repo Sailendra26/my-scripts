@@ -81,4 +81,4 @@ Changes are now sent to GitHub.
 
 #!/bin/bash -> Shebang
 
-it should be the first line in shell script, it is the interpret to check the syntax of the script and execute them
+it should be the first line in shell script, it is the interpretor to check the syntax of the script and execute them
