@@ -1,5 +1,5 @@
-SESSION-14:
------------
+#)SESSION-14:
+-------------
 
 Why Scripting?
 
@@ -36,7 +36,7 @@ STEPS:
 
 *)git clone https://github.com/yourname/my-scripts.git
 *)git status
-*)git add hello.sh (or git add . to add all files)
+*)git add hello.sh (or git add . --> to add all files)
 *)git commit -m "Add hello script"
 *)git push origin main
 
@@ -65,7 +65,7 @@ Shows hello.sh as untracked.
 
 5)Add file to staging area
 
-*)git add hello.sh (or git add . to add all files)
+*)git add hello.sh (or git add . --> to add all files)
 
 6)Commit to local repository
 
@@ -79,6 +79,664 @@ Changes are now saved in the local repo.
 
 Changes are now sent to GitHub.
 
-#!/bin/bash -> Shebang
 
-it should be the first line in shell script, it is the interpretor to check the syntax of the script and execute them
+SHELL-SCRIPTING COMMANDS:
+--------------------------
+
+**) #!/bin/bash -> Shebang
+
+👉 #!/bin/bash (Shebang) is the first line of a shell script that tells the system to use the Bash interpreter to execute the script.
+
+
+
+*)echo --> prints the line of the data and goes to a new line by default. 
+
+Ex: echo "Suresh: Hi Ramesh how are you"
+
+
+
+#)Declaring the Variables inside Script:
+----------------------------------------
+
+Ex: sample.sh
+-------------
+
+#!/bin/bash 
+
+person1=Suresh
+person2=Ramesh
+
+echo "$person1: Hi $person2 how are you"
+echo "" ## Comment : prints empty line
+echo "$person2: Good,how are you $person1"
+
+Exection: sh sample.sh 
+---------
+
+
+O/P: 
+----
+
+Hi Ramesh how are you"
+
+Ramesh: Good,how are you Suresh"
+
+
+
+#)SESSION-15:
+-------------
+
+
+#)Passing the arguments to the variables at the time of script execution instead of hard coding them inside the script:
+-----------------------------------------------------------------------------------------------------------------------
+
+
+*)Assume "sample.sh" is your script containing below 
+
+
+EX:
+---
+
+#!/bin/bash 
+
+person1=$1
+person2=$2
+
+echo "$person1: Hi $person2, how are you"
+echo "$person2: Good,how are you $person1"
+
+
+During Script Exection : sh sample.sh Girish Prakash
+
+
+O/P: 
+----
+
+Girish: Hi Prakash, how are you
+Prakash: Good,how are you Girish
+
+
+#)Environment Variable:
+-----------------------
+
+*)An environment variable is used to set values from outside instead of changing them in the code, 
+  so that it reduces the need to modify, rebuild, and redeploy the application every time a value changes.
+  
+*)This will be active until the terminal session is alive, you need to give that environment variable again once you login if you want.
+*)when u execute the script, it uses the environment-variable that is declared outside the script.
+
+
+ENV-VAR:
+--------
+
+*)export Course=" DevSecOps with AWS "
+
+
+*)Assume "sample.sh" is your script containing below 
+
+
+Ex:
+---
+
+#!/bin/bash 
+
+echo "Training is $Course"
+
+
+Exection: sh sample.sh 
+---------
+
+O/P:Training is DevSecOps with AWS
+----
+
+
+
+**)read -s : read -s takes input from the user and stores it in a variable, but hides the text on the screen when user typing.
+
+read : takes input from user
+-s : silent (don’t show what user types)
+
+Ex:
+---
+
+#!/bin/bash
+
+echo "Enter your password:"
+read -s password
+
+Exection: sh sample.sh
+---------
+
+O/P:
+---
+
+Enter your password
+you need to enter paassword here but it won't show while typing
+
+
+
+#)Executing a command inside shell script:
+------------------------------------------
+
+Syntax: var-name = $(command)
+
+*)So when script is executed, command will execute first and the value will be stored in a variable then displays the result.
+
+Ex:
+---
+
+#!/bin/bash
+
+var1=$(date)
+var2=$(date +Y)
+
+echo " timestamp is : $var1"
+echo " timestamp is : $var2"
+
+Exection: sh sample.sh
+---------
+
+
+O/P:
+----
+
+timestamp is : Mon Feb  2 17:40:52 IST 2026
+2026
+
+#)Special variables : 
+---------------------
+
+*)Special variables are predefined variables that give information about the script, arguments, and system.
+
+
+All arguments(variables) of the script are the values you pass after the script name when running it.
+
+| Variable | Purpose                                   |
+| -------- | ----------------------------------------- |
+| `$0`     | Name of the script                        |
+| `$1`     | Displays First argument                   |
+| `$2`     | Diaplays Second argument                  |
+| `$#`     | Displays count of Total  arguments        |
+| `$@`     | All arguments (separately)                |
+| `$*`     | All arguments (as one string)             |
+| `$?`     | Exit status of previous command (0 = success) |
+| `$$`     | Process ID of the script                  |
+| `$!`     | Process ID of last background command     |
+
+
+****)Linux exit status range: 0–255
+
+1)0 = success
+
+2)Non-zero = fail
+
+1–255(non-zero) = different types of errors
+
+
+
+Ex:
+---
+
+#!/bin/bash
+
+echo "Script name: $0"
+echo "Process ID: $$"
+
+echo "First argument: $1"
+echo "Second argument: $2"
+echo "Total arguments: $#"
+
+echo "All arguments using : $@"
+echo "All arguments using : $*"
+
+ls /notexist
+echo "Exit status of last command: $?"
+
+sleep 5 &
+echo "PID of last background process: $!"
+
+While Execution: sh sample.sh apple mango banana
+----------------
+
+O/P:
+----
+
+Script name: ./special.sh
+Process ID: 3456
+
+First argument: apple
+Second argument: mango
+Total arguments: 3
+
+All arguments using $@: apple mango banana
+All arguments using $*: apple mango banana
+
+ls: cannot access '/notexist': No such file or directory
+Exit status of last command: 2
+
+PID of last background process: 3490
+
+
+
+***IMP***) - Practiced all commands in single script file:
+----------------------------------------------------------
+
+
+#!/bin/bash
+
+v1=kiran
+v2=hari
+touch file1
+echo " exit status of last command: " $?
+echo " script name is : " $0
+echo " "
+echo " PID of the script is : $$"
+echo " $info "
+echo " $v1: hi $v2, are u practicing shell-script "
+echo " $v2: hi $v1, yes i am "
+read -s -t 10 -p " enter your password: " password
+echo " "
+echo " "
+echo " exit status of password is: " $?
+echo " first argument : " $1
+echo " second argument : " $2
+echo " total arguments count : " $#
+echo " Display all arguments: " $@
+
+
+Exection: sh practice.sh Sailendra Megham
+
+O/P:
+----
+
+ exit status of last command:  0
+ script name is :  practice.sh
+
+ PID of the script is : 805
+ conversation
+ kiran: hi hari, are u practicing shell-script
+ hari: hi kiran, yes i am
+ enter your password:
+
+ exit status of password is:  0
+ first argument :  Sailendra
+ second argument :  Megham
+ total arguments count :  2
+ Display all arguments:  Sailendra Megham
+
+
+#)SESSION-16:
+-------------
+
+**IMP**)Rule No: 1  --> if there is a chance of diasplaying an error at any step then must use the EXIT CODE( $? ) to stop the process there itself 
+because you should not move forward when it is errored out. in rare cases we can move when required.
+
+
+*)&? - Exit status of previous command 
+
+****)Linux exit status range: 0–255
+
+1)0 = success
+
+2)Non-zero = failure 
+
+1–255(non-zero) = different types of errors, u can use any exit code number randomly but default is 1 & 2 values
+
+
+
+#)Conditions:
+-------------
+
+*)Conditions are used to check whether a statement is true or false and execute commands based on the result.
+
+*)SYNTAX:
+---------
+
+
+if [ condition ]; then
+    commands
+elif [ condition ]; then
+    commands
+else
+    commands
+fi
+
+
+
+#!/bin/bash
+
+NUMBER=5
+
+if [ $NUMBER -lt 20 ]; then
+	echo " this number $NUMBER is less than 20 "
+elif [ $NUMBER -gt 20 ]: then
+	echo " this number $NUMBER is greater than 20 "
+else
+	echo " this number $NUMBER is equal to 20 "
+fi
+
+2)Even or Odd:
+--------------
+
+#!/bin/bash
+
+echo "enter the number"
+read NUMBER
+
+if [ $((NUMBER%2)) -eq 0 ]; then
+        echo " this number $NUMBER is even "
+else
+        echo " this number $NUMBER is odd "
+fi
+
+3)Example-3 : Installing packages:
+----------------------------------
+
+root-user-id = 0
+ec2-user-id = 1001
+
+
+
+#!/bin/bash
+
+
+USER_ID=$(id -u)
+
+if [ $USER_ID -ne 0]; then
+        echo " ERROR: please run with user permissions "
+        exit 2
+fi
+
+dnf install nginx -y
+
+if [ $? -eq 0 ]; then
+        echo " nginx is installed "
+else
+        echo " nginx is not installed "
+fi
+
+dnf install mysql -y
+
+if [ $? -eq 0 ]; then
+        echo " Mysql is installed "
+else
+        echo : " Mysql is not installed "
+fi
+
+dnf install git -y
+
+if [ $? -eq 0 ]; then
+        echo " Git is installed "
+else
+        echo : " Git is not installed "
+fi
+
+
+FUNCTIONS:
+----------
+
+*)A function is a reusable block of code that performs a specific task and can be called multiple times in a script.
+*)Arguments( values ) are given only when calling a function, not when you write the function.
+*)Functions improve code reusability and readability.
+
+SYNTAX:
+-------
+
+function_name() {
+
+    commands
+}
+
+function_name arg1 arg2
+
+
+Example: Write Functions code using the conditions example which is installing the packages 
+--------
+
+*)root-user-id = 0
+*)ec2-user-id = 1001
+
+
+
+#!/bin/bash
+
+USER_ID=$(id -u)
+
+if [ $USER_ID -ne 0 ]; then 
+	echo " ERROR: please run with ROOT permissions "
+	exit 2
+fi
+
+
+VALIDATE(){
+
+	if [ $1 -ne 0 ]; then
+		echo " $2 installation is FAILED "
+		exit 1
+	
+	else 
+		echo " $2 installation is SUCCESS "
+	fi
+	
+}
+
+dnf install nginx -y
+VALIDATE $? "nginx"
+
+dnf install mysql -y
+VALIDATE $? "mysql"
+
+dnf install git -y
+VALIDATE $? "git"
+
+
+
+
+Example-2: First check if package is installed or not, if not then only install
+-----------
+
+*)root-user-id = 0
+*)ec2-user-id = 1001
+
+
+#!/bin/bash
+
+
+USER_ID=$(id -u)
+
+if [ $USER_ID -ne 0 ]; then
+	echo " ERROR:: please run with ROOT permissions "
+	exit 2
+fi
+
+
+VALIDATE() {
+
+	if [ $1 -ne 0 ]; then
+		echo " $2 installation is failed "
+		exit 1
+	else 
+		echo " $2 installation is SUCCESS "
+		
+	fi
+	
+}
+
+
+dnf list installed nginx
+
+# Install nginx only if it is not installed - this is just a COMMENT for readability 
+
+if [ $? -ne 0 ]; then
+	dnf install nginx -y
+	VALIDATE $? "nginx"
+	
+else
+	echo " nginx is already exists "
+fi
+
+
+dnf list installed mysql 
+
+# Install mysql only if it is not installed - this is just a COMMENT for readability 
+
+
+if [ $? -ne 0 ]; then
+	dnf install mysql -y 
+	VALIDATE $? "mysql"
+	
+else 
+	echo " mysql is already exists "
+	
+fi
+	
+
+dnf list installed git 
+
+# Install git only if it is not installed - this is just a COMMENT for readability 
+
+
+if [ $? -ne 0 ]; then
+	dnf install git -y 
+	VALIDATE $? "git"
+	
+else
+	echo " git is already exists "
+	
+fi
+
+#)REDIRECTIONS & LOGS:
+----------------------
+
+*)Redirection is used to send command output(SUCCESS or FAILED i.e errors) to a log-file instead of displaying on the screen.
+ 
+*) 1 --> SUCCESS
+*) 2 --> FAILED
+*) & --> SUCCESS/FAILED
+*) > --> overwrite the data
+*) >> --> append the data
+
+LOGS: Logs are records of what happens during the execution of an action used for monitoring and troubleshooting.
+-----
+
+
+Examples:
+----------
+
+
+*) ls -l 1> output.log --> it stores the command result in "output.log" only when it is success
+
+*) lsdfgg -l 2> output.log --> it stores the command result in "output.log" only when it is failure
+
+*) ls -l &>> output.log --> it stores the command result in "output.log" irrespective of the failure or success.
+
+
+Example-1: Assume your script file name is "Task.sh"
+----------
+
+First you need to create a log directory inside "/var/log" which is inside root user to store the output of a script or command,
+
+Assume you want create a "shell-script-logs" folder, as you are working as non-root user so first create the folder with sudo permissions
+
+sudo /var/log/shell-script-logs 
+
+
+*)| tee -a $LOG_FILE --> appends the data 
+
+
+#!/bin/bash 
+
+USER_ID=$(id -u)
+
+LOG_FOLDER="/var/log/shell-script-logs"
+
+SCRIPT_NAME=$(echo $0 | cut -d "." -f1)  # it will remove the .sh so the script name will be "Task"
+
+LOG_FILE=$LOG_FOLDER/$SCRIPT_NAME.log   # here you are adding the .log to the script name so the name will be "Task.log"
+
+mkdir -p $LOG_FOLDER
+
+echo " Script started and executed on : $(date) "
+
+if [ $USER_ID -ne 0 ]; then
+	echo " ERROR:: please run the script with user privileges "
+	exit 1
+fi
+
+
+VALIDATE() {
+
+if [ $1 -ne 0 ]; then
+	echo " &2 installation is.. FAILED "
+	exit 1
+else
+	echo " $2 installation is.. SUCCESS "
+fi
+
+
+dnf list installed nginx &>> $LOG_FILE
+
+if [ $? -ne 0 ]; then
+	dnf install nginx -y &>> $LOG_FILE
+	VALIDATE $? "nginx"
+else
+	echo " nginx is already exists...SKIPPING " | tee -a $LOG_FILE
+fi
+
+dnf list installed mysql &>> $LOG_FILE
+
+if [ $? -ne 0 ]; then 
+	dnf install mysql -y &>> $LOG_FILE
+	VALIDATE $? "mysql"
+else
+	echo " mysql already exists...SKIPPING " | tee -a $LOG_FILE
+fi
+
+COLOR CODING:
+-------------
+
+*)Colors are used to make logs readable (for example: red for errors, green for success, yellow for warnings).
+
+RED --> ERROR
+GREEN --> SUCCESS
+YELLOW --> WARNING
+WHITE --> NORMAL
+
+Example:
+--------
+
+#!/bin/bash
+
+# Color variables
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+NORMAL="\e[0m"
+
+# Messages
+echo -e "$RED ERROR: Something failed $NORMAL"
+echo -e "$GREEN SUCCESS: Operation completed $NORMAL"
+echo -e "$YELLOW WARNING: Check this step $NORMAL"
+echo -e "$NORMAL INFO: Normal message $NORMAL"
+
+
+
+-e --> enable the color 
+$NORMAL --> if you dont use at the end then same color will continue for the next text so use white color code which is "\e[0m".
+
+
+#)SESSION-17:
+-------------
+
+
+*)A for loop is used to execute a set of commands multiple times for each item in a list.
+*)It is mainly used to avoid repetition and automate tasks like processing files, checking services, or running commands on multiple inputs.
+
+SYNTAX:
+-------
+
+for variable in list
+do
+  commands
+done
+

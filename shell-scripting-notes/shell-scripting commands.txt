@@ -1,0 +1,39 @@
+1)read command
+
+=)Syntax: read [options] variable_name
+
+
+*)read -s --> It takes input from the user and stores it in a variable, -s hides the text on the screen when user typing.
+*)read -p → Displays a prompt message and reads user input in the same line.
+*)read -t → Waits for user input for a specified number of seconds. If the user does not enter input within that time, the read command is skipped.
+
+
+Ex-1: read -s -p "Enter your password: " password
+Ex-2: read -s -t 5 -p "Enter your password: " password
+
+
+
+2)echo --> prints the line of the data and goes to a new line by default. 
+
+Ex: echo "Suresh: Hi Ramesh how are you"
+
+
+3)Environment variable command:
+
+=)Syntax: export VARIABLE_NAME="value"
+
+*)An environment variable is used to set values from outside instead of changing them in the code, 
+  so that it reduces the need to modify, rebuild, and redeploy the application every time a value changes.
+*)This will be active until the terminal session is alive, you need to give that environment variable again once you login if you want.
+*)when u execute the script, it uses the environment-variable that is declared outside the script.
+
+
+4)Executing a command inside shell script:
+
+=)Syntax: var-name = $(command)
+
+*)So when script is executed, command will execute first and the value will be stored in a variable then displays the result.
+
+
+
+

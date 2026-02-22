@@ -1,0 +1,217 @@
+
+#)Join-Devops AMI: search " devops-practice " and select " Redhat-9-DevOps-Practice "
+
+Default username: ec2-user
+Password: DevOps321
+
+
+To connect to the server:
+-------------------------
+
+*)ssh ec2-user@public-Ip-address of instance
+
+ANSIBLE - SESSION-22:
+---------------------
+
+*)Ansible is a configuration management and automation tool used to manage and configure many servers from one place or one server.
+*)Ansible is an agentless tool, which means it performs automation without intstalling any additional software in managed nodes(remote servers)
+
+*)Playbook: A playbook is a collection of plays, and each play is a list of tasks that are executed on managed nodes.
+
+
+
+1)Without Ansible:
+
+*)You must login to each server
+*)Run commands one by one
+*)High chance of mistakes
+*)Wastes time
+
+2)With Ansible:
+
+*)Write instructions once
+*)Run them on all servers at the same time
+*)Same configuration everywhere
+*)Faster and error-free
+
+*)A control node is the main machine where Ansible is installed, managed nodes are the servers managed by the control node and 
+  a playbook is a YAML file that contains the instructions executed by Ansible.
+
+*)Ansible playbooks are written in YAML format.
+
+*)A playbook starts with -(hyphen) to define a play and "name:" is optional and used to describe the play or task for human understanding format.
+
+*)hosts: defines the target server where the action need to be performed ,tasks contains the list of tasks to run.
+
+*)Each task starts with -(hyphen) and task has a name and a module, Modules perform the actual action.
+
+
+
+#)Syntax to run the playbook: ansible-playbook -i inventory-file-name PlayBook-filename.yml
+
+
+*)ansible-playbook : runs the playbook
+*)-i inventory : inventory file name specify chestunnav
+*)PlayBook-filename.yml : playbook name
+
+*) you can create both Playbook & Inventory in same folder because its' easy for you 
+
+
+Inventory file:
+---------------
+
+Ex: inventory.ini ( file name ) inisde it should be like below so then control-node will call the group names either 'prod or test' based on the requirement
+    then perform the tasks accordingly after you run the playbook.
+
+[prod]
+12.13.14.15
+12.13.14.15
+
+[test]
+12.13.14.15
+
+
+Here, [prod] and [test] are the group names
+
+Example:1 - How to ping the server:
+-----------------------------------
+
+
+
+- name: Ping the server
+  hosts: 12.13.14.15
+  tasks:
+  - name: ping
+    ansible.builtin.ping:
+	
+	
+	
+	
+Example-2: How to install a package or software, start the service and auto restart the service on reboot?
+
+- name: Intall the Nginx
+  hosts: frontend
+  become: yes
+  
+  tasks:
+  - name: Nginx install
+    ansible.builtin.package:
+	  name: Nginx
+	  state: present
+	  
+  - name: start nginx
+    ansible.builtin.service:
+	  name: start
+	  state: started
+	  enabled: yes
+  
+  
+#)NOTE:
+--------
+  
+*)hosts: frontend --> decides the target server
+*)become: yes --> it will run the tasks with sudo permissions(root user) in the node server.
+*)enabled: yes --> service will be auto-enabled on the rebbot 
+ 
+-------------------------------------------------------------------------------------------------
+
+
+#)Syntax to run the playbook: ansible-playbook -i inventory-file-name -e ansible_user=ec2-user -e ansible_passwor=DevOps32 PlayBook-name
+
+
+*)ansible-playbook : runs the playbook
+*)-i inventory : inventory file name specify chestunnav
+*)PlayBook-filename.yml : playbook name
+
+
+##)Multiple-PLAYS in a single playbook:
+----------------------------------------
+
+Example-3: Writing multiple PLAYS inside one playbook
+
+- name: PLAY-1
+  hosts: prod
+  become:yes 
+  
+  tasks:
+  
+  - name: install git
+    ansible.builtin.package:
+	  name: git
+	  state: present
+	  
+	  
+	  
+- name: PLAY-2
+  hosts: test
+  become: yes
+  
+  tasks: 
+  
+  - name: install nginx 
+    ansible.builtin.package:
+	  name: nginx
+	  state: present
+    
+	
+	
+	
+Example-4: To print a text message and execute in localhost where ansible server is installed
+
+
+Inevtory-file.ini
+
+[local]
+local host
+
+*)Understand: when you give "local" it will print that message in control-node i.e where ansible is installed
+
+- name: printing a message
+  hosts: local
+  connection: local ## Ansible is connecting to localhost
+  
+  tasks:
+  
+  - name: see the message
+    ansible.builtin.debug:
+	    msg: " keep practicing with patience "
+		
+		
+NOTE:
+
+*)ansible.builtin.debug: We use the debug module to display messages and variable values to understand what is happening during playbook execution.
+
+
+##)Variables:
+--------------
+
+#)Declare Variables in PLAY level:
+-----------------------------------
+
+*)Variables declared at play level are accessible to all the tasks that are there in PLAY.
+
+
+==)Example-1: 
+
+- name: declare variable in PLAY level
+  hosts: local
+  connection: local 
+  
+  vars:
+    
+	NAME: Megham
+	RELATION: Soul
+	
+  
+  tasks:
+  ansible.builtin.debug:
+    msg: " You are my {{ NAME }} and {{ RELATION }} "
+	
+	
+*)Understand: During the execution it will call the variables and print the message
+
+
+
+
+
+  
