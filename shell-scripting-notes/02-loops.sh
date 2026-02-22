@@ -9,7 +9,7 @@ N="\e[0m"
 
 LOG_FOLDER="/var/log/shell-scripting-logs"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
-LOG_FILE="($LOG_FOLDER/$SCRIPT_NAME.log)"
+LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 
 mkdir -p $LOG_FOLDER
 
