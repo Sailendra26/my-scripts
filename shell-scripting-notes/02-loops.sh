@@ -14,17 +14,17 @@ LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 mkdir -p $LOG_FOLDER
 
 if [ $USER_ID -ne 0 ]; then
-    echo " $R ERROR: please run wuth user privileges $N" 
+    echo -e " $R ERROR: please run wuth user privileges $N" 
     exit 1
 fi 
 
 VALIDATE() {
 
     if [ $1 -ne 0 ]; then
-        echo " $2 installation is ...$G FAILURE $N"
+        echo -e " $2 installation is ...$G FAILURE $N"
         exit 1
     else
-        echo " $2 intstallation is ... $R SUCCESS $N "
+        echo -e " $2 intstallation is ... $R SUCCESS $N "
     fi
 }
 
@@ -36,6 +36,6 @@ do
         dnf install $package -y &>> $LOG_FILE
         VALIDATE $? "$package"
     else
-        echo "$package is alreay exists..$Y SKIPPING $N"
+        echo -e "$package is alreay exists..$Y SKIPPING $N"
     fi
 done
