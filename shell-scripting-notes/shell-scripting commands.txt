@@ -36,4 +36,42 @@ Ex: echo "Suresh: Hi Ramesh how are you"
 
 
 
+Numeric Comparison Operators (Used for counts, sizes, status codes):
+--------------------------------------------------------------------
+
+-eq → Equal
+-ne → Not equal
+-gt → Greater than
+-lt → Less than
+-ge → Greater than or equal
+-le → Less than or equal
+
+
+Logical Operators (Condition Combination)
+------------------------------------------
+
+! → NOT
+&& → AND
+|| → OR
+
+
+String Test Operators (Very Common in Scripts):
+-----------------------------------------------
+-z → String empty aa?
+-n → String not empty aa?
+= → Two strings equal aa?
+!= → Two strings not equal aa?
+
+
+File / Directory Checks:
+--------------------------
+
+-d → Directory exists aa?
+-f → Regular file exists aa?
+-e → File or directory exists aa?
+-s → File exists and size > 0 aa?
+-r → File readable aa?
+-w → File writable aa?
+-x → File executable aa?
+-L → Symbolic link aa?
 

@@ -616,7 +616,7 @@ fi
 *) > --> overwrite the data
 *) >> --> append the data
 
-LOGS: Logs are records of what happens during the execution of an action used for monitoring and troubleshooting.
+LOGS: Logs are records of what happens during the execution of an action and used for monitoring and troubleshooting.
 -----
 
 
@@ -672,7 +672,7 @@ if [ $1 -ne 0 ]; then
 else
 	echo " $2 installation is.. SUCCESS "
 fi
-
+}
 
 dnf list installed nginx &>> $LOG_FILE
 
@@ -728,6 +728,8 @@ $NORMAL --> if you dont use at the end then same color will continue for the nex
 #)SESSION-17:
 -------------
 
+LOOPS:
+------
 
 *)A for loop is used to execute a set of commands multiple times for each item in a list.
 *)It is mainly used to avoid repetition and automate tasks like processing files, checking services, or running commands on multiple inputs.
@@ -739,4 +741,56 @@ for variable in list
 do
   commands
 done
+
+AWS CLI: 
+--------
+
+*)AWS CLI is a command-line tool that allows users to interact with and manage AWS services directly from the terminal, 
+  enabling automation and faster infrastructure management.
+
+Configure AWS CLI to connect with AWS account:
+----------------------------------------------
+Step 1: Login to AWS Console
+Step 2: Open IAM Service
+Step 3: Go to Users
+Step 4: Create a New User
+Step 5: Provide User Name
+Step 6: Set Permissions
+
+*)Choose the following:
+
+1)Attach policies directly
+
+Example policy:
+AdministratorAccess or required limited permissions.
+
+Step 7: Create the User
+Step 8: Generate Access Keys
+
+After the user is created:
+1)Open the user
+2)Go to Security credentials tab
+3)Click Create access key
+
+Step 9: Copy the Keys and download .CSV file 
+
+*)because keys shown only once so u have to download.
+
+Step 10: Install AWS CLI and Use Keys 
+
+*)sudo yum install awscli -y
+*)Check Instalation: aws --version
+  
+aws configure --> this is the command we use to configure, once this command is executed it will ask you the below details.
+ 
+ 
+AWS Access Key ID: 
+AWS Secret Access Key: 
+Default region name: 
+Default output format: 
+
+if all the requested deatails submitted then it will be configured with this step.
+
+
+
 
