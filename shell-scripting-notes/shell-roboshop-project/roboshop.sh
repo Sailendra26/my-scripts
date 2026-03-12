@@ -1,7 +1,7 @@
 #!/bin/bash
 
-AMI_ID="ami-09c813fb71547fc4f"
-SG_ID="sg-07c8acf3fa6b923fa" # replace with your SG-ID
+AMI_ID="ami-0220d79f3f480ecf5"
+SG_ID="sg-00f8aad7ab69831fd" # replace with your SG-ID
 ZONE_ID="Z04223522WLWW3RAUWSAN" # this is your Hosted zone-ID
 DOMAIN_NAME="devopsmegham.fun" # this is your domain name 
 
@@ -12,7 +12,7 @@ do
 
 
     # Get Private IP
-    if [ $instance -ne "frontend" ]; then
+    if [ $instance != "frontend" ]; then
 
     # This will give your instance Private-ip address if your insatnce is not "frontend"
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)

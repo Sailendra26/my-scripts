@@ -755,7 +755,8 @@ Step 2: Open IAM Service
 Step 3: Go to Users
 Step 4: Create a New User
 Step 5: Provide User Name
-Step 6: Set Permissions
+
+Step 6: Set Permissions :
 
 *)Choose the following:
 
@@ -765,12 +766,12 @@ Example policy:
 AdministratorAccess or required limited permissions.
 
 Step 7: Create the User
-Step 8: Generate Access Keys
+Step 8: Generate Access Keys :
 
 After the user is created:
 1)Open the user
 2)Go to Security credentials tab
-3)Click Create access key
+3)Click Create access key --> select "command line interface" -->
 
 Step 9: Copy the Keys and download .CSV file 
 
