@@ -5,7 +5,7 @@ SG_ID="sg-00f8aad7ab69831fd" # replace with your SG-ID
 ZONE_ID="Z04223522WLWW3RAUWSAN" # this is your Hosted zone-ID
 DOMAIN_NAME="devopsmegham.fun" # this is your domain name 
 
-for instance in $@ # mongodb redis mysql : Instance names
+for instance in $@ # passing multiple values dynamically like mongodb redis mysql : Instance names
 do
    # This will create an instance and give you the instance ID
         INSTANCE_ID=$(aws ec2 run-instances --image-id $AMI_ID --instance-type t3.micro --security-group-ids $SG_ID --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" --query 'Instances[0].InstanceId' --output text)

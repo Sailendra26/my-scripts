@@ -771,7 +771,7 @@ Step 8: Generate Access Keys :
 After the user is created:
 1)Open the user
 2)Go to Security credentials tab
-3)Click Create access key --> select "command line interface" -->
+3)Click Create access key --> select "command line interface" and Confirmation tick box --> click next -->
 
 Step 9: Copy the Keys and download .CSV file 
 
