@@ -793,5 +793,19 @@ Default output format:
 if all the requested deatails submitted then it will be configured with this step.
 
 
+#)SESSION-18:
+-------------
+
+*)set -euo pipefail --> Stops the script when an error occurs and prevents unsafe execution,
+i.e. script will be stopped when an error occurs during the script execution 
+
+-e → exit immediately if any command fails
+-u → throw error if an undefined variable is used
+pipefail → fail if any command in a pipeline fails 
 
 
+trap --> used to handle errors and display which line and command failed (i.e. it shows at which line we got error and which command failed) 
+
+SYNTAX: trap 'what to do' WHEN
+
+Example-01: trap 'echo "ERROR at line $LINENO: $BASH_COMMAND"' ERR
