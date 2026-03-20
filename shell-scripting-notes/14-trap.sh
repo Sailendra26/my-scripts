@@ -1,6 +1,8 @@
 #!/bin/bash
 
-set -euo pipefail
+# set -euo pipefail
+
+trap 'echo "ERROR at line $LINENO: $BASH_COMMAND"' ERR
 
 echo "Starting..."
 
