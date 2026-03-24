@@ -7,4 +7,4 @@ EVERYTHING="SHIVA"
 echo " I love : $EVERYTHING "
 echo "PID of SCRIPT-1: $$"
 
-source ./15-script-2.sh
+source ./15-SCRIPT-2.sh
