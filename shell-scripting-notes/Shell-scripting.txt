@@ -809,3 +809,35 @@ trap --> used to handle errors and display which line and command failed (i.e. i
 SYNTAX: trap 'what to do' WHEN
 
 Example-01: trap 'echo "ERROR at line $LINENO: $BASH_COMMAND"' ERR
+
+#)SESSION-19:
+-------------
+
+Source Command:
+---------------
+
+##)Calling One Script from Another Script (source command):
+
+1)What is source?
+
+*)The source command is used to execute one script inside another script.
+*)It runs in the same shell environment, so no new process is created and the PID remains the same.
+*)Variables and functions are shared between both scripts, and any changes affect the current shell.
+
+1)SCRIPT-1 (main script):
+
+#!/bin/bash
+
+EVERYTHING="SHIVA"
+
+echo "I Love: $EVERYTHING"
+echo "PID of SCRIPT-1: $$"
+
+source ./15-SCRIPT-2.sh
+
+2)SCRIPT-2:
+
+#!/bin/bash
+
+echo "I Love: $EVERYTHING"
+echo "PID of SCRIPT-2: $$"
