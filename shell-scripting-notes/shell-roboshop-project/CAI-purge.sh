@@ -5,6 +5,9 @@ set -euo pipefail
 SOURCE="/tmp/wgs"
 DEST="/tmp/wgs/ARCHIVE"
 
+mkdir -p "$SOURCE"
+mkdir -p "$DEST/logs"
+
 CURRENT_DATE=$(date +%Y-%m-%d)
 START_TIME=$(date +%s)
 
