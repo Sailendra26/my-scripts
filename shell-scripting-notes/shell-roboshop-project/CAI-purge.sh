@@ -32,6 +32,9 @@ LOG_FILE="$DEST/logs/$QUARTER.log"
 mkdir -p "$ARCHIVE_DIR"
 
 echo "-----------------------------" >> "$LOG_FILE"
+
+echo "script started running"
+
 echo "Script started at $(date)" >> "$LOG_FILE"
 
 # Get last 30 days .bkp files
@@ -68,3 +71,5 @@ DURATION=$((END_TIME - START_TIME))
 
 echo "Script ended at $(date)" >> "$LOG_FILE"
 echo "Total time taken: $DURATION seconds" >> "$LOG_FILE"
+
+echo " script completed successfully"
