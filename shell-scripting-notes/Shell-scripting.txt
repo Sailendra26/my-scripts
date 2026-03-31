@@ -801,7 +801,7 @@ i.e. script will be stopped when an error occurs during the script execution
 
 -e → exit immediately if any command fails
 -u → throw error if an undefined variable is used
-pipefail → fail if any command in a pipeline fails 
+pipefail → return failuer ( exit status as non-ze0 ) if any command in a pipeline fails 
 
 
 trap --> used to handle errors and display which line and command failed (i.e. it shows at which line we got error and which command failed) 
