@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-SOURCE="/gpc/purge/download/nonemp/wgs/"
-DEST="/gpc/purge/download/nonemp/wgs/ARCHIVE"
+SOURCE="/tmp/wgs"
+DEST="/tmp/wgs/ARCHIVE"
 
 CURRENT_DATE=$(date +%Y-%m-%d)
 START_TIME=$(date +%s)
@@ -48,7 +48,7 @@ do
 
     #Zip the file without including full path (only filename will be stored)
     zip -j "$ARCHIVE_DIR/$zip_file" "$file"
-    
+
     #Check if zip file exists (created successfully)
     if [ -f "$ARCHIVE_DIR/$zip_file" ]; then
         echo "Zipped successfully: $zip_file" >> "$LOG_FILE"
