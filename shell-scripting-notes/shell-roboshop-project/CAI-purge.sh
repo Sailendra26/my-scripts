@@ -1,6 +1,13 @@
 #!/bin/bash
 
+# if any command failes in the script then set stops the script. 
 set -euo pipefail
+
+# trap used to handle errors and display which line and command failed
+# Bash excecutes each command and checks its exit status, 
+# If any command returns a non-zero exit code, the "ERR trap" command gets triggered.
+
+trap 'echo "ERROR at line $LINENO: $BASH_COMMAND"' ERR
 
 SOURCE="/tmp/wgs"
 DEST="/tmp/wgs/ARCHIVE"
@@ -38,9 +45,9 @@ echo "script started running"
 echo "Script started at $(date)" | tee -a $LOG_FILE
 
 # Get last 30 days .bkp files
-FILES=$(find "$SOURCE" -type f -name "*.bkp" -mtime -30)
+FILES=$(find "$SOURCE" -type f -name "*.bak" -mtime -30)
 
-# Check if no .bkp files found (FILES variable is empty i.e. string is empty or not )
+# Check if no .bak files found (FILES variable is empty i.e. string is empty or not )
 if [ -z "$FILES" ]; then
     echo "No .bkp files found in last 30 days" | tee -a $LOG_FILE
 fi

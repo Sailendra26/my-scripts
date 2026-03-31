@@ -800,16 +800,28 @@ if all the requested deatails submitted then it will be configured with this ste
 *)set -euo pipefail --> Stops the script when an error occurs and prevents unsafe execution,
 i.e. script will be stopped when an error occurs during the script execution 
 
--e → exit immediately if any command fails
--u → throw error if an undefined variable is used
-pipefail → return failuer ( exit status as non-ze0 ) if any command in a pipeline fails 
+-e → stop the script and exit if any command fails
+-u → throw error if an undefined variable is used ( like any typo mistakes )
+pipefail → return failuer ( exit status as non-zero ) if any command in a pipeline fails 
 
 
-trap --> used to handle errors and display which line and command failed (i.e. it shows at which line we got error and which command failed) 
+*)trap --> 
+
+used to handle errors and display which line and command failed (i.e. it shows at which line we got error and which command failed) 
+Bash excecutes each command and checks its exit status, If any command returns a non-zero exit code, the "ERR trap" command gets triggered.
 
 SYNTAX: trap 'what to do' WHEN
+-------
 
-Example-01: trap 'echo "ERROR at line $LINENO: $BASH_COMMAND"' ERR
+*)trap 'echo "ERROR at line $LINENO: $BASH_COMMAND"' ERR
+
+ERR --> it's an event signal, so it says if any command fails then trigger this message
+LINENO & BASH_COMMAND --> these are Bash-built-in variables.
+
+IMP***) if we use trap command alone it will show at what line we got the error but still proceed forward 
+and excecute other commands but script will not stop so better use " set and trap " commands together.
+
+
 
 #)SESSION-19:
 -------------
