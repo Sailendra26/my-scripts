@@ -641,8 +641,9 @@ Assume you want create a "shell-script-logs" folder, as you are working as non-r
 sudo /var/log/shell-script-logs 
 
 
-*)| tee -a $LOG_FILE --> appends the data 
+*)| tee -a $LOG_FILE --> appends the data to the log file and also display the messages on the screen 
 
+*)example: echo " nginx is already exists...SKIPPING " | tee -a $LOG_FILE
 
 #!/bin/bash 
 

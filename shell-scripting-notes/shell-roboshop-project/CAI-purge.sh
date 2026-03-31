@@ -31,18 +31,18 @@ LOG_FILE="$DEST/logs/$QUARTER.log"
 # Create only quarter folder (ARCHIVE & logs already exist)
 mkdir -p "$ARCHIVE_DIR"
 
-echo "-----------------------------" >> "$LOG_FILE"
+echo "-----------------------------" >| tee -a $LOG_FILE
 
 echo "script started running"
 
-echo "Script started at $(date)" >> "$LOG_FILE"
+echo "Script started at $(date)" | tee -a $LOG_FILE
 
 # Get last 30 days .bkp files
 FILES=$(find "$SOURCE" -type f -name "*.bkp" -mtime -30)
 
 # Check if no .bkp files found (FILES variable is empty i.e. string is empty or not )
 if [ -z "$FILES" ]; then
-    echo "No .bkp files found in last 30 days" >> "$LOG_FILE"
+    echo "No .bkp files found in last 30 days" | tee -a $LOG_FILE
 fi
 
 for file in $FILES
@@ -50,19 +50,19 @@ do
     filename=$(basename "$file" .bkp)
     zip_file="${filename}_${CURRENT_DATE}.zip"
 
-    echo "Processing file: $file" >> "$LOG_FILE"
+    echo "Processing file: $file" | tee -a $LOG_FILE
 
     #Zip the file without including full path (only filename will be stored)
     zip -j "$ARCHIVE_DIR/$zip_file" "$file"
 
     #Check if zip file exists (created successfully)
     if [ -f "$ARCHIVE_DIR/$zip_file" ]; then
-        echo "Zipped successfully: $zip_file" >> "$LOG_FILE"
+        echo "Zipped successfully: $zip_file" | tee -a $LOG_FILE
 
         rm -f "$file"
-        echo "Deleted original file: $file" >> "$LOG_FILE"
+        echo "Deleted original file: $file" | tee -a $LOG_FILE
     else
-        echo "Error zipping file: $file" >> "$LOG_FILE"
+        echo "Error zipping file: $file" | tee -a $LOG_FILE
     fi
 done
 
@@ -70,6 +70,6 @@ END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 
 echo "Script ended at $(date)" >> "$LOG_FILE"
-echo "Total time taken: $DURATION seconds" >> "$LOG_FILE"
+echo "Total time taken: $DURATION seconds" | tee -a $LOG_FILE
 
 echo "script completed successfully"
