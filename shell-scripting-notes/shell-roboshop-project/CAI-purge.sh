@@ -72,4 +72,4 @@ DURATION=$((END_TIME - START_TIME))
 echo "Script ended at $(date)" >> "$LOG_FILE"
 echo "Total time taken: $DURATION seconds" >> "$LOG_FILE"
 
-echo " script completed successfully"
+echo "script completed successfully"
