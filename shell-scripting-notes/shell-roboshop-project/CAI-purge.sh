@@ -39,7 +39,6 @@ fi
 ARCHIVE_DIR="$DEST/$QUARTER"
 LOG_FILE="$DEST/logs/cai-archive.log"
 
-dnggg
 
 # Create only quarter folder 
 mkdir -p "$ARCHIVE_DIR"
