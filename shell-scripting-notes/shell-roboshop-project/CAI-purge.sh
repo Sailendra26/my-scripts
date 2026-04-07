@@ -44,7 +44,7 @@ LOG_FILE="$DEST/logs/cai-archive.log"
 mkdir -p "$ARCHIVE_DIR"
 
 echo "-----------------------------" | tee -a "$LOG_FILE"
-echo -e "Script started at $G $(date) $N" | tee -a "$LOG_FILE"
+echo -e "Script started at $(date)" | tee -a "$LOG_FILE"
 
 # Get last 30 days .bak files
 FILES=$(find "$SOURCE" -type f -name "*.bak" -mtime -30)
@@ -56,7 +56,7 @@ if [ -z "$FILES" ]; then
 fi
 
 #Zip the file without including full path (only filename will be stored, it will ignore the file)
-echo -e "zip package validation..$G STARTED $N"
+
 
 VALIDATE() {
     if [ $1 -eq 0 ]; then
@@ -68,14 +68,14 @@ VALIDATE() {
 }
 
 if dnf list installed zip &> /dev/null; then
-    echo "zip is already installed -- SKIPPING" | tee -a "$LOG_FILE"
+    echo "zip is already installed -- $Y SKIPPING$N" | tee -a "$LOG_FILE"
 else
     echo "zip is not installed, installing..." | tee -a "$LOG_FILE"
     sudo dnf install zip -y &> /dev/null
     VALIDATE $? "zip"
 fi
 
-echo -e "zip package validation..$G COMPLETED $N"
+
 
 for file in $FILES
 do
