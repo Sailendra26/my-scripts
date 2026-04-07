@@ -68,7 +68,7 @@ VALIDATE() {
 }
 
 if dnf list installed zip &> /dev/null; then
-    echo "zip is already installed -- $Y SKIPPING$N" | tee -a "$LOG_FILE"
+    echo "zip is already installed -- $Y SKIPPING $N" | tee -a "$LOG_FILE"
 else
     echo "zip is not installed, installing..." | tee -a "$LOG_FILE"
     sudo dnf install zip -y &> /dev/null
@@ -85,17 +85,17 @@ do
 
     echo "Processing file: $file" | tee -a "$LOG_FILE"
 
-    echo -e "File zipping $G STARTED $N"
+    echo -e "File zipping $G..STARTED $N"
     # -j ignores the path, select only file name and -q it supress the output of zip command
     zip -j -q "$ARCHIVE_DIR/$zip_file" "$file"
 
     #Check if zip file exists 
     if [ -f "$ARCHIVE_DIR/$zip_file" ]; then
-        echo -e "File Zipped $G ..successfully $N: $zip_file" | tee -a "$LOG_FILE"
+        echo -e "File Zipped $G..successfully $N: $zip_file" | tee -a "$LOG_FILE"
         rm -f "$file"
-        echo -e "Deleted original file: $file $G ..SUCCESSFULLY $N" | tee -a "$LOG_FILE"
+        echo -e "Deleted original file: $file $G..SUCCESSFULLY $N" | tee -a "$LOG_FILE"
     else
-        echo -e "Error zipping file: $file $R ..FAILED $N" | tee -a "$LOG_FILE"
+        echo -e "Error zipping file: $file $R..FAILED $N" | tee -a "$LOG_FILE"
     fi
 done
 
