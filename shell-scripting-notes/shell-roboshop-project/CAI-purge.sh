@@ -68,7 +68,7 @@ VALIDATE() {
 }
 
 if dnf list installed zip &> /dev/null; then
-    echo "zip is already installed -- $Y SKIPPING $N" | tee -a "$LOG_FILE"
+    echo -e "zip is already installed -- $Y SKIPPING $N" | tee -a "$LOG_FILE"
 else
     echo "zip is not installed, installing..." | tee -a "$LOG_FILE"
     sudo dnf install zip -y &> /dev/null
