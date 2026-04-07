@@ -39,6 +39,8 @@ fi
 ARCHIVE_DIR="$DEST/$QUARTER"
 LOG_FILE="$DEST/logs/cai-archive.log"
 
+dnggg
+
 # Create only quarter folder 
 mkdir -p "$ARCHIVE_DIR"
 
@@ -55,7 +57,7 @@ if [ -z "$FILES" ]; then
 fi
 
 #Zip the file without including full path (only filename will be stored, it will ignore the file)
-echo -e "zip package validation.. $G STARTED $N"
+echo -e "zip package validation..$G STARTED $N"
 
 VALIDATE() {
     if [ $1 -eq 0 ]; then
@@ -74,7 +76,7 @@ else
     VALIDATE $? "zip"
 fi
 
-echo -e "zip package validation.. $G COMPLETED $N"
+echo -e "zip package validation..$G COMPLETED $N"
 
 for file in $FILES
 do
@@ -85,8 +87,8 @@ do
     echo "Processing file: $file" | tee -a "$LOG_FILE"
 
     echo -e "File zipping $G STARTED $N"
-
-    zip -j "$ARCHIVE_DIR/$zip_file" "$file"
+    # -j ignores the path, select only file name and -q it supress the output of zip command
+    zip -j -q "$ARCHIVE_DIR/$zip_file" "$file"
 
     #Check if zip file exists 
     if [ -f "$ARCHIVE_DIR/$zip_file" ]; then
@@ -101,6 +103,6 @@ done
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 
-echo -e "$N Script ended at $(date) $N" | tee -a "$LOG_FILE"
-echo -e "$N Total time taken: $DURATION seconds $N" | tee -a "$LOG_FILE"
+echo -e "Script ended at $(date)" | tee -a "$LOG_FILE"
+echo -e "Total time taken: $DURATION seconds" | tee -a "$LOG_FILE"
 echo -e "script completed $G ..successfully $N"
