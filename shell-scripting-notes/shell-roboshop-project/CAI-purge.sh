@@ -55,8 +55,6 @@ if [ -z "$FILES" ]; then
     exit 0
 fi
 
-#Zip the file without including full path (only filename will be stored, it will ignore the file)
-
 
 VALIDATE() {
     if [ $1 -eq 0 ]; then
@@ -104,4 +102,4 @@ DURATION=$((END_TIME - START_TIME))
 
 echo -e "Script ended at $(date)" | tee -a "$LOG_FILE"
 echo -e "Total time taken: $DURATION seconds" | tee -a "$LOG_FILE"
-echo -e "script completed $G ..successfully $N"
+echo -e "script completed $G..successfully $N"

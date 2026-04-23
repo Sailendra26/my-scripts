@@ -14,7 +14,7 @@ Automation goals: Speed and Accuracy
 
 What is Git? (simple)
 
-Git is a tool that helps you save versions of your code and track changes so you can go back anytime.
+Git is a tool that helps you save versions of your code and track changes so that you can go back anytime.
 
 Why Git is used:
 
@@ -110,8 +110,8 @@ echo "$person1: Hi $person2 how are you"
 echo "" ## Comment : prints empty line
 echo "$person2: Good,how are you $person1"
 
-Exection: sh sample.sh 
----------
+Execution: sh sample.sh 
+----------
 
 
 O/P: 
@@ -160,10 +160,22 @@ Prakash: Good,how are you Girish
 -----------------------
 
 *)An environment variable is used to set values from outside instead of changing them in the code, 
-  so that it reduces the need to modify, rebuild, and redeploy the application every time a value changes.
+  This helps avoid typo mistakes, rebuilding and redeploying the application whenever a value changes.
+  It is mainly used for dynamic or temporary configuration changes.
+  Dynamic = values can change based on the situation
   
-*)This will be active until the terminal session is alive, you need to give that environment variable again once you login if you want.
+*)This environment-variable will be active until the current terminal session is alive, you need to give that environment variable again 
+  once you open new terminal or current terminal is closed.
 *)when u execute the script, it uses the environment-variable that is declared outside the script.
+
+**)"export" is a command used to set environment variables.
+
+
+👉 Real-time example (important):
+----------------------------------
+
+➡️ DB URL / Password / Port number
+➡️ Dev, QA, Prod lo different values pettaachu
 
 
 ENV-VAR:
@@ -188,6 +200,27 @@ Exection: sh sample.sh
 
 O/P:Training is DevSecOps with AWS
 ----
+
+##)Set environment-variable permanently (Linux):
+--------------------------------------------------
+
+*)Environment variables can be made permanent by adding them to ~/.bashrc and reloading using source command.
+
+*)~ represents the home directory of the current user and .(dot) represents hidden file.
+
+1. Open bashrc file
+vi ~/.bashrc
+
+2. Add variable at end of file
+export ENV=dev
+
+3. Save and exit
+
+4. Apply changes
+source ~/.bashrc
+
+5. Verify
+echo $ENV
 
 
 
@@ -241,7 +274,7 @@ O/P:
 ----
 
 timestamp is : Mon Feb  2 17:40:52 IST 2026
-2026
+timestamp is : 2026
 
 #)Special variables : 
 ---------------------
@@ -260,7 +293,7 @@ All arguments(variables) of the script are the values you pass after the script 
 | `$@`     | All arguments (separately)                |
 | `$*`     | All arguments (as one string)             |
 | `$?`     | Exit status of previous command (0 = success) |
-| `$$`     | Process ID of the script                  |
+| `$$`     | Process ID of the script or command       |
 | `$!`     | Process ID of last background command     |
 
 
@@ -368,8 +401,8 @@ O/P:
 #)SESSION-16:
 -------------
 
-**IMP**)Rule No: 1  --> if there is a chance of diasplaying an error at any step then must use the EXIT CODE( $? ) to stop the process there itself 
-because you should not move forward when it is errored out. in rare cases we can move when required.
+**IMP**)Rule No: 1  --> if there is a chance of displaying an error at any step then must use the EXIT CODE( $? ) to stop the process there itself 
+because you should not move forward when it is errored out. in rare cases we can move forward when required.
 
 
 *)&? - Exit status of previous command 
@@ -802,7 +835,7 @@ i.e. script will be stopped when an error occurs during the script execution
 
 -e → stop the script and exit if any command fails
 -u → throw error if an undefined variable is used ( like any typo mistakes )
-pipefail → return failuer ( exit status as non-zero ) if any command in a pipeline fails 
+pipefail → return failure ( exit status as non-zero ) if any command in a pipeline fails 
 
 
 *)trap --> 
@@ -819,7 +852,7 @@ ERR --> it's an event signal, so it says if any command fails then trigger this 
 LINENO & BASH_COMMAND --> these are Bash-built-in variables.
 
 IMP***) if we use trap command alone it will show at what line we got the error but still proceed forward 
-and excecute other commands but script will not stop so better use " set and trap " commands together.
+and excecute other commands but script will not stop, so better use " set and trap " commands together.
 
 
 
@@ -836,6 +869,9 @@ Source Command:
 *)The source command is used to execute one script inside another script.
 *)It runs in the same shell environment, so no new process is created and the PID remains the same.
 *)Variables and functions are shared between both scripts, and any changes affect the current shell.
+
+*)You can put all the common code in one ".sh" file and call this script from another script when you know that 
+  multiple services are using same code so that you can avoid writing repeated code in other services.
 
 1)SCRIPT-1 (main script):
 
@@ -854,3 +890,34 @@ source ./15-SCRIPT-2.sh
 
 echo "I Love: $EVERYTHING"
 echo "PID of SCRIPT-2: $$"
+
+##)/dev/null:
+--------------
+
+***)Use this If you dont want to save the uncessary info in log-file or dont want to display on the screen 
+
+*)/dev/null is a special file in Linux/Unix systems that acts as a null device.
+
+It accepts any data sent to it But does not store it anywhere.The data is discarded immediately.
+
+Example:
+---------
+
+#!/bin/bash
+
+VALIDATE() {
+  if [ $1 -eq 0 ]; then
+    echo "$2 installed successfully" | tee -a $LOG_FILE
+  else
+    echo "$2 installation failed" | tee -a $LOG_FILE
+    exit 1
+  fi
+}
+
+if dnf list installed zip &> /dev/null; then
+  echo "zip is already installed -- SKIPPING" | tee -a $LOG_FILE
+else
+  echo "zip is not installed, installing..." | tee -a $LOG_FILE
+  dnf install zip -y &> /dev/null
+  VALIDATE $? "zip"
+fi
