@@ -942,4 +942,25 @@ do
   commands
 done
 
+SLEEP COMMAND:
+--------------
+
+*)sleep command is used to pause the execution of a script or command for some time.
+
+In real-time scripting, sleep is mainly used to:
+
+*)add delay between operations
+*)avoid continuous looping
+*)wait for services/files/processes
+*)create countdowns or retries
+
+
+Example:
+--------
+
+#!/bin/bash
+
+echo "tesing sleep command"
+sleep 3 
+echo "successfully tested sleep command"
 
