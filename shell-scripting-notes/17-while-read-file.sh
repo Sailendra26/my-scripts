@@ -8,4 +8,5 @@
 while read line
 do
   echo "processing line:$line"
+learning
 done < ./15-SCRIPT-2.sh
