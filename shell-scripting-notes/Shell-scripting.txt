@@ -89,7 +89,7 @@ SHELL-SCRIPTING COMMANDS:
 
 
 
-*)echo --> prints the line of the data and goes to a new line by default. 
+*)echo --> prints the line of the data and goes to new line by default. 
 
 Ex: echo "Suresh: Hi Ramesh how are you"
 
@@ -164,8 +164,8 @@ Prakash: Good,how are you Girish
   It is mainly used for dynamic or temporary configuration changes.
   Dynamic = values can change based on the situation
   
-*)This environment-variable will be active until the current terminal session is alive, you need to give that environment variable again 
-  once you open new terminal or current terminal is closed.
+*)This environment-variable will be active until the current terminal session is alive, you need to give that environment variable again once
+  you open new terminal or current terminal is closed.
 *)when u execute the script, it uses the environment-variable that is declared outside the script.
 
 **)"export" is a command used to set environment variables.
@@ -401,7 +401,7 @@ O/P:
 #)SESSION-16:
 -------------
 
-**IMP**)Rule No: 1  --> if there is a chance of displaying an error at any step then must use the EXIT CODE( $? ) to stop the process there itself 
+**IMP**)Rule No: 1  --> if there is a chance of displaying an error at any step then you must use the EXIT CODE( $? ) to stop the process there itself 
 because you should not move forward when it is errored out. in rare cases we can move forward when required.
 
 
@@ -476,7 +476,7 @@ ec2-user-id = 1001
 USER_ID=$(id -u)
 
 if [ $USER_ID -ne 0]; then
-        echo " ERROR: please run with user permissions "
+        echo " ERROR: please run with root user permissions "
         exit 2
 fi
 
@@ -641,7 +641,7 @@ fi
 #)REDIRECTIONS & LOGS:
 ----------------------
 
-*)Redirection is used to send command output(SUCCESS or FAILED i.e errors) to a log-file instead of displaying on the screen.
+*)Redirections are used to send command output(either SUCCESS or FAILED i.e errors) to a log-file instead of displaying on the screen.
  
 *) 1 --> SUCCESS
 *) 2 --> FAILED
@@ -677,6 +677,8 @@ sudo /var/log/shell-script-logs
 *)| tee -a $LOG_FILE --> appends the data to the log file and also display the messages on the screen 
 
 *)example: echo " nginx is already exists...SKIPPING " | tee -a $LOG_FILE
+
+
 
 #!/bin/bash 
 
@@ -765,7 +767,7 @@ $NORMAL --> if you dont use at the end then same color will continue for the nex
 LOOPS:
 ------
 
-*)A for loop is used to execute a set of commands multiple times for each item in a list.
+*)A for loop is used to execute a set of commands repeatedly for each item in a list, range. Use for loop when values/range are already known.
 *)It is mainly used to avoid repetition and automate tasks like processing files, checking services, or running commands on multiple inputs.
 
 SYNTAX:
@@ -779,8 +781,9 @@ done
 AWS CLI: 
 --------
 
-*)AWS CLI is a command-line tool that allows users to interact with and manage AWS services directly from the terminal, 
-  enabling automation and faster infrastructure management.
+*)AWS CLI is a command-line tool that allows users to interact with and manage AWS services directly from the terminal without need of 
+  logging to the AWS portal.
+  
 
 Configure AWS CLI to connect with AWS account:
 ----------------------------------------------
@@ -867,8 +870,8 @@ Source Command:
 1)What is source?
 
 *)The source command is used to execute one script inside another script.
-*)It runs in the same shell environment, so no new process is created and the PID remains the same.
-*)Variables and functions are shared between both scripts, and any changes affect the current shell.
+*)It runs in the same shell environment, so new process will not be created and the PID remains the same.
+*)Variables and functions are shared between both scripts, and if any changes it affects the current shell.
 
 *)You can put all the common code in one ".sh" file and call this script from another script when you know that 
   multiple services are using same code so that you can avoid writing repeated code in other services.
@@ -921,3 +924,22 @@ else
   dnf install zip -y &> /dev/null
   VALIDATE $? "zip"
 fi
+
+#)SESSION-20:
+-------------
+
+While Loop:
+-----------
+
+*)A while loop is used to execute a set of commands repeatedly as long as the given condition is true.
+*)Use while loop when loop depends on a condition, Loop runs until condition becomes false.
+
+Syntax:
+-------
+
+while [ condition ]
+do
+  commands
+done
+
+

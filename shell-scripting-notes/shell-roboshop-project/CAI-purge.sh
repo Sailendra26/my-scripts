@@ -103,3 +103,4 @@ DURATION=$((END_TIME - START_TIME))
 echo -e "Script ended at $(date)" | tee -a "$LOG_FILE"
 echo -e "Total time taken: $DURATION seconds" | tee -a "$LOG_FILE"
 echo -e "script completed $G..successfully $N"
+
