@@ -3,6 +3,9 @@
 
 USER_ID=$(id -u)
 
+# root-userId = 0
+# ec2-userId = 1001
+
 if [ $USER_ID -ne 0 ]; then
 	echo " ERROR:: please run with ROOT permissions "
 	exit 2

@@ -945,7 +945,7 @@ done
 SLEEP COMMAND:
 --------------
 
-*)sleep command is used to pause the execution of a script or command for some time.
+*)sleep command is used to pause(stop) the execution of a script or command for some time.
 
 In real-time scripting, sleep is mainly used to:
 
@@ -964,3 +964,33 @@ echo "tesing sleep command"
 sleep 3 
 echo "successfully tested sleep command"
 
+#)How to read file data line by line:
+-------------------------------------
+
+"<" --> input direction, giving the file as an input 
+
+*)when you read the file with this "IFS= read -r" IFS keeps the leading(spaces before line)/trailing(spaces after line) spaces as it is 
+*)-r keeps the backslashes as it is 
+
+Example-1:
+----------
+
+#!/bin/bash
+
+while IFS= read -r line 
+do
+  echo "processing line:$line"
+done < ./15-SCRIPT-2.sh
+
+Example-2:
+----------
+
+*)when you read the file normally like below then it will remove the leading/trailing spaces and backslashes in the file.
+
+
+while read line
+do
+  echo "processing line:$line"
+done < ./15-SCRIPT-2.sh
+
+*)touch -d 20260410 win.txt - to create a file in back date 

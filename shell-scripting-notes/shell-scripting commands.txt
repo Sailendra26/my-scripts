@@ -75,3 +75,4 @@ File / Directory Checks:
 -x → File executable aa?
 -L → Symbolic link aa?
 
+*)touch -d 20260410 win.txt - to create a file in back date 
