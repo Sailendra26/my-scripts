@@ -1,0 +1,15 @@
+- name: task level variables
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  tasks:
+  - name: print Husband and wife names
+    # Below vars section is task level variables, task variables always comes under task name eg: - name 
+    vars:
+      NAME: Bujji Megham
+      HUSBAND: Aaranya
+
+    ansible.builtin.debug:
+      msg: " wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}"
+  
+   
