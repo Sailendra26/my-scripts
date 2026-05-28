@@ -1,5 +1,5 @@
 - name: ping the server
-  hosts: 
+  hosts: warrior
   become: yes
 
   tasks:
