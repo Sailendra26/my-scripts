@@ -17,4 +17,4 @@
       msg: " wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}" 
 
 
-  # In this case, task level variables will have the first priority here so the output is wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}
+  # Task-level variables override play-level variables when both have the same variable name. that means When both task-level and play-level variables are declared with the same variable names but with different values then the first priority goes to task level variables only. so, here the output is "msg": " wife is: Bujji Megham, and her Husband is: Sailendra"

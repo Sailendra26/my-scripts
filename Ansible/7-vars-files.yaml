@@ -1,0 +1,11 @@
+- name: load the variables from external file
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+  
+  # kept the variables in a relationship.yaml file and loading them here. " vars_files: " is used to load the variables from external files
+  vars_files:
+  - relationship.yaml
+  tasks:
+  - name: print the couple details
+    ansible.builtin.debug:
+      msg: " wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}, bond is: {{ RELATIONSHIP }}"
