@@ -11,7 +11,7 @@
   - name: print the names
     # task level variables
     vars:
-      HUSBAND: Aaranya
+      HUSBAND: Sailendra
 
     ansible.builtin.debug:
       msg: " wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}" 
