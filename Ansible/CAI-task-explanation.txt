@@ -1,0 +1,63 @@
+Source = /gpc/purge/download/nonemp/wgs/ARCHIVE
+Destination = /gpc/purge/download/nonemp/wgs/ARCHIVE
+
+Automation task is : whenever we get the .bkp files in the source folder, we should zip each file individually( EX: clmdb01.bkp should be archived as 
+clmdb01_current-date.zip, clmdb02_current-date.zip like this) then move them to the archive folder and then after remove the original files in the source folder
+once files are archived successfully. we should archive only last 30 days files like ( from today to last 30 days files )
+
+We should create an "Archive" folder inside destination not with date just folder and log-file as well with current date automatically
+Inside "Archive" folder we should create another folder like Q1-2026, Q2-2026 for all the 4 quarters in a year automatically
+
+create script start time message, end time and how much time it is taken to complete the script 
+
+
+
+-j → path ignore chesi only file name zip lo petti
+
+mkdir -p /tmp/wgs
+
+mkdir -p /tmp/wgs/ARCHIVE/logs
+
+SOURCE="/tmp/wgs"
+DEST="/tmp/wgs/ARCHIVE"
+
+touch /tmp/wgs/file1.bkp
+touch /tmp/wgs/file2.bkp
+
+chmod +x script.sh
+./script.sh
+
+
+SOURCE="/gpc/purge/download/nonemp/wgs/"
+DEST="/gpc/purge/download/nonemp/wgs/ARCHIVE"
+
+
+VALIDATE() {
+  if [ $1 -eq 0 ]; then
+    echo "$2 installed successfully" | tee -a $LOG_FILE
+  else
+    echo "$2 installation failed" | tee -a $LOG_FILE
+    exit 1
+  fi
+}
+
+dnf list installed zip &>> $LOG_FILE
+
+if [ $? -eq 0 ]; then
+  echo "zip is already installed -- SKIPPING" | tee -a $LOG_FILE
+else
+  echo "zip is not installed, installing..." | tee -a $LOG_FILE
+  dnf install zip -y &>> $LOG_FILE
+  VALIDATE $? "zip"
+fi
+
+
+Option 3 (super simple fallback)
+
+👉 Nee script ikkada paste chey
+nenu direct ga indentation correct chesi ichestha (fastest)
+
+
+#Zip the file without including full path (only filename will be stored, it will ignore the file)
+
+touch -d 20260410 win.txt - to create a file in back date 

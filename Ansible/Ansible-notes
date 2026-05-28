@@ -10,14 +10,73 @@ To connect to the server:
 
 *)ssh ec2-user@public-Ip-address of instance
 
-ANSIBLE - SESSION-22:
----------------------
+SESSION-22:
+-----------
 
 *)Ansible is a configuration management and automation tool used to manage and configure many servers from one place or one server.
-*)Ansible is an agentless tool, which means it performs automation without intstalling any additional software in managed nodes(remote servers)
 
-*)Playbook: A playbook is a collection of plays, and each play is a list of tasks that are executed on managed nodes.
+*)Ansible is an agentless tool(No software installation needed on remote servers), which means it performs automation 
+  without installing any agent or additional software in managed nodes(remote servers). It uses SSH (Secure Shell) protocol to communicate with remote servers.
 
+*)A control node is the main machine where Ansible is installed, managed nodes are the servers managed by the control node.
+  
+*)Ansible playbooks are written in YAML format. We use YAML in Ansible because it is simple, human-readable, and easy to write.
+  Ansible playbooks are written in YAML format to define automation tasks in a structured way.
+  
+#)Indentation: 
+
+*)Indentation is important in YAML because YAML uses spaces to define structure and hierarchy. Incorrect indentation can cause syntax errors and playbook failures.
+
+*)Playbook: A playbook is a collection of one or more plays that contains tasks.
+
+#)YAML:
+
+*)YAML is a simple and human-readable language used to write Ansible playbooks in a structured format.
+
+#)SSH:
+
+*)SSH stands for Secure Shell. It is a secure protocol used to connect and communicate with servers remotely over a network.
+
+Playbook → Collection of plays
+Play → Defines target hosts and tasks
+Task → Single action that will be performed on the managed nodes or remote servers by Ansible.
+Module → Performs the actual work
+
+
+Explanation of Playbook with an example:
+----------------------------------------
+
+- name: Configure web servers
+  hosts: webservers
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+- name: Configure database servers
+  hosts: dbservers
+  tasks:
+    - name: Install mysql
+      apt:
+        name: mysql-server
+        state: present
+	
+	
+*)Entire file → One PLAYBOOK
+  First - name block → First PLAY
+  Second - name block → Second PLAY
+
+
+*)Same hosts/groups unte → same play + multiple tasks. i.e. If the same host group is used, multiple tasks can be written in the same play.
+
+*)Different hosts/groups unte → multiple plays better practice🌿 i.e. If different host groups are used, using multiple plays is a better practice.
+
+*)A playbook starts with -(hyphen) to define a play and "name:" is optional and used to describe the play or task for human readable format.
+
+*)hosts: defines the target server where the tasks are executed.
+
+*)Each task starts with -(hyphen) and task has a name and a module, Modules perform the actual action. 
 
 
 1)Without Ansible:
@@ -34,20 +93,8 @@ ANSIBLE - SESSION-22:
 *)Same configuration everywhere
 *)Faster and error-free
 
-*)A control node is the main machine where Ansible is installed, managed nodes are the servers managed by the control node and 
-  a playbook is a YAML file that contains the instructions executed by Ansible.
 
-*)Ansible playbooks are written in YAML format.
-
-*)A playbook starts with -(hyphen) to define a play and "name:" is optional and used to describe the play or task for human understanding format.
-
-*)hosts: defines the target server where the action need to be performed ,tasks contains the list of tasks to run.
-
-*)Each task starts with -(hyphen) and task has a name and a module, Modules perform the actual action.
-
-
-
-#)Syntax to run the playbook: ansible-playbook -i inventory-file-name PlayBook-filename.yml
+#)Syntax to run the playbook: ansible-playbook -i inventory-fileName PlayBook-filename.yml
 
 
 *)ansible-playbook : runs the playbook
@@ -60,7 +107,10 @@ ANSIBLE - SESSION-22:
 Inventory file:
 ---------------
 
-Ex: inventory.ini ( file name ) inisde it should be like below so then control-node will call the group names either 'prod or test' based on the requirement
+*)Inventory is a file in Ansible that contains the list of target servers (hosts) and host groups managed by Ansible.
+  It tells Ansible which servers to connect to and manage.
+
+Ex: inside inventory.ini ( file name ), it should be like below so then control-node will call the group names either 'prod or test' based on the requirement
     then perform the tasks accordingly after you run the playbook.
 
 [prod]
@@ -109,15 +159,15 @@ Example-2: How to install a package or software, start the service and auto rest
 #)NOTE:
 --------
   
-*)hosts: frontend --> decides the target server
-*)become: yes --> it will run the tasks with sudo permissions(root user) in the node server.
-*)enabled: yes --> service will be auto-enabled on the rebbot 
+*)hosts: frontend(group name) --> decides the target server
+*)become: yes --> it will run the tasks with sudo permissions(root user) in the managed(remote) server.
+*)enabled: yes --> service will be auto-restart on the reboot 
  
 -------------------------------------------------------------------------------------------------
 
 
-#)Syntax to run the playbook: ansible-playbook -i inventory-file-name -e ansible_user=ec2-user -e ansible_passwor=DevOps32 PlayBook-name
-
+#)Syntax to run the playbook: ansible-playbook -i inventory-fileName -e ansible_user=ec2-user -e ansible_password=DevOps321 PlayBook-name
+-----------------------------
 
 *)ansible-playbook : runs the playbook
 *)-i inventory : inventory file name specify chestunnav
