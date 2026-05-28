@@ -1,0 +1,20 @@
+- name: play level variables
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  # play level variables, play level variables can be used for multiple tasks
+  vars:
+    NAME: Bujji Megham
+    HUSBAND: Aaranya
+
+  tasks:
+  - name: print the names
+    # task level variables
+    vars:
+      HUSBAND: Aaranya
+
+    ansible.builtin.debug:
+      msg: " wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}" 
+
+
+  # In this case, task level variables will have the first priority here so the output is wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}

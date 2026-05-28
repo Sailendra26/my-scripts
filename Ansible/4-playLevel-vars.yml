@@ -2,7 +2,7 @@
   hosts: local
   connection: local # Ansible is connecting to localhost
 
-  # Below vars section is play level variables
+  # Below vars section is play level variables, play level variables can be used for multiple tasks
   vars:
     NAME: Bujji Megham
     HUSBAND: Aaranya

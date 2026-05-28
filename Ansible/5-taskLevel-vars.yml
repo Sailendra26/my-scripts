@@ -4,7 +4,7 @@
 
   tasks:
   - name: print Husband and wife names
-    # Below vars section is task level variables, task variables always comes under task name eg: - name 
+    # Below vars section is task level variables, task variables are limited to only a specific task so   one task varibles cannot be used by other tasks 
     vars:
       NAME: Bujji Megham
       HUSBAND: Aaranya
