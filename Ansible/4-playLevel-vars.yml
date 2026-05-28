@@ -1,0 +1,13 @@
+- name: play level variables
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  # Below vars section is play level variables
+  vars:
+    NAME: Bujji Megham
+    HUSBAND: Aaranya
+
+  tasks:
+  - name: print the names
+    ansible.builtin.debug:
+      msg: " wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}" 
