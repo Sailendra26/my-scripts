@@ -1,0 +1,8 @@
+- name: variables from inventory
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  tasks:
+  - name: print the details
+    ansible.builtin.debug:
+      msg: "wife name is: {{ WIFE }}, husband name is: {{ HUSBAND}}"
