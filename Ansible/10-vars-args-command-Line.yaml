@@ -1,0 +1,8 @@
+- name: variables from arguments
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  tasks:
+  - name: print the couple details
+    ansible.builtin.debug:
+      msg: " wife is: {{  WIFE }}, husband is: {{ HUSBAND }}, region is: {{ CLOUD }}"
