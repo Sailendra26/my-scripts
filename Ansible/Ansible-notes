@@ -248,11 +248,9 @@ NOTE:
   connection: local 
   
   vars:
-    
 	NAME: Megham
 	RELATION: Soul
 	
-  
   tasks:
   ansible.builtin.debug:
     msg: " You are my {{ NAME }} and {{ RELATION }} "
