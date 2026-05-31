@@ -232,13 +232,15 @@ NOTE:
 *)ansible.builtin.debug: We use the debug module to display messages and variable values to understand what is happening during playbook execution.
 
 
-##)Variables:
---------------
+##)Ansible Variables:
+---------------------
 
-#)Declare Variables in PLAY level:
------------------------------------
+1) PLAY level Variables :
+-----------------------
 
-*)Variables declared at play level are accessible to all the tasks that are there in PLAY.
+*)Variables declared at play level are accessible only to all the tasks within that PLAY.
+
+*)Use Case: When multiple tasks need the same value.
 
 
 ==)Example-1: 
@@ -256,10 +258,212 @@ NOTE:
     msg: " You are my {{ NAME }} and {{ RELATION }} "
 	
 	
-*)Understand: During the execution it will call the variables and print the message
+*)Understand: During execution it will call the variables and print the message
 
 
+2) Task level Variables:
+------------------------
 
+*)Variables defined inside a specific task are accessible only for that task.
 
+*)Use Case: When variables are required only for one task.
 
+Example:
+--------
+
+- name: task level variables
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  tasks:
+  - name: print Husband and wife names
   
+    # Below vars section is task level variables, task variables are limited to only a specific task so   one task varibles cannot be used by other tasks 
+    vars:
+      NAME: Bujji Megham
+      HUSBAND: Aaranya
+
+    ansible.builtin.debug:
+      msg: " wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}"
+  
+   
+3) vars_files:
+---------------
+
+*)Used to load variables from an external YAML file into a playbook.
+
+*)Use Case: To keep variables separate from the playbook and improve reusability.
+
+*)In this case, If Variables file is present in same directory then you can directly mention the file name in playbook but 
+  if it is in different path then you will have to give path of the variables file under "  vars_files: " section
+
+Example:
+--------
+
+- name: load the variables from external file
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+  
+  # kept the variables in a relationship.yaml file and loading them here. " vars_files: " is used to load the variables from external files
+  vars_files:
+  - relationship.yaml
+  
+  tasks:
+  - name: print the couple details
+    ansible.builtin.debug:
+      msg: " wife is: {{ NAME }}, and her Husband is: {{ HUSBAND }}, bond is: {{ RELATIONSHIP }}"
+
+4. vars_prompt:
+---------------
+
+*)Asks the user to enter a value during playbook execution. 
+
+*)Use Case: When values such as username, password, or environment need to be provided at runtime.
+
+
+Example:
+-------- 
+ 
+Enter username during playbook execution.
+ 
+ 
+- name: variables from prompt
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  vars_prompt:
+  - name: USERNAME
+    prompt: enter your name
+    private: false # When you keep it as false it will shows the data on the screen while typing
+
+  - name: PASSWORD
+    prompt: enter the password
+    private: true # When you keep it as true it will hide the data on the screen while typing
+
+  tasks:
+    - name: print the credentials
+      ansible.builtin.debug:
+        msg: "Hello, user is: {{ USERNAME }}, password is: {{ PASSWORD}}"
+
+5) Inventory Variables:
+-----------------------
+
+*)Variables are defined in the inventory file for hosts or groups.
+
+*)Use Case: When different hosts require different values.
+
+[local]
+localhost
+
+[PROD]
+100.53.132.70
+
+Assume that above two groups or hosts are available in an iventory file(i.e. inventory.ini). If you would like to declare variables for any specific group then 
+you have to declare the variables in below format in the inventory file.
+
+[local:vars]
+WIFE=Megham
+HUSBAND=Aaranya
+
+[PROD:vars]
+PACKAGE=Nginx
+APPROVAL=Install
+
+
+
+Example:
+--------
+
+- name: variables from inventory
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  tasks:
+  - name: print the details
+    ansible.builtin.debug:
+      msg: "wife name is: {{ WIFE }}, husband name is: {{ HUSBAND}}"
+
+
+6) Extra Variables (--extra-vars):
+----------------------------------
+
+*)Variables passed from the command line while running the playbook.
+
+*)Use Case: To override existing variable values without modifying the playbook.
+
+Example:
+--------
+
+- name: variables from arguments
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  tasks:
+  - name: print the couple details
+    ansible.builtin.debug:
+      msg: " wife is: {{  WIFE }}, husband is: {{ HUSBAND }}, region is: {{ CLOUD }}"
+
+
+Arguments declaration while running Playbook:
+---------------------------------------------
+
+NOTE: You have to pass the arguments through command line like below
+
+# ansible-playbook -i inventory.ini -e ansible_user=ec2-user -e ansible_password=DevOps321 -e "WIFE=Bujji" 
+  -e "HUSBAND=Aaranya" -e "CLOUD=Megham" 10-vars-args-command-Line.yaml
+ 
+
+ 
+#)Variable Precedence( Decides variable usage based on high priority in the below order):
+-----------------------------------------------------------------------------------------
+
+*)The order Ansible follows when the same variable is defined in multiple places.
+
+*)Use Case: To determine which value Ansible will use.
+
+Precedence (Highest to Lowest):
+--------------------------------
+
+Extra Variables (--extra-vars) - First priority
+Task Variables - Second priority
+Play Variables - Third priority
+Inventory Variables - Fourth priority
+
+Rule: If the same variable exists in multiple locations, the variable with higher precedence will be used
+
+###)Difference between Host Variables and Group variables:
+----------------------------------------------------------
+
+Host Variables:
+---------------
+
+Definition:
+Variables defined for a specific host in the inventory file are available only to that host.
+
+Use Case:
+When different hosts need different values.
+
+
+# Variable assignment format for a specific host in the inventory file
+
+[frontend]
+server1 ansible_host=100.53.132.70 NAME=Aaranya COURSE=Ansible
+server2 ansible_host=100.53.132.71
+
+Group Variables:
+-----------------
+
+Definition:
+Variables defined for a group in the inventory file are available to all hosts in that group.
+
+Use Case:
+When all hosts in that group require the same variables.
+
+# Variable assignment format for hosts under a group in the inventory file
+
+[local]
+localhost
+
+[local:vars]
+WIFE=Bujji Megham
+HUSBAND=Aaranya

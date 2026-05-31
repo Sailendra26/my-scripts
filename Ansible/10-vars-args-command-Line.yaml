@@ -6,3 +6,7 @@
   - name: print the couple details
     ansible.builtin.debug:
       msg: " wife is: {{  WIFE }}, husband is: {{ HUSBAND }}, region is: {{ CLOUD }}"
+
+
+      # NOTE: You pass the arguments through command line like below
+      # ansible-playbook -i inventory.ini -e ansible_user=ec2-user -e ansible_password=DevOps321 -e "WIFE=Bujji" -e "HUSBAND=Aaranya" -e "CLOUD=Megham" 10-vars-args-command-Line.yaml

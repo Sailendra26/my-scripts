@@ -5,11 +5,11 @@
   vars_prompt:
   - name: USERNAME
     prompt: enter your name
-    private: false
+    private: false # When you keep it as false it will shows the data on the screen while typing
 
   - name: PASSWORD
     prompt: enter the password
-    private: true
+    private: true # When you keep it as true it will hide the data on the screen while typing
 
   tasks:
     - name: print the credentials
