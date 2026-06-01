@@ -1329,7 +1329,7 @@ sudo mv backup.sh /usr/bin/
 Step-3:
 --------
 
-Now the script can be executed like a normal Linux command:
+Now the script can be executed as a normal Linux command like:
 
 backup.sh
 
@@ -1391,7 +1391,7 @@ When a script is moved to /usr/local/bin/ and given execute permission:
 chmod +x backup
 
 
-It can be executed like a normal Linux commands like ls, pwd, ls -l:
+It can be executed as a normal Linux commands like ls, pwd, ls -l:
 
 backup
 
