@@ -1,0 +1,28 @@
+- name: Data types
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  vars:
+    NAME: "Aaranya"
+    TARGET: 26
+    PERCENTAGE: 99.9
+    WINNER: true
+    
+    GOALS:
+    - No Mistakes
+    - Job switch
+    - Family-happiness
+    - Clean-Life
+
+    PROCESS:
+      STATUS: InProgress
+      COURSE: Ansible
+
+    FAILURES: null
+
+  task:
+  - name: Print Aaranya details
+    ansible.builtin.debug:
+      msg: " Name is: {{ NAME }}, Target is: {{ TARGET }}, Percentage is: {{ PERCENTAGE }}, Winner is: {{ WINNER }}, Goals are: {{ GOALS }}, Process is: {{ PROCESS }}, Failures are: {{ NULL }}"
+
+    

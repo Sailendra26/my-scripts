@@ -174,6 +174,9 @@ Example-2: How to install a package or software, start the service and auto rest
 *)PlayBook-filename.yml : playbook name
 
 
+SESSION-23:
+-----------
+
 ##)Multiple-PLAYS in a single playbook:
 ----------------------------------------
 
@@ -414,22 +417,27 @@ NOTE: You have to pass the arguments through command line like below
  
 
  
-#)Variable Precedence( Decides variable usage based on high priority in the below order):
------------------------------------------------------------------------------------------
+#)Variable Precedence( Decides which variable value Ansible uses when the same variable is defined in multiple places ):
+-------------------------------------------------------------------------------------------------------------------------
 
-*)The order Ansible follows when the same variable is defined in multiple places.
+*)The below order Ansible follows when the same variable is defined in multiple places.
 
 *)Use Case: To determine which value Ansible will use.
 
 Precedence (Highest to Lowest):
 --------------------------------
 
-Extra Variables (--extra-vars) - First priority
-Task Variables - Second priority
-Play Variables - Third priority
-Inventory Variables - Fourth priority
+1. Extra Variables (--extra-vars)
+2. Task Variables
+3. vars_files
+4. vars_prompt
+5. Play Variables
+6. Inventory Variables
 
-Rule: If the same variable exists in multiple locations, the variable with higher precedence will be used
+
+Rule: If the same variable exists in multiple locations, the variable with higher precedence will be used.
+
+
 
 ###)Difference between Host Variables and Group variables:
 ----------------------------------------------------------
@@ -467,3 +475,124 @@ localhost
 [local:vars]
 WIFE=Bujji Megham
 HUSBAND=Aaranya
+
+
+
+# Ansible Data Types:
+---------------------
+
+1. String:
+----------
+
+*)Definition: Stores text or characters.
+
+*)Syntax: variable_name: "value"
+
+Example: 
+
+Course: "Ansible"
+
+2. Integer:
+-----------
+
+*)Definition: Stores whole numbers without decimal points.
+
+*)Syntax: variable_name: number
+
+Example: 
+
+Duration: 120
+
+3. Float:
+---------
+
+*)Definition: Stores numbers with decimal points.
+
+*)Syntax: variable_name: decimal_number
+
+Example: 
+
+Version: 2.5
+
+
+4. Boolean:
+-----------
+
+*)Definition: Stores only True or False values.
+
+*)Syntax: variable_name: true/false
+
+Example: 
+
+Install_Package: true
+
+
+5. List:
+--------
+
+*)Definition: Stores multiple values in a sequence.
+
+*)Syntax:
+
+variable_name:
+  - value1
+  - value2
+  - value3
+
+
+Example:
+
+Tools:
+  - Linux
+  - Shell
+  - Ansible
+
+
+6. Dictionary (Map):
+--------------------
+
+*)Definition: Stores data as key-value pairs.
+
+*)Syntax:
+
+variable_name:
+  key1: value1
+  key2: value2
+
+Example:
+
+Student:
+  Name: Aaranya
+  Course: Ansible
+
+7. Null:
+--------
+
+*)Definition: Represents an empty value or no value.
+
+*)Syntax: 
+
+variable_name: null
+
+
+Example:
+
+Manager: null
+
+
+## Quick Summary:
+-----------------
+
+String      -> Text
+
+Integer     -> Whole numbers
+
+Float       -> Decimal numbers
+
+Boolean     -> True / False
+
+List        -> Multiple values
+
+Dictionary  -> Key-Value pairs
+
+Null        -> Empty value
