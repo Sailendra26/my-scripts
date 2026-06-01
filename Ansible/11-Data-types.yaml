@@ -23,6 +23,6 @@
   tasks:
   - name: Print Aaranya details
     ansible.builtin.debug:
-      msg: " Name is: {{ NAME }}, Target is: {{ TARGET }}, Percentage is: {{ PERCENTAGE }}, Winner is: {{ WINNER }}, Goals are: {{ GOALS }}, Process is: {{ PROCESS }}, Failures are: {{ NULL }}"
+      msg: " Name is: {{ NAME }}, Target is: {{ TARGET }}, Percentage is: {{ PERCENTAGE }}, Winner is: {{ WINNER }}, Goals are: {{ GOALS }}, Process is: {{ PROCESS }}, Failures are: {{ FAILURES }}"
 
     
