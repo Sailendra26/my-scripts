@@ -1,6 +1,7 @@
 - name: facts
   hosts: local
   connection: local
+  become: yes
 
   tasks:
   - name: Install nginix if OS is Redhat
