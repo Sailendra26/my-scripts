@@ -11,15 +11,20 @@
 #       msg: "Given number is: {{ NUMBER }} less than 20"
 #   when: NUMBER < 20
 
-  - name: Conditions
-    hosts: local
-    connection: local
+  
 
-    vars:
-      NUMBER: 30
+- name: Conditions
+  hosts: local
+  connection: local
 
-    tasks:
-    - name: print whether the given number is less than 20
-      ansible.builtin.debug:
-        msg: "Given number is: {{ NUMBER }} less than 20"
-    when: NUMBER < 20
+  vars:
+    NUMBER: 9
+
+  tasks:
+  - name: print whether the given number is less than 20
+    ansible.builtin.debug:
+      msg: "Given number is: {{ NUMBER }} less than 20"
+  when: NUMBER < 20
+
+  
+  
