@@ -1,0 +1,16 @@
+- name: facts
+  hosts: local
+  connection: local
+
+  tasks:
+  - name: Install nginix if OS is Redhat
+    ansible.builtin.dnf:
+      name: nginix
+      state: latest
+    when: ansible_os_family == "RedHat"
+
+  - name: Install nginix if OS is Redhat
+    ansible.builtin.apt:
+      name: nginix
+      state: latest
+    when: ansible_os_family == "RedHat"
