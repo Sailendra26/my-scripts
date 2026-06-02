@@ -8,10 +8,10 @@
     ansible.builtin.dnf:
       name: nginix
       state: latest
-    when: ansible_os_family == "RedHat"
+    when: ansible_os_family == "RedHat" # This first task will be executed since the condition is true.
 
   - name: Install nginix if OS is Redhat
     ansible.builtin.apt:
       name: nginix
       state: latest
-    when: ansible_os_family == "RedHat"
+    when: ansible_os_family == "Debian" # This second task will be skipped since the condition is false.

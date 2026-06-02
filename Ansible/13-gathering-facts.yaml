@@ -5,4 +5,6 @@
   tasks:
   - name: facts
     ansible.builtin.debug:
-      msg: " facts are: {{ ansible_facts }} "
+      msg: " facts are: {{ ansible_facts }} " 
+      
+# ansible_facts - This is used to get facts of a target server, i.e. target server information

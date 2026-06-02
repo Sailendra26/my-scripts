@@ -596,3 +596,152 @@ List        -> Multiple values
 Dictionary  -> Key-Value pairs
 
 Null        -> Empty value
+
+##)Conditions:
+--------------
+
+*)Conditions are used to execute tasks only when a specified condition is true. 
+
+*) If the condition is true, the task will be executed. If the condition is false, the task will be skipped.
+
+*)Conditions are written using the "when" keyword.
+
+*)Conditions can be used with variables, facts, and expressions.
+
+*) The "when" keyword is used to define conditions in Ansible playbooks.
+
+Memory Tip:
+-----------
+
+Condition = True  → Task Runs
+Condition = False → Task Skips
+
+  
+Syntax:
+
+- name: Task Name
+  module_name:
+    parameter: value
+  when: condition
+  
+  
+Example-1:
+----------
+
+
+- name: Conditions
+  hosts: local
+  connection: local
+
+  vars:
+    NUMBER: 9
+
+  tasks:
+  - name: print whether the given number is less than 20
+    ansible.builtin.debug:
+      msg: "Given number is: {{ NUMBER }} less than 20"
+    when: NUMBER < 20
+	
+	
+Example-2:
+----------
+
+- name: facts
+  hosts: local
+  connection: local
+  become: yes
+
+  tasks:
+  - name: Install nginix if OS is Redhat
+    ansible.builtin.dnf:
+      name: nginix
+      state: latest
+    when: ansible_os_family == "RedHat"
+
+  - name: Install nginix if OS is Redhat
+    ansible.builtin.apt:
+      name: nginix
+      state: latest
+    when: ansible_os_family == "Debian"
+	
+
+Common Operators:
+-----------------
+
+==  Equal to
+
+!=  Not Equal to
+
+>   Greater than
+
+<   Less than
+
+>=  Greater than or Equal to
+
+<=  Less than or Equal to	
+	
+	
+	
+	
+##IMP) Conditions Not Covered by Trainer Yet:
+----------------------------------------------
+
+1. Multiple Conditions (and, or)
+2. Condition Blocks
+3. Variable Existence Checks
+4. File Existence Checks
+5. Conditions Based on Task Results
+6. Conditions with Loops
+7. Failed/Skipped Conditions
+
+##)FACTS:
+---------
+
+*)Facts are target server information collected automatically by Ansible. 
+  Gathering Facts is the process of collecting that information before executing tasks in a playbook.
+  
+*)Facts are used to retrieve server information and make decisions in playbooks using facts.
+
+*)ansible_facts is a built-in variable that stores all facts collected from the target server.
+  ansible_facts → Contains all collected server information.
+
+*)ansible_os_family → One specific fact inside the collected facts.
+
+*)The "ansible_" prefix is used to refer the facts collected automatically by Ansible and to avoid conflicts with user-defined variables.
+
+Ex: ansible_hostnames
+    ansible_distribution
+    ansible_os_family
+
+
+Examples of Facts:
+------------------
+
+Hostname
+IP Address
+OS Family
+Distribution
+Memory Information
+CPU Information
+Disk Information
+
+Example-1:
+----------
+
+- name: facts
+  hosts: local
+  connection: local
+  become: yes
+
+  tasks:
+  - name: Install nginix if OS is Redhat
+    ansible.builtin.dnf:
+      name: nginix
+      state: latest
+    when: ansible_os_family == "RedHat"
+
+  - name: Install nginix if OS is Redhat
+    ansible.builtin.apt:
+      name: nginix
+      state: latest
+    when: ansible_os_family == "Debian"
