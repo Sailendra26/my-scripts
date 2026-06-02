@@ -5,4 +5,4 @@
   tasks:
   - name: facts
     ansible.builtin.debug:
-      msg: " facts are: {{ ansible_hosts }} "
+      msg: " facts are: {{ ansible_facts }} "
