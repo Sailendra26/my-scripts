@@ -23,7 +23,7 @@
   tasks:
   - name: print whether the given number is less than 20
     ansible.builtin.debug:
-      msg: "Given number is: {{ NUMBER }} less than 20"
+      msg: " Given number is: {{ NUMBER }} less than 20 "
     when: NUMBER < 20
 
   
