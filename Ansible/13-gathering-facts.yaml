@@ -1,0 +1,8 @@
+- name: Gathering facts
+  hosts: local
+  connection: local # Ansible is connecting to the localhost
+
+  tasks:
+  - name: facts
+    ansible.builtin.debug:
+      msg: "Facts are: {{ ansible_hosts }}"
