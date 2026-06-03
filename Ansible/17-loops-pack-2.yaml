@@ -6,10 +6,14 @@
   tasks:
   - name: packages
     ansible.builtin.package:
-      name: "{{ item.name }}"
-      state: "{{ item.state }}"
+      name: "{{ item.name }}" # refers name key 
+      state: "{{ item.state }}" # refers state key
 
     loop:
     - { name: "nginix", state: "absent"}
     - { name: "mysql", state: "absent"}
     - { name: "zip", state: "latest"}
+
+
+# {{ item.name }}, {{ item.state }}
+# → Used when loop contains key-value pairs (dictionary data).

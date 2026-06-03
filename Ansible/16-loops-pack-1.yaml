@@ -6,7 +6,7 @@
   tasks:
   - name: packages
     ansible.builtin.package:
-      name: "{{ item }}"
+      name: "{{ item }}" # {{ item }} → Used when loop contains simple values like below.
       state: present
 
     loop:

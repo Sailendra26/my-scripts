@@ -745,3 +745,75 @@ Example-1:
       name: nginix
       state: latest
     when: ansible_os_family == "Debian"
+	
+	
+LOOPS:
+------
+
+*) Loops are used to execute the same task multiple times with different values.
+*) Loops help avoid writing the same task repeatedly.
+
+Use Case:
+---------
+ 
+*)When the same task needs to be performed on multiple items.
+
+Syntax:
+-------
+
+- name: Task Name
+  module_name:
+    parameter: "{{ item }}" # item is a reserved keyword that holds the value being processed in the loop.
+  loop:
+    - value1
+    - value2
+    - value3
+
+
+*)item --> item contains the current value being processed in the loop
+
+
+Example-1:
+----------
+
+- name: Loops
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  tasks: 
+  - name: print names
+    ansible.builtin.debug:
+      msg: " Hello {{ item }}" # item is reserved keyword
+
+    loop:
+    - Megham
+    - Aaranya
+    - Bujji
+    - Sailendra
+	
+	
+Example-2:
+----------
+
+- name: configure packages
+  hosts: local
+  connection: local
+  become: yes
+
+  tasks:
+  - name: packages
+    ansible.builtin.package:
+      name: "{{ item.name }}"   # refers name key
+      state: "{{ item.state }}" # refers state key
+
+    loop:
+    - { name: "nginix", state: "absent"}
+    - { name: "mysql", state: "absent"}
+    - { name: "zip", state: "latest"}
+	
+###IMP)Important Points:
+------------------------
+
+*) {{ item }} is used when the loop contains simple values.
+
+*) {{ item.key_name }} is used when the loop contains dictionary (key-value pair) data.
