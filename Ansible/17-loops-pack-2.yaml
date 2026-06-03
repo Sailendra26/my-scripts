@@ -15,5 +15,7 @@
     - { name: "zip", state: "latest"}
 
 
+# {{ item.key_name }} is used when the loop contains dictionary (key-value pair) data.
+
 # {{ item.name }}, {{ item.state }}
 # → Used when loop contains key-value pairs (dictionary data).

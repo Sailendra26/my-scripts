@@ -12,3 +12,5 @@
     - Aaranya
     - Bujji
     - Sailendra
+
+    # {{ item }} → Used when loop contains simple values.

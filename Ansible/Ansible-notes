@@ -446,13 +446,13 @@ Host Variables:
 ---------------
 
 Definition:
-Variables defined for a specific host in the inventory file are available only to that host.
+Variables that are defined for a specific host in the inventory file are available only to that host.
 
 Use Case:
 When different hosts need different values.
 
 
-# Variable assignment format for a specific host in the inventory file
+# Host Variables assignment format for a specific host in the inventory file
 
 [frontend]
 server1 ansible_host=100.53.132.70 NAME=Aaranya COURSE=Ansible
@@ -462,17 +462,17 @@ Group Variables:
 -----------------
 
 Definition:
-Variables defined for a group in the inventory file are available to all hosts in that group.
+Variables that are defined for a group in the inventory file are available to all hosts under that group.
 
 Use Case:
 When all hosts in that group require the same variables.
 
-# Variable assignment format for hosts under a group in the inventory file
+# Group Variables assignment format for hosts under a group in the inventory file
 
-[local]
-localhost
+[frontend]
+100.53.132.71
 
-[local:vars]
+[frontend:vars]
 WIFE=Bujji Megham
 HUSBAND=Aaranya
 
@@ -747,8 +747,8 @@ Example-1:
     when: ansible_os_family == "Debian"
 	
 	
-LOOPS:
-------
+#)LOOPS:
+--------
 
 *) Loops are used to execute the same task multiple times with different values.
 *) Loops help avoid writing the same task repeatedly.
@@ -763,7 +763,7 @@ Syntax:
 
 - name: Task Name
   module_name:
-    parameter: "{{ item }}" # item is a reserved keyword that holds the value being processed in the loop.
+    parameter: "{{ item }}" # item is a reserved keyword that holds the current value being processed in the loop.
   loop:
     - value1
     - value2

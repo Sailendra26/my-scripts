@@ -13,3 +13,7 @@
     - nginix
     - mysql
     - zip
+
+
+# {{ item }} → Used when loop contains simple values.
+# item is a reserved keyword that holds the value being processed in the Loop.
