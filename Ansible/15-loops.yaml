@@ -1,0 +1,14 @@
+- name: Loops
+  hosts: local
+  connection: local # Ansible is connecting to localhost
+
+  tasks: 
+  - name: print names
+    ansible.builtin.debug:
+      msg: " Hello {{ item }}" # item is reserved keyword
+
+    loop:
+    - Megham
+    - Aaranya
+    - Bujji
+    - Sailendra
