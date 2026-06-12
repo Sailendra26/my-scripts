@@ -5,7 +5,7 @@
   vars:
     Goals: Learning, Job-switch, Family-happiness # string
     name: AarAnya
-    ipAddress: 101.0.301.0
+    ipAddress: 101.0.201.0
 
     # dictinary/map
     Course:
