@@ -24,4 +24,8 @@
     ansible.builtin.debug:
       msg: "conversion is: {{ Course | dict2items }}" # here, items--> list
 
+  - name: list to dictionary/map conversion
+    ansible.builtin.debug:
+      msg: "conversion is: {{ Course | items2dict }}" # here, items--> list
+
 
