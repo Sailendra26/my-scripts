@@ -36,4 +36,8 @@
     ansible.builtin.debug:
       msg: "conversion is: {{ Success | items2dict }}" # here, items--> list
 
+  - name: read the data and take into a variable
+    ansible.builtin.set_fact:
+      student_yaml: "{{ lookup( 'file', ./student.yaml) | from_yaml }}"
+
 
