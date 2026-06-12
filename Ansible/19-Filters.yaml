@@ -51,7 +51,7 @@
 
   - name: copy file from source to detsination path
     ansible.builtin.copy:
-      src: /home/ec2-user/my-scripts/Ansible
+      src: /home/ec2-user/my-scripts/Ansible/18-student.yaml
       dest: /tmp/student.yaml
 
 
