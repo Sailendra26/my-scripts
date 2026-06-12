@@ -49,4 +49,9 @@
       dest: ./student-data.json
       content: "{{ student_yaml | to_nice_json }}"
 
+  - name: copy file from source to detsination path
+    ansible.bultin.copy:
+      src: /home/ec2-user/student.yaml
+      dest: /tmp/student.yaml
+
 
