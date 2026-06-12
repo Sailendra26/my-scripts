@@ -1,0 +1,99 @@
+1. ansible.builtin.ping
+
+Definition:
+Used to test connectivity between the Ansible control node and managed nodes.
+
+Syntax:
+ansible.builtin.ping
+
+Example:
+- name: Test connectivity
+  ansible.builtin.ping
+
+
+2. ansible.builtin.package
+
+Definition:
+Used to install, update, and remove packages using the package manager available on the target system.
+
+Syntax:
+ansible.builtin.package
+
+Example:
+- name: Install nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+
+3. ansible.builtin.service
+
+Definition:
+Used to start, stop, restart, and manage services.
+
+Syntax:
+ansible.builtin.service
+
+Example:
+- name: Start nginx service
+  ansible.builtin.service:
+    name: nginx
+    state: started
+
+
+4. ansible.builtin.debug
+
+Definition:
+Used to display messages and variable values during playbook execution.
+
+Syntax:
+ansible.builtin.debug
+
+Example:
+- name: Print message
+  ansible.builtin.debug:
+    msg: "Hello World"
+
+
+5. ansible.builtin.dnf
+
+Definition:
+Used to install, update, and remove packages on RHEL-based systems using the DNF package manager.
+
+Syntax:
+ansible.builtin.dnf
+
+Example:
+- name: Install nginx
+  ansible.builtin.dnf:
+    name: nginx
+    state: present
+
+
+6. ansible.builtin.set_fact
+
+Definition:
+Used to create a variable and load data into it during playbook execution.
+
+Syntax:
+ansible.builtin.set_fact
+
+Example:
+- name: Read YAML data into a variable
+  ansible.builtin.set_fact:
+    student_yaml: "{{ lookup('file', 'student.yaml') | from_yaml }}"
+
+
+7. ansible.builtin.copy
+
+Definition:
+Used to copy files or directories from the control node to managed nodes. It can also create a file using the content parameter.
+
+Syntax:
+ansible.builtin.copy
+
+Example:
+- name: Copy a file
+  ansible.builtin.copy:
+    src: sample.txt
+    dest: /tmp/sample.txt

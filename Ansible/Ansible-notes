@@ -821,3 +821,177 @@ Example-2:
 
 #)Filters:
 ----------
+
+1. default
+-----------
+
+Definition:
+Used to provide a default value if the variable is undefined.
+
+Syntax:
+{{ variable | default('value') }}
+
+Example:
+
+tasks:
+  - name: default filter
+    ansible.builtin.debug:
+      msg: "name is: {{ NAME | default('Megham') }}"
+
+
+2. split
+-----------
+
+Definition:
+Used to split a string into a list using a delimiter.
+
+Syntax:
+{{ string | split(',') }}
+
+Example:
+
+tasks:
+  - name: string to list conversion
+    ansible.builtin.debug:
+      msg: "conversion is: {{ Goals | split(',') }}"
+
+
+3. dict2items
+--------------
+
+Definition:
+Used to convert a dictionary into a list of key-value pairs.
+
+Syntax:
+{{ dictionary | dict2items }}
+
+Example:
+
+tasks:
+  - name: dictionary/map to list conversion
+    ansible.builtin.debug:
+      msg: "conversion is: {{ Course | dict2items }}"
+
+
+4. items2dict
+-------------
+
+Definition:
+Used to convert a list of key-value pairs into a dictionary.
+
+Syntax:
+{{ list | items2dict }}
+
+Example:
+
+tasks:
+  - name: list to dictionary/map conversion
+    ansible.builtin.debug:
+      msg: "conversion is: {{ Success | items2dict }}"
+
+
+5. from_yaml
+-------------
+
+Definition:
+Used to convert YAML content into an Ansible data structure.
+
+Syntax:
+{{ yaml_content | from_yaml }}
+
+Example:
+
+tasks:
+  - name: read the data and take into a variable
+    ansible.builtin.set_fact:
+      student_yaml: "{{ lookup('file', './18-student.yaml') | from_yaml }}"
+
+
+6. to_json
+-----------
+
+Definition:
+Used to convert data into JSON format.
+
+Syntax:
+{{ variable | to_json }}
+
+Example:
+
+tasks:
+  - name: yaml to JSON conversion
+    ansible.builtin.debug:
+      msg: "conversion is: {{ student_yaml | to_json }}"
+
+
+7. to_nice_json
+----------------
+
+Definition:
+Used to convert data into a human-readable JSON format.
+
+Syntax:
+{{ variable | to_nice_json }}
+
+Example:
+
+tasks:
+  - name: save JSON into a file
+    ansible.builtin.copy:
+      dest: ./student-data.json
+      content: "{{ student_yaml | to_nice_json }}"
+
+
+8. upper
+-----------
+
+Definition:
+Used to convert a string into uppercase.
+
+Syntax:
+{{ string | upper }}
+
+Example:
+
+tasks:
+  - name: convert to uppercase
+    ansible.builtin.debug:
+      msg: "conversion is: {{ name | upper }}"
+
+
+9. lower
+-----------
+
+Definition:
+Used to convert a string into lowercase.
+
+Syntax:
+{{ string | lower }}
+
+Example:
+
+tasks:
+  - name: convert to lowercase
+    ansible.builtin.debug:
+      msg: "conversion is: {{ name | lower }}"
+
+
+10. ansible.utils.ipv4
+----------------------
+
+
+Definition:
+Used to validate and filter IPv4 addresses.
+
+Syntax:
+{{ ip_address | ansible.utils.ipv4 }}
+
+Example:
+
+tasks:
+  - name: check ipv4 is valid or not
+    ansible.builtin.debug:
+      msg: "ip is: {{ ipAddress | ansible.utils.ipv4 }}"
+
+Prerequisite:
+pip3 install netaddr
