@@ -11,6 +11,11 @@
       duration: 9
       days: 7
 
+    Success:
+      - patience
+      - consistency
+      - winner
+
   tasks:
   - name: default filter
     ansible.builtin.debug:
@@ -26,6 +31,6 @@
 
   - name: list to dictionary/map conversion
     ansible.builtin.debug:
-      msg: "conversion is: {{ Course | items2dict }}" # here, items--> list
+      msg: "conversion is: {{ Success | items2dict }}" # here, items--> list
 
 
