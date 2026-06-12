@@ -12,7 +12,7 @@
       tool: ansible
       duration: 9
       days: 7
-
+    # List of dictionaries
     Success:
       - key: patience
         value: 1
