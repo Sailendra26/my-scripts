@@ -5,7 +5,7 @@
   vars:
     Goals: Learning, Job-switch, Family-happiness # string
     name: AarAnya
-    ip-address: 101.0.301.0
+    ipAddress: 101.0.301.0
 
     # dictinary/map
     Course:
@@ -66,6 +66,6 @@
 
   - name: check ipv4 is valid or not 
     ansible.builtin.debug:
-      msg: "ip is: {{ ip-address | ansible.utils.ipv4  }}"
+      msg: "ip is: {{ ipAddress | ansible.utils.ipv4  }}"
 
 
