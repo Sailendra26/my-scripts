@@ -817,3 +817,7 @@ Example-2:
 *) {{ item }} is used when the loop contains simple values.
 
 *) {{ item.key_name }} is used when the loop contains dictionary (key-value pair) data.
+
+
+#)Filters:
+----------

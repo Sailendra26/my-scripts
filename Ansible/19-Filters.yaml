@@ -1,0 +1,9 @@
+- name: filters
+  hosts: local 
+  connection: local # Ansible is connecting to the localhost
+
+
+  tasks:
+  - name: default function
+    ansible.builtin.degug:
+      msg: "name is: {{ NAME | default ('Megham') }} "

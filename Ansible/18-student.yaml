@@ -1,0 +1,27 @@
+- name: print student-1 details
+  hosts: local
+  connection: local # Ansible is connecting to the localhost
+
+  vars:
+    NAME: Megham
+    NUMBER: 1
+
+  tasks:
+  - name: Megham details
+    ansible.builtin.debug:
+      msg: "name is: {{ NAME }}, number is: {{ NUMBER }}"
+
+
+
+- name: print student-2 details
+  hosts: local
+  connection: local # Ansible is connecting to the localhost
+
+  vars:
+    NAME: Aaranya
+    NUMBER: 2
+
+  tasks:
+  - name: Aaranya details
+    ansible.builtin.debug:
+      msg: "name is: {{ NAME }}, number is: {{ NUMBER }}"
