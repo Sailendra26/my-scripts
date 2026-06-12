@@ -38,6 +38,6 @@
 
   - name: read the data and take into a variable
     ansible.builtin.set_fact:
-      student_yaml: "{{ lookup( 'file', './student.yaml)' | from_yaml }}"
+      student_yaml: "{{ lookup( 'file', './18-student.yaml)' | from_yaml }}"
 
 
