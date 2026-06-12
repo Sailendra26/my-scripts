@@ -4,6 +4,7 @@
 
   vars:
     Goals: Learning, Job-switch, Family-happiness # string
+    name: AarAnya
 
     # dictinary/map
     Course:
@@ -53,5 +54,9 @@
     ansible.builtin.copy:
       src: /home/ec2-user/my-scripts/Ansible/18-student.yaml
       dest: /tmp/
+
+  - name: covert to uppercase
+    ansible.builtin.debug:
+      msg: "conversion is: {{ name | upper }}"
 
 
