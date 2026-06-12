@@ -5,6 +5,12 @@
   vars:
     Goals: Learning, Job-switch, Family-happiness # string
 
+    # dictinary/map
+    Course:
+      tool: ansible
+      duration: 9
+      days: 7
+
   tasks:
   - name: default filter
     ansible.builtin.debug:
@@ -13,3 +19,9 @@
   - name: string to list conversion
     ansible.builtin.debug:
       msg: "conversion is: {{ Goals | split(',') }}"
+
+  - name: dictionary/map to list conversion
+    ansible.builtin.debug:
+      msg: "conversion is: {{ Course | dict2items }}" # here, items--> list
+
+
