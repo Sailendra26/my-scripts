@@ -63,4 +63,8 @@
     ansible.builtin.debug:
       msg: "conversion is: {{ name | lower }}"
 
+  - name: check ipv4 is valid or not 
+    ansible.builtin.debug:
+      msg: "ip is: {{ 101.0.301.0 }}"
+
 
