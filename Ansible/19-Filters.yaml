@@ -12,9 +12,12 @@
       days: 7
 
     Success:
-      - patience
-      - consistency
-      - winner
+      - key: patience
+        value: 1
+      - key: consistency
+        value: 2
+      - key: winner
+        value: 3
 
   tasks:
   - name: default filter
