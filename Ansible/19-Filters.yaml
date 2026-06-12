@@ -5,5 +5,5 @@
 
   tasks:
   - name: default function
-    ansible.builtin.degug:
+    ansible.builtin.debug:
       msg: "name is: {{ NAME | default ('Megham') }} "
