@@ -2,8 +2,14 @@
   hosts: local 
   connection: local # Ansible is connecting to the localhost
 
+  vars:
+    Goals: Learning, Job-switch, Family-happiness # string
 
   tasks:
-  - name: default function
+  - name: default filter
     ansible.builtin.debug:
       msg: "name is: {{ NAME | default ('Megham') }} "
+
+  - name: string to list conversion
+    ansible.builtin.debug:
+      msg: "conversion is: {{ Goals | split(',') }}"
