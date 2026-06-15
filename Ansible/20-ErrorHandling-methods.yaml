@@ -6,7 +6,7 @@
   - name: user validation
     ansible.builtin.command: id Megham
     register: variable1
-    # ignore_errors: true
+    ignore_errors: true
 
   - name: print user details
     ansible.builtin.debug:
