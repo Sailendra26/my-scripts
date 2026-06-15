@@ -3,14 +3,31 @@
   connection: local # when you " connection: local ", Ansible connects to localhost.
 
   tasks:
+  # ignore_errors handling method
   - name: user validation
     ansible.builtin.command: id Megham
-    register: variable1
+    register: user_output
     ignore_errors: true
 
-  - name: print user details
+  - name: next task 
     ansible.builtin.debug:
-      msg: "{{ variable1.stdout }}"
+      msg: "{{ next task running: user_output.stdout }}"
 
+  # failed_when error handling method
+  - name: root user
+    ansible.builtin.shell: cat /etc/passwd | grep root
+    register: root_output
+
+
+  - name: root user validation
+    ansible.builtin.debug:
+      msg: "{{ root_output.stdout }}"
+    failed_when: root_output.stdout.rc != 0
+
+
+  - name: root user available
+    ansible.builtin.debug:
+      msg: "root user found: {{ root_output }}"
+    
   
 
