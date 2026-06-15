@@ -68,20 +68,37 @@
     ansible.builtin.debug:
       msg: "ip is: {{ ipAddress | ansible.utils.ipv4  }}"
 
-  - name: print first normal command
+  - name: first normal command
     ansible.builtin.command: ls -l
     register: output
 
-  - name: print first shell command
+  - name: print first normal command output
+    ansible.builtin.debug: 
+      msg: "{{ output }}"
+
+  - name: first shell command
     ansible.builtin.shell: hostname >> /tmp/logs.txt
     register: result
 
-  - name: print second normal command
+  - name: first shell command output
+    ansible.builtin.debug: 
+      msg: "{{ result }}"
+
+  - name: second normal command
     ansible.builtin.command: touch file1.txt
     register: variable1
-  - name: print second shell command
-    ansible.builtin.shell: ls /etc/passwd | grep root
+
+  - name: print second normal command output
+    ansible.builtin.debug: 
+      msg: "{{ variable1 }}"
+
+  - name: second shell command
+    ansible.builtin.shell: cat /etc/passwd | grep root
     register: variable2
+
+  - name: print second shell command output
+    ansible.builtin.debug: 
+      msg: "{{ variable2 }}"
 
 
 
