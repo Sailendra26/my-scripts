@@ -1,5 +1,5 @@
 - name: check user exist or not 
-  connection: local 
+  hosts: local 
   connection: local # when you " connection: local ", Ansible connects to localhost.
 
   tasks:
