@@ -995,3 +995,262 @@ tasks:
 
 Prerequisite:
 pip3 install netaddr
+
+
+#)ANSIBLE COMMAND & SHELL MODULES
+==================================
+
+1. WHY DO WE USE COMMAND AND SHELL MODULES?
+
+Ansible provides many built-in modules such as:
+
+- yum
+- dnf
+- package
+- service
+- user
+- copy
+- file
+- template
+
+However, sometimes:
+
+1. A dedicated module may not exist.
+2. We need to execute Linux commands directly.
+3. We need to collect system information.
+4. We need to run custom commands/scripts.
+
+In such cases, we use:
+
+- command module
+- shell module
+
+
+
+##)ANSIBLE COMMAND MODULE
+==========================
+
+*)Definition:
+
+Used to run a simple Linux command on a remote server.
+
+*)Syntax:
+
+- name: Run command
+  ansible.builtin.command: <command>
+  
+  
+COMMAND MODULE SUPPORTS
+========================
+
+*)Preferred module because it is safer.
+
+hostname
+date
+uptime
+whoami
+pwd
+ls -l
+
+
+*)Example:
+
+- name: Check hostname
+  ansible.builtin.command: hostname
+
+With Register: 
+--------------
+
+*)Register is used to store the output of a command or output of a task in a variable.
+
+- name: Check hostname
+  ansible.builtin.command: hostname
+  register: host_output
+
+- name: Print hostname
+  ansible.builtin.debug:
+    msg: "{{ host_output.stdout }}"
+
+
+Here: host_output = variable name
+
+*)What can we access?
+
+host_output.stdout  --> actual output
+host_output.stderr  --> error output
+host_output.rc      --> return code
+
+
+
+COMMAND MODULE DOES NOT SUPPORT
+================================
+
+*) Command module does not supports: |   --> Pipe,  >   --> Output Redirection, >>  --> Append Redirection, <   --> Input Redirection, 
+   $HOME --> Environment Variable and && --> Command Chaining
+
+EXAMPLES:
+========
+
+*) |   --> Pipe, 
+
+Example:
+
+cat /etc/passwd | grep root
+
+*) >   --> Output Redirection
+
+Example:
+
+hostname > /tmp/logs.txt
+
+*) >>  --> Append Redirection
+
+Example:
+
+hostname >> /tmp/logs.txt
+
+*) <   --> Input Redirection
+
+Example:
+
+wc -l < file.txt
+
+*) $HOME --> Environment Variable
+
+Example:
+
+echo $HOME
+
+*) && --> Command Chaining
+
+Example:
+
+mkdir test && cd test
+
+*)Reason:
+
+Command module does NOT use a shell.
+
+
+#)ANSIBLE SHELL MODULE
+======================
+
+*)Definition:
+
+Used to run Linux commands through a shell. Use shell module only when you need shell features like |, >, >>, $HOME, &&.
+
+SHELL MODULE SUPPORTS
+======================
+
+*) SHELL module supports: |   --> Pipe,  >   --> Output Redirection, >>  --> Append Redirection, <   --> Input Redirection, 
+   $HOME --> Environment Variable and && --> Command Chaining
+
+
+1) |   --> Pipe
+
+Example:
+
+cat /etc/passwd | grep root
+
+*)Meaning: Output of first command becomes input of second command.
+
+---------------------------------
+
+2) >   --> Output Redirection
+
+Example:
+
+hostname > /tmp/logs.txt
+
+*)Meaning: Store output in a file.
+
+---------------------------------
+
+3) >>  --> Append Redirection
+
+Example:
+
+hostname >> /tmp/logs.txt
+
+*)Meaning: Add output to existing file.
+
+---------------------------------
+
+4) <   --> Input Redirection
+
+Example:
+
+wc -l < file.txt
+
+*)Meaning: Take input from a file.
+
+---------------------------------
+
+5) $HOME --> Environment Variable
+
+Example:
+
+echo $HOME
+
+*)Meaning: Print home directory path.
+
+---------------------------------
+
+6) && --> Command Chaining
+
+Example:
+
+mkdir test && cd test
+
+*)Meaning: Run second command only if first command succeeds.
+
+
+EXAMPLES:
+---------
+
+*)Examples:
+
+cat /etc/passwd | grep root
+
+hostname > /tmp/logs.txt
+
+echo $HOME
+
+mkdir test && cd test
+
+
+*)Syntax:
+
+- name: Run shell command
+  ansible.builtin.shell: <command>
+
+*)Example:
+
+- name: Check root user
+  ansible.builtin.shell: cat /etc/passwd | grep root
+
+*)With Register:
+
+- name: Check root user
+  ansible.builtin.shell: cat /etc/passwd | grep root
+  register: root_output
+
+- name: Print output
+  ansible.builtin.debug:
+    msg: "{{ root_output.stdout }}"
+
+
+
+MEMORY TRICK
+=============
+
+*) command module = simple Linux command
+
+*) shell module = command + pipe + redirection + variables + chaining
+
+
+#)Difference (Interview Style):
+-------------------------------
+
+*)I use the command module for simple commands like hostname, date, and uptime. If I need shell features such as pipe (|), 
+  redirection (>), append (>>), environment variables ($HOME), or command chaining (&&), then I use the shell module."

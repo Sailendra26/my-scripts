@@ -25,3 +25,5 @@
   - name: Aaranya details
     ansible.builtin.debug:
       msg: "name is: {{ NAME }}, number is: {{ NUMBER }}"
+
+  

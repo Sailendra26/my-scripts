@@ -1,0 +1,16 @@
+- name: check user exist or not 
+  connection: local 
+  connection: local # when you " connection: local ", Ansible connects to localhost.
+
+  tasks:
+  - name: user validation
+    ansible.builtin.command: id Megham
+    register: variable1
+    ignore_errors: true
+
+  # - name: print user details
+  #   ansible.builtin.debug:
+  #     msg: "{{ variable1 }}"
+
+  
+
