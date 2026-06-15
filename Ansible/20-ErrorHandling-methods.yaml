@@ -8,9 +8,9 @@
     register: variable1
     # ignore_errors: true
 
-  # - name: print user details
-  #   ansible.builtin.debug:
-  #     msg: "{{ variable1 }}"
+  - name: print user details
+    ansible.builtin.debug:
+      msg: "{{ variable1 }}"
 
   
 
