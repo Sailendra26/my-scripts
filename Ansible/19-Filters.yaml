@@ -74,7 +74,7 @@
 
   - name: print first normal command output
     ansible.builtin.debug: 
-      msg: "{{ output }}"
+      msg: "{{ output.stdout }}"
 
   - name: first shell command
     ansible.builtin.shell: hostname >> /tmp/logs.txt
@@ -82,7 +82,7 @@
 
   - name: first shell command output
     ansible.builtin.debug: 
-      msg: "{{ result }}"
+      msg: "{{ result.stdout }}"
 
   - name: second normal command
     ansible.builtin.command: touch file1.txt
@@ -90,7 +90,7 @@
 
   - name: print second normal command output
     ansible.builtin.debug: 
-      msg: "{{ variable1 }}"
+      msg: "{{ variable1.rc }}"
 
   - name: second shell command
     ansible.builtin.shell: cat /etc/passwd | grep root
@@ -98,7 +98,7 @@
 
   - name: print second shell command output
     ansible.builtin.debug: 
-      msg: "{{ variable2 }}"
+      msg: "{{ variable2.stdout }}"
 
 
 
