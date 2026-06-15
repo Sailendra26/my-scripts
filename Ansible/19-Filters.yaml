@@ -70,19 +70,18 @@
 
   - name: print first normal command
     ansible.builtin.command: ls -l
-    register: output.txt
+    register: output
 
   - name: print first shell command
     ansible.builtin.shell: hostname >> /tmp/logs.txt
-    register: result.txt
+    register: result
 
   - name: print second normal command
     ansible.builtin.command: touch file1.txt
-    register: output.txt 
-
+    register: variable1
   - name: print second shell command
     ansible.builtin.shell: ls /etc/passwd | grep root
-    register: result.txt
+    register: variable2
 
 
 
