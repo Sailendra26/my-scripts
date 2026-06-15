@@ -11,7 +11,7 @@
 
   - name: next task 
     ansible.builtin.debug:
-      msg: "{{ next task running: user_output.stdout }}"
+      msg: " next task running: {{ user_output.stdout }}"
 
   # failed_when error handling method
   - name: root user
