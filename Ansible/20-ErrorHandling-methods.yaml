@@ -27,7 +27,7 @@
 
   - name: root user available
     ansible.builtin.debug:
-      msg: "root user found: {{ root_output }}"
+      msg: "root user found: {{ root_output.stdout }}"
     
   
 
