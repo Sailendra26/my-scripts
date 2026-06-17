@@ -1074,13 +1074,12 @@ With Register:
 
 Here: host_output = variable name
 
+
 *)What can we access?
 
 host_output.stdout  --> actual output
 host_output.stderr  --> error output
-host_output.rc      --> return code
-
-
+host_output.rc      --> rc - return code
 
 COMMAND MODULE DOES NOT SUPPORT
 ================================
@@ -1254,3 +1253,107 @@ MEMORY TRICK
 
 *)I use the command module for simple commands like hostname, date, and uptime. If I need shell features such as pipe (|), 
   redirection (>), append (>>), environment variables ($HOME), or command chaining (&&), then I use the shell module."
+  
+  
+#)Ansible error handling methods:
+---------------------------------
+
+
+  
+1)ignore_errors:
+----------------
+
+*)ignore_errors is used to continue the execution of the playbook even if a task fails.
+
+Syntax:
+-------
+
+- name: task_name
+  ansible.builtin.command: <command>
+  ignore_errors: true
+  
+  
+Example:
+--------
+
+- name: user validation
+  ansible.builtin.command: id Megham
+  register: user_output
+  ignore_errors: true
+
+- name: next task
+  ansible.builtin.debug:
+    msg: "Next task is running"
+  
+Here, Ansible ignores the failure even though the user is not exixts because we have mentioned "ignore_errors: true" to ignore the errors if there is any 
+and continue to execute the next task.
+
+
+
+2)failed_when:
+--------------
+
+*)failed_when is used to define a custom condition for task failure. It allows you to decide when a task should be marked as failed.
+  
+Syntax:
+-------
+
+- name: task_name
+  ansible.builtin.command: <command>
+  register: output
+  failed_when: <condition>
+
+Example: Validate whether the root user exists in /etc/passwd. If the root user is not found, fail the playbook. If found, display the root user details.
+--------
+
+- name: root user
+    ansible.builtin.shell: cat /etc/passwd | grep root
+    register: root_output
+
+  - name: root user validation
+    ansible.builtin.debug:
+      msg: "{{ root_output.rc }}"
+    failed_when: root_output.rc != 0
+
+  - name: root user available
+    ansible.builtin.debug:
+      msg: "root user found: {{ root_output.stdout }}"
+  
+  
+  
+3)changed_when: 
+---------------
+
+*)changed_when is used to override Ansible's default change detection and specify whether a task should be marked as changed or not changed after the task is executed.
+  
+	
+Syntax:
+-------
+
+- name: task_name
+  ansible.builtin.command: <command>
+  register: output
+  changed_when: false	
+
+
+Example:
+--------
+
+- name: Check disk space
+  ansible_builtin_command: df -h
+  register: disk_output
+  changed_when: false
+  
+  
+- name: display user details
+  ansible.builtin.debug:
+    msg: "{{ disk_output.stdout }}"
+	
+Explanation:
+------------
+
+df -h only checks disk usage.
+It does not modify anyting in the target system.
+
+changed_when: false --> It tells Ansible Even though the command ran successfully, do not mark this task as changed because
+                        it is not changing anything in the target server or remote server.
