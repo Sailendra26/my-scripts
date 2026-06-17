@@ -1324,7 +1324,11 @@ Example: Validate whether the root user exists in /etc/passwd. If the root user 
 3)changed_when: 
 ---------------
 
+*)changed_when is used when Ansible cannot accurately determine whether a task modified the target system, 
+  especially when using generic modules like " command and shell ".
+  
 *)changed_when is used to override Ansible's default change detection and specify whether a task should be marked as changed or not changed after the task is executed.
+
   
 	
 Syntax:

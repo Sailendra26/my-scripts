@@ -21,7 +21,7 @@
   - name: root user validation
     ansible.builtin.debug:
       msg: "{{ root_output.rc }}"
-    failed_when: root_output.rc != 0
+    failed_when: root_output.rc != 1
 
   - name: root user available
     ansible.builtin.debug:
