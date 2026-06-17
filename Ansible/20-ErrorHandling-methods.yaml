@@ -31,11 +31,12 @@
   - name: check disk space
     ansible.builtin.command: df -h
     register: disk_output
+    changed_when: false 
 
   - name: disk details
     ansible.builtin.debug:
       msg: "disk details are: {{ disk_output }}"
-    changed_when: false 
+
     # we are saying that this df -h just print the details and do not make any changes in the target server so don't show it as changed after the task is executed.
 
 
