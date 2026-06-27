@@ -25,4 +25,14 @@
     register: ec2_output
 
     # create r53 records
+  - name: create route53 record
+    amazon.aws.route53:
+      state: present
+      zone: "{{ DOMAIN_NAME }}"
+      record: "{{ item.item }}.{{ DOMAIN_NAME }}" # mongodb.devopsmegham.fun
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].private_ip_address }}"
+      overwrite: true
+    loop: "{{ ec2_output.results }}"
     
