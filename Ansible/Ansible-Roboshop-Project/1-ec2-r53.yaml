@@ -19,6 +19,8 @@
         instance_type: t3.micro
         security_group: "{{ SG_ID }}"
         image_id: "{{ AMI_ID }}"
+        tags:
+          Name: "{{ item }}"
       loop: "{{ instances }}"
       register: ec2_output
 
