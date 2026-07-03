@@ -4,7 +4,7 @@
 
 - tasks: copy mongodb repo 
   ansible.builtin.copy:
-    src: .mongo.repo
+    src: ./mongo.repo
     dest: /etc/yum.repos.d/
 
   ansible.builtin.package:
