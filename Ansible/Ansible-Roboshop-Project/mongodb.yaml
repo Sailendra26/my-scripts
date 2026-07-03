@@ -26,7 +26,7 @@
         replace: 0.0.0.0
 
     - name: service start
-      ansible_buitlin.service:
+      ansible.buitlin.service:
         name: mongod
         state: started
 
