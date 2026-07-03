@@ -28,5 +28,5 @@
     - name: service start
       ansible.buitlin.service:
         name: mongod
-        state: started
+        state: restarted
 
