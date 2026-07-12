@@ -1,4 +1,5 @@
 1. ansible.builtin.ping
+------------------------
 
 Definition:
 Used to test connectivity between the Ansible control node and managed nodes.
@@ -12,6 +13,7 @@ Example:
 
 
 2. ansible.builtin.package
+------------------------
 
 Definition:
 Used to install, update, and remove packages using the package manager available on the target system.
@@ -27,6 +29,7 @@ Example:
 
 
 3. ansible.builtin.service
+------------------------
 
 Definition:
 Used to start, stop, restart, and manage services.
@@ -42,6 +45,7 @@ Example:
 
 
 4. ansible.builtin.debug
+------------------------
 
 Definition:
 Used to display messages and variable values during playbook execution.
@@ -54,8 +58,15 @@ Example:
   ansible.builtin.debug:
     msg: "Hello World"
 
+Purpose:
+
+- Print Variables
+- Inspect Module Output Structure
+- Troubleshoot Playbooks
+- Understand Unknown Module Outputs
 
 5. ansible.builtin.dnf
+------------------------
 
 Definition:
 Used to install, update, and remove packages on RHEL-based systems using the DNF package manager.
@@ -71,6 +82,7 @@ Example:
 
 
 6. ansible.builtin.set_fact
+---------------------------
 
 Definition:
 Used to create a variable and load data into it during playbook execution.
@@ -85,6 +97,7 @@ Example:
 
 
 7. ansible.builtin.copy
+------------------------
 
 Definition:
 Used to copy files or directories from the control node to managed nodes. It can also create a file using the content parameter.
@@ -97,3 +110,148 @@ Example:
   ansible.builtin.copy:
     src: sample.txt
     dest: /tmp/sample.txt
+	
+	
+*)Ansible Register & Results
+-----------------------------
+
+1. Ansible module returns output as Dictionary format .
+
+2. register stores complete module output.
+
+3. register variable datatype = Dictionary.
+
+4. If a task uses loop, Ansible adds a "results" key inside the register variable.
+
+5. results value datatype = List.
+
+6. Each element inside results = Dictionary.
+
+7. loop expects List.
+
+# Aaranya DevOps Handbook
+--------------------------
+
+1. Every Ansible module returns its output as a Dictionary.
+
+2. register stores the complete module output.
+
+Example:
+
+- command: hostname
+  register: output
+
+output
+│
+├── changed
+├── stdout
+├── rc
+└── ...
+
+Datatype:
+
+output ---> Dictionary
+
+
+-------------------------------------------------------
+
+When loop is NOT used
+
+Module datatype
+   │
+   ▼
+Dictionary
+   │
+   ▼
+register (Dictionary)
+
+
+-------------------------------------------------------
+
+When loop IS used
+
+loop
+ │
+ ├── Iteration 1
+ │      │
+ │      ▼
+ │   Dictionary
+ │
+ ├── Iteration 2
+ │      │
+ │      ▼
+ │   Dictionary
+ │
+ └── Iteration N
+        │
+        ▼
+     Dictionary
+
+
+Ansible cannot overwrite every Dictionary.So it stores all iteration outputs inside one key called "results".
+
+
+register variable
+
+output
+│
+├── changed
+├── failed
+└── results
+      │
+      ├── Dictionary (Iteration 1)
+      ├── Dictionary (Iteration 2)
+      └── Dictionary (Iteration N)
+
+
+-------------------------------------------------------
+
+Remember
+
+Module Output datatype
+        │
+        ▼
+Dictionary
+
+register variable datatype
+        │
+        ▼
+Dictionary
+
+results datatype
+        │
+        ▼
+List
+
+Each element inside results
+        │
+        ▼
+Dictionary
+
+loop expects
+        │
+        ▼
+List
+
+
+-------------------------------------------------------
+
+Production:
+
+✔ Don't memorize module outputs.
+
+✔ Use:
+
+- debug:
+    msg: output
+
+Inspect the output.
+
+Find the required key and Use it.
+
+Remember:
+
+Module → Dictionary
+register → Dictionary
+results → List
+

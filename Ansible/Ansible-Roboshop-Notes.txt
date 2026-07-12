@@ -1,0 +1,314 @@
+Mongodb service configuration details:
+--------------------------------------
+
+# MongoDB Configuration Story (Roboshop + Ansible)
+
+## Scenario
+
+We are building an E-commerce application called Roboshop.
+
+It consists of multiple microservices:
+
+- Catalogue
+- User
+- Cart
+- Shipping
+- Payment
+- Dispatch
+
+These services run on different EC2 instances.
+
+Example:
+
+Catalogue EC2
+User EC2
+Cart EC2
+Shipping EC2
+                |
+                |
+                ▼
+           MongoDB EC2
+
+All these services need to store and retrieve data from MongoDB.
+
+------------------------------------------------------------
+
+## Step 1 - Create MongoDB EC2
+
+First, we create an EC2 instance which will act as the MongoDB server.
+
+AWS provides:
+
+- Private IP
+- Public IP (optional)
+
+By default Every Linux server already has:
+
+- Loopback(localhost) Interface (127.0.0.1)
+
+Important:
+
+127.0.0.1 is NOT created by MongoDB.
+
+It is provided by the Linux Operating System.
+
+So By default Every Linux server has the same 127.0.0.1.
+
+------------------------------------------------------------
+
+## Step 2 - Copy MongoDB Repository
+
+Task:
+
+copy mongo.repo
+
+Question:
+
+Why?
+
+Answer:
+
+Linux knows only its default repositories.
+
+It does not know where MongoDB packages are available.
+
+mongo.repo tells Linux:
+
+"MongoDB packages are available in this repository."
+
+Without this file:
+
+dnf install mongodb-org
+
+will fail because Linux cannot find the package.
+
+------------------------------------------------------------
+
+## Step 3 - Install MongoDB
+
+Task:
+
+dnf:
+  name: mongodb-org
+  state: present
+
+Why use dnf?
+
+Because dnf
+
+- downloads the package
+- resolves dependencies
+- installs everything automatically
+
+Why state: present?
+
+Ansible first checks:
+
+Is MongoDB already installed?
+
+YES -> Do nothing
+
+NO -> Install it
+
+This makes the playbook idempotent.
+
+------------------------------------------------------------
+
+## Step 4 - Start MongoDB
+
+Task:
+
+state: started
+
+Why?
+
+Installing software does not automatically make it usable.
+
+MongoDB service must be running.
+
+If stopped:
+
+Applications cannot connect.
+
+------------------------------------------------------------
+
+## Step 5 - Enable MongoDB
+
+Task:
+
+enabled: yes
+
+Why?
+
+Suppose the EC2 instance reboots.
+
+Without enabling:
+
+MongoDB remains stopped.
+
+Someone must login and start it manually.
+
+With enabled: yes
+
+Linux automatically starts MongoDB during every boot.
+
+------------------------------------------------------------
+
+## Step 6 - Understanding bindIp
+
+Default:
+
+bindIp: 127.0.0.1
+
+Meaning:
+
+MongoDB listens only on the Linux loopback interface.
+
+Only applications running inside the SAME EC2 can connect.
+
+Example:
+
+MongoDB EC2
+
+loopback(localhost)=127.0.0.1
+Private IP = 172.31.10.20
+
+MongoDB accepts:
+
+127.0.0.1:27017
+
+MongoDB rejects:
+
+172.31.10.20:27017
+
+because it is NOT listening on that interface.
+
+------------------------------------------------------------
+
+## Step 7 - Why replace 127.0.0.1 with 0.0.0.0?
+
+Roboshop services are running on different EC2 instances.
+
+Example:
+
+Catalogue EC2
+172.31.10.30
+
+MongoDB EC2
+172.31.10.20
+
+Catalogue wants to connect to MongoDB.
+
+It sends request to:
+
+172.31.10.20:27017
+
+MongoDB says:
+
+"I'm only listening on 127.0.0.1"
+
+Connection fails.
+
+
+So we replace:
+
+127.0.0.1
+
+↓
+
+0.0.0.0
+
+Meaning:
+
+MongoDB now listens on all available network interfaces.
+
+Example:
+
+MongoDB listens on all ip-addresses belongs to Mongodb server:
+
+✔ 127.0.0.1
+✔ Private IP
+✔ Public IP (if available) 
+
+Now other EC2 instances can connect using the MongoDB server's Private IP.
+
+--------------------------------------------------------------------------
+
+## Step 9 - How does Catalogue, Cart and User etc.. sevices know MongoDB?
+
+MongoDB does NOT broadcast its address.
+
+So we will configure MongoDB server Private-Ip address or DNS name in Catalogue, Cart and User etc.. sevices and then these services will able to connect
+
+Example:
+
+MONGO_HOST=172.31.10.20
+
+or
+
+MONGO_HOST=mongodb.roboshop.internal
+
+Catalogue initiates the connection.
+
+MongoDB simply waits and accepts the connection if it is listening on that interface.
+
+------------------------------------------------------------
+
+## Step 10 - Why use DNS instead of Private IP?
+
+Private IP may change if the server is recreated.
+
+Instead of using:
+
+172.31.10.20
+
+we use
+
+mongodb.roboshop.internal
+
+Route53 resolves the DNS name to the current Private IP.
+
+Applications never need to change.
+
+------------------------------------------------------------
+
+## Production Perspective
+
+Using
+
+bindIp: 0.0.0.0
+
+is convenient for learning.
+
+In production, we usually bind only to the required private interface and protect access using:
+
+- Security Groups
+- Firewalls
+- MongoDB Authentication
+- Private Networking
+
+------------------------------------------------------------
+
+## Complete Story
+
+Create MongoDB EC2
+        ↓
+Linux has loopback interface
+        ↓
+Copy mongo.repo
+        ↓
+Linux knows MongoDB repository
+        ↓
+Install mongodb-org
+        ↓
+Start MongoDB
+        ↓
+Enable MongoDB for reboot
+        ↓
+Change bindIp to 0.0.0.0
+        ↓
+MongoDB listens on Private IP
+        ↓
+Configure Catalogue/User/Cart with MongoDB DNS
+        ↓
+Applications connect successfully

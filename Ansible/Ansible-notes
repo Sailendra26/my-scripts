@@ -4,6 +4,55 @@
 Default username: ec2-user
 Password: DevOps321
 
+# Tool: Ansible
+----------------
+
+## 1. Before Ansible, how was this work done?
+
+Before Ansible, administrators manually logged into each server using SSH and executed the required shell scripts or Linux commands to install software, 
+configure applications, and manage services.
+
+---
+
+## 2. Why was Ansible introduced?
+
+Ansible was introduced to automate remote server configuration from a central control node. It eliminates manual logins, 
+reduces repetitive work, and ensures consistent configuration across multiple servers.
+
+---
+
+## 3. What is Ansible responsible for?
+
+Ansible is responsible for Configuration Management.
+
+Its responsibilities include:
+
+- Installing software/packages
+- Copying configuration files
+- Modifying configuration files
+- Managing services (start, stop, restart, enable)
+- Executing commands remotely
+- Deploying and configuring applications
+
+---
+
+## 4. What is NOT Ansible responsible for?
+
+Ansible is not responsible for provisioning cloud infrastructure.
+
+It does not create or manage resources such as:
+
+- VPC
+- EC2 Instances
+- Security Groups
+- Route53 Hosted Zones
+- Subnets
+
+These responsibilities belong to Infrastructure as Code (IaC) tools such as Terraform.
+
+
+
+
 
 To connect to the server:
 -------------------------
@@ -1061,7 +1110,7 @@ ls -l
 With Register: 
 --------------
 
-*)Register is used to store the output of a command or output of a task in a variable.
+*)Register stores the complete output returned by an Ansible module.
 
 - name: Check hostname
   ansible.builtin.command: hostname
