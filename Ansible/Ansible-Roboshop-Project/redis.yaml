@@ -20,11 +20,11 @@
       regexp: 127.0.0.1 
       replace: 0.0.0.0 
 
-  - name: replace entire line 
-    ansible.builtin.lineinfile:
+  - name: replace entire word 
+    ansible.builtin.replace:
       path: /etc/redis/redis.conf
       regexp: Megham 
-      line: "muddule-muddulu" 
+      replace: "muddule-muddulu" 
 
   - name: start and enable redis
     ansible.builtin.service:
