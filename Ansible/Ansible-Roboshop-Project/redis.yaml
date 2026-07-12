@@ -21,10 +21,10 @@
       replace: 0.0.0.0 
 
   - name: replace entire word 
-    ansible.builtin.replace:
+    ansible.builtin.lineinfile:
       path: /etc/redis/redis.conf
-      regexp: Megham 
-      replace: "muddule-muddulu" 
+      regexp: protected-mode
+      line: "protected-mode no" 
 
   - name: start and enable redis
     ansible.builtin.service:
