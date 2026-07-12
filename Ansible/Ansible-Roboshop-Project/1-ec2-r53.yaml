@@ -9,7 +9,9 @@
     DOMAIN_NAME: "devopsmegham.fun" # this is your domain name
 
     instances:
+    - mondodb
     - redis
+    - mysql
 
   tasks:
   - name: create ec2 instances 
