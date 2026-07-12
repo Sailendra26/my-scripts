@@ -3,22 +3,22 @@
   become: yes
 
   tasks:
-    - name: disable edis 
-      ansible.builtin.command: dnf module disable redis -y
+  - name: disable edis 
+    ansible.builtin.command: dnf module disable redis -y
 
-    - name: enable redis
-      anisble.builtin.command: dnf module enable redis:7 -y
+  - name: enable redis
+    anisble.builtin.command: dnf module enable redis:7 -y
 
-    - name: install redis package
-      ansible.builtin.package:
-        name: redis 
-        state: present
+  - name: install redis package
+    ansible.builtin.package:
+      name: redis 
+      state: present
 
-    - name: replace bindIP
-      ansible.builtin.replace:
-        path: /etc/redis/redis.conf
-        regexp: 127.0.0.1 
-        replace: 0.0.0.0 
+  - name: replace bindIP
+    ansible.builtin.replace:
+      path: /etc/redis/redis.conf
+      regexp: 127.0.0.1 
+      replace: 0.0.0.0 
 
   # - name: replace entire line 
   #   ansible.builtin.lineinfile:
@@ -26,8 +26,8 @@
   #     regexp: protected-mode 
   #     line: "protected-mode no" 
 
-    - name: start and enable redis
-      ansible.builtin.service:
-        name: redis
-        enabled: yes
-        state: started 
+  - name: start and enable redis
+    ansible.builtin.service:
+      name: redis
+      enabled: yes
+      state: started 
