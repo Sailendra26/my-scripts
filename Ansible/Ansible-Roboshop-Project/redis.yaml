@@ -20,7 +20,7 @@
       regexp: 127.0.0.1 
       replace: 0.0.0.0 
 
-  - name: replace entire word 
+  - name: replace entire line 
     ansible.builtin.lineinfile:
       path: /etc/redis/redis.conf
       regexp: protected-mode

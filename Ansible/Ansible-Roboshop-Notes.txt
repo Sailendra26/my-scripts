@@ -1,3 +1,8 @@
+-------------
+1. Mongodb:
+------------
+
+
 Mongodb service configuration details:
 --------------------------------------
 
@@ -42,45 +47,27 @@ AWS provides:
 - Private IP
 - Public IP (optional)
 
-By default Every Linux server already has:
+By default Every Linux server already has: Loopback(localhost) Interface (127.0.0.1)
 
-- Loopback(localhost) Interface (127.0.0.1)
+Important: 127.0.0.1 is NOT created by MongoDB.
 
-Important:
-
-127.0.0.1 is NOT created by MongoDB.
-
-It is provided by the Linux Operating System.
-
-So By default Every Linux server has the same 127.0.0.1.
+It is provided by the Linux Operating System. So By default Every Linux server has the same 127.0.0.1.
 
 ------------------------------------------------------------
 
 ## Step 2 - Copy MongoDB Repository
 
-Task:
+Task: copy mongo.repo
 
-copy mongo.repo
-
-Question:
-
-Why?
+Question: Why?
 
 Answer:
 
-Linux knows only its default repositories.
+Linux knows only its default repositories.It does not know where MongoDB packages are available.
 
-It does not know where MongoDB packages are available.
+So mongo.repo tells Linux: "MongoDB packages are available in this repository."
 
-mongo.repo tells Linux:
-
-"MongoDB packages are available in this repository."
-
-Without this file:
-
-dnf install mongodb-org
-
-will fail because Linux cannot find the package.
+Without this file: dnf install mongodb-org so it will fail because Linux cannot find the package.
 
 ------------------------------------------------------------
 
@@ -102,12 +89,9 @@ Because dnf
 
 Why state: present?
 
-Ansible first checks:
-
-Is MongoDB already installed?
+Ansible first checks: Is MongoDB already installed?
 
 YES -> Do nothing
-
 NO -> Install it
 
 This makes the playbook idempotent.
@@ -122,13 +106,9 @@ state: started
 
 Why?
 
-Installing software does not automatically make it usable.
+Installing software does not automatically make it usable. MongoDB service must be running.
 
-MongoDB service must be running.
-
-If stopped:
-
-Applications cannot connect.
+If service stopped, Applications cannot connect.
 
 ------------------------------------------------------------
 
@@ -143,45 +123,26 @@ Why?
 Suppose the EC2 instance reboots.
 
 Without enabling:
-
-MongoDB remains stopped.
-
-Someone must login and start it manually.
+MongoDB remains stopped, Someone must login and start it manually.
 
 With enabled: yes
-
 Linux automatically starts MongoDB during every boot.
 
 ------------------------------------------------------------
 
 ## Step 6 - Understanding bindIp
 
-Default:
+Default bindIp: 127.0.0.1
 
-bindIp: 127.0.0.1
+Meaning: MongoDB listens only on the Linux loopback interface so Only applications running inside the SAME EC2 can connect.
 
-Meaning:
-
-MongoDB listens only on the Linux loopback interface.
-
-Only applications running inside the SAME EC2 can connect.
-
-Example:
-
-MongoDB EC2
+Example: MongoDB EC2
 
 loopback(localhost)=127.0.0.1
 Private IP = 172.31.10.20
 
-MongoDB accepts:
-
-127.0.0.1:27017
-
-MongoDB rejects:
-
-172.31.10.20:27017
-
-because it is NOT listening on that interface.
+MongoDB accepts: 127.0.0.1:27017
+MongoDB rejects: 172.31.10.20:27017 because it is NOT listening on this interface.
 
 ------------------------------------------------------------
 
@@ -197,30 +158,17 @@ Catalogue EC2
 MongoDB EC2
 172.31.10.20
 
-Catalogue wants to connect to MongoDB.
+Catalogue wants to connect to MongoDB. It sends request to: 172.31.10.20:27017
 
-It sends request to:
-
-172.31.10.20:27017
-
-MongoDB says:
-
-"I'm only listening on 127.0.0.1"
-
-Connection fails.
-
+MongoDB says: "I'm only listening on 127.0.0.1" so the Connection fails.
 
 So we replace:
 
 127.0.0.1
-
 ↓
-
 0.0.0.0
 
-Meaning:
-
-MongoDB now listens on all available network interfaces.
+Meaning: MongoDB now listens on all available network interfaces.
 
 Example:
 
@@ -234,51 +182,34 @@ Now other EC2 instances can connect using the MongoDB server's Private IP.
 
 --------------------------------------------------------------------------
 
-## Step 9 - How does Catalogue, Cart and User etc.. sevices know MongoDB?
+## Step 8 - How does Catalogue, Cart and User etc.. sevices know MongoDB?
 
 MongoDB does NOT broadcast its address.
-
 So we will configure MongoDB server Private-Ip address or DNS name in Catalogue, Cart and User etc.. sevices and then these services will able to connect
 
 Example:
 
 MONGO_HOST=172.31.10.20
-
-or
-
+(or)
 MONGO_HOST=mongodb.roboshop.internal
 
-Catalogue initiates the connection.
-
-MongoDB simply waits and accepts the connection if it is listening on that interface.
+Catalogue initiates the connection. MongoDB simply waits and accepts the connection if it is listening on that interface.
 
 ------------------------------------------------------------
 
-## Step 10 - Why use DNS instead of Private IP?
+## Step 9 - Why use DNS instead of Private IP?
 
 Private IP may change if the server is recreated.
 
-Instead of using:
+Instead of using: 172.31.10.20, we use mongodb.devopsmegham.fun
 
-172.31.10.20
-
-we use
-
-mongodb.roboshop.internal
-
-Route53 resolves the DNS name to the current Private IP.
-
-Applications never need to change.
+Route53 resolves the DNS name to the current Private IP so the Applications never need to change.
 
 ------------------------------------------------------------
 
 ## Production Perspective
 
-Using
-
-bindIp: 0.0.0.0
-
-is convenient for learning.
+Using bindIp: 0.0.0.0 is convenient for learning.
 
 In production, we usually bind only to the required private interface and protect access using:
 
@@ -312,3 +243,532 @@ MongoDB listens on Private IP
 Configure Catalogue/User/Cart with MongoDB DNS
         ↓
 Applications connect successfully
+
+
+
+------------------------------------------------------------
+
+2.Redis:
+
+------------------------------------------------------------
+
+## Step 1 - Create Redis EC2
+
+First, we create an EC2 instance which will act as the Redis server.
+
+AWS provides:
+
+- Private IP
+- Public IP (optional)
+
+By default Every Linux server already has: Loopback(localhost) Interface (127.0.0.1)
+
+Important: 127.0.0.1 is NOT created by Redis.
+
+It is provided by the Linux Operating System. So By default Every Linux server has the same 127.0.0.1.
+
+------------------------------------------------------------
+
+## Step 2 - Disable Default Redis Module
+
+Task: dnf module disable redis -y
+
+Question: Why?
+
+Answer:
+
+Amazon Linux already provides a default Redis module But Roboshop requires Redis Version 7.
+If we directly install Redis, Linux may install the default Redis version instead of Version 7.
+
+So first we disable the default module, This tells Linux: "Do not use your default Redis version."
+
+------------------------------------------------------------
+
+## Step 3 - Enable Redis 7 Module
+
+Task:
+
+dnf module enable redis:7 -y
+
+Question: Why?
+
+Answer: After disabling the default module, Linux no longer knows which Redis version to install So we explicitly enable Redis Version 7.
+
+Now Linux understands: "Whenever Redis is installed, use Version 7."
+
+Without enabling Redis 7, dnf install redis diectly so it may fail or install an unexpected version.
+
+------------------------------------------------------------
+
+## Step 4 - Install Redis
+
+Task:
+
+dnf:
+  name: redis
+  state: present
+
+Question: Why use dnf/package module?
+
+Answer:
+
+The package manager
+
+- downloads Redis
+- resolves dependencies
+- installs Redis automatically
+
+Why state: present?
+
+Ansible first checks: Is Redis already installed?
+
+YES -> Do nothing
+NO -> Install Redis
+
+This makes the playbook idempotent.
+
+------------------------------------------------------------
+
+## Step 5 - Understanding bind
+
+Default:
+
+bind 127.0.0.1
+
+Meaning: Redis listens only on the Linux loopback interface. Only applications running inside the SAME EC2 can connect.
+
+Example: Redis EC2
+
+loopback(localhost)=127.0.0.1
+Private IP = 172.31.10.30
+
+Redis accepts: 127.0.0.1:6379
+
+Redis rejects: 172.31.10.30:6379 because it is NOT listening on that interface.
+
+------------------------------------------------------------
+
+## Step 6 - Replace bind IP
+
+Task:
+
+replace:
+  regexp: 127.0.0.1
+  replace: 0.0.0.0
+
+Question: Why?
+
+Answer: Roboshop services are running on different EC2 instances.
+
+Example:
+
+Catalogue EC2
+172.31.10.40
+
+Redis EC2
+172.31.10.30
+
+Catalogue wants to connect to Redis. It sends request to: 172.31.10.30:6379
+
+Redis says: "I'm only listening on 127.0.0.1" so the Connection fails.
+
+So we replace:
+
+127.0.0.1
+↓
+0.0.0.0
+
+Meaning: Redis now listens on all available network interfaces.
+
+Example:
+
+Redis listens on all ip-addresses belongs to Redis server:
+
+✔ 127.0.0.1
+✔ Private IP
+✔ Public IP (if available)
+
+Now other EC2 instances can connect using the Redis server's Private IP.
+
+------------------------------------------------------------
+
+## Step 7 - Understanding Protected Mode
+
+Default:
+
+protected-mode yes
+
+Meaning:
+
+Protected Mode is a Redis security feature.Even if Redis is listening on all interfaces,
+
+Redis still blocks remote connections unless it is configured safely.Think of it as an additional security layer.
+
+------------------------------------------------------------
+
+## Step 8 - Disable Protected Mode
+
+Task:
+
+lineinfile:
+  regexp: protected-mode
+  line: protected-mode no
+
+Question: Why?
+
+Answer:
+
+Catalogue, User, Cart and other Roboshop services run on different EC2 instances.
+
+If Protected Mode remains enabled, Redis blocks remote connections.
+
+By changing:
+
+protected-mode yes
+↓
+protected-mode no
+
+Redis allows remote Roboshop services to connect.
+
+------------------------------------------------------------
+
+## Step 9 - Start Redis
+
+Task: state: started
+
+Question: Why?
+
+Answer:
+
+Installing Redis does not automatically make it usable. Redis service must be running.
+
+If stopped: Applications cannot connect.
+
+------------------------------------------------------------
+
+## Step 10 - Enable Redis
+
+Task: enabled: yes
+
+Question: Why?
+
+Answer:
+
+Suppose the EC2 instance reboots Without enabling:
+
+Redis remains stopped so Someone must login and start Redis manually.
+
+With enabled: yes
+
+Linux automatically starts Redis during every boot.
+
+------------------------------------------------------------
+
+## Step 11 - How do Catalogue, Cart and User etc.. services know Redis?
+
+Redis does NOT broadcast its address. So we configure the Redis server Private IP address or DNS name in Catalogue, Cart and User etc.. services.
+
+Example:
+
+REDIS_HOST=172.31.10.30
+
+or
+
+REDIS_HOST=redis.roboshop.internal
+
+Catalogue initiates the connection. Redis simply waits and accepts the connection if it is listening on that interface.
+
+------------------------------------------------------------
+
+## Step 12 - Why use DNS instead of Private IP?
+
+Private IP may change if the server is recreated.
+
+Instead of using:
+
+172.31.10.30
+
+we use redis.devopsmegham.fun
+
+Route53 resolves the DNS name to the current Private IP.
+
+Applications never need to change.
+
+------------------------------------------------------------
+
+## Important Concepts Learned
+
+### Difference between replace and lineinfile
+
+*)replace:
+
+Purpose: Replaces every matching occurrence in the file.
+
+Example:
+
+Input:
+
+Megham
+Megham is my wife
+
+with replace module:
+
+regexp: Megham
+replace: muddule-muddulu
+
+Output:
+
+muddule-muddulu
+muddule-muddulu is my wife
+
+Observation: Every matching occurrence is replaced.
+
+
+*)lineinfile:
+
+Purpose: replaces an entire matching line.
+
+Example:
+
+Input:
+
+Megham
+Megham is my wife
+
+with lineinfile module:
+
+regexp: Megham
+line: muddule-muddulu
+
+Output:
+
+Megham
+muddule-muddulu
+
+Observation:
+
+In inlinefile module, If regexp finds the matching word or line then it replaces the entire line.
+
+If regexp finds multiple matching lines, then lineinfile module replaces the last matching line.
+
+------------------------------------------------------------
+
+### Understanding regexp
+
+regexp itself has only one responsibility.
+
+Find the given pattern.
+
+What happens after finding the pattern depends on the module.
+
+replace
+↓
+Replaces every matching occurrence.
+
+lineinfile
+↓
+Replaces the matching configuration line.
+
+------------------------------------------------------------
+
+## Production Perspective
+
+Using
+
+bind 0.0.0.0
+
+and
+
+protected-mode no
+
+is convenient for learning.
+
+In production, we usually:
+
+- Bind Redis only to the required private interface
+- Use Security Groups
+- Use Firewalls
+- Enable Redis Authentication/ACL
+- Keep Redis inside Private Network
+
+------------------------------------------------------------
+
+## Complete Story
+
+Create Redis EC2
+        ↓
+Linux has loopback interface
+        ↓
+Disable default Redis module
+        ↓
+Enable Redis 7 module
+        ↓
+Install Redis
+        ↓
+Change bind to 0.0.0.0
+        ↓
+Disable protected-mode
+        ↓
+Start Redis
+        ↓
+Enable Redis for reboot
+        ↓
+Configure Catalogue/User/Cart with Redis DNS
+        ↓
+Applications connect successfully
+
+
+
+
+
+-----------------------------------------------------
+
+3. Mysql
+
+------------------------------------------------------------
+
+## Step 1 - Create MySQL EC2
+
+First, we create an EC2 instance which will act as the MySQL server.
+
+AWS provides:
+
+- Private IP
+- Public IP (optional)
+
+Applications like Shipping require a relational database to store data, so MySQL acts as the backend database server.
+
+------------------------------------------------------------
+
+## Step 2 - Install MySQL Server
+
+Task:
+
+dnf:
+  name: mysql-server
+  state: present
+
+Question: Why?
+
+Answer: Linux does not have MySQL installed by default.So we install the MySQL Server package.
+
+The package manager
+
+- downloads MySQL
+- resolves dependencies
+- installs everything automatically
+
+Why state: present?
+
+Ansible first checks: Is MySQL already installed?
+
+YES -> Do nothing
+NO -> Install MySQL
+
+This makes the playbook idempotent.
+
+------------------------------------------------------------
+
+## Step 3 - Start MySQL
+
+Task:
+
+state: started
+
+Question: Why?
+
+Answer:
+
+Installing MySQL only copies the software onto the server.
+The MySQL service is still stopped.Unless the service is running, applications cannot connect to the database.
+
+------------------------------------------------------------
+
+## Step 4 - Enable MySQL
+
+Task:
+
+enabled: yes
+
+Question: Why?
+
+Answer:
+
+Suppose the EC2 instance reboots. 
+Without enabling, MySQL remains stopped so someone must login and start MySQL manually.
+
+With enabled: yes
+Linux automatically starts MySQL during every boot.
+
+------------------------------------------------------------
+
+## Step 5 - Set MySQL Root Password
+
+Task:
+
+mysql_secure_installation --set-root-pass RoboShop@1
+
+Question: Why?
+
+Answer:
+
+After installing MySQL, the root user either has no password or an insecure default authentication method.
+
+If we leave it unchanged, anyone with root access to the server may be able to access MySQL without a proper password.
+
+So we configure a secure password for the MySQL root user.
+
+This allows:
+
+- Secure administrator login
+- Database creation
+- User management
+- Privilege management
+
+------------------------------------------------------------
+
+## Step 6 - Why do Applications not use the Root User?
+
+Applications like Shipping should NOT connect using the MySQL root account.
+
+Instead, we create a dedicated database user with only the required permissions.
+
+Example:
+
+Application User
+shipping
+Database
+cities
+Permissions
+
+Only the permissions required by the Shipping service.This follows the Principle of Least Privilege.
+
+------------------------------------------------------------
+
+## Production Perspective
+
+In production we usually:
+
+- Never allow applications to use the root account.
+- Store passwords securely using Secret Managers or Vault.
+- Restrict MySQL access using Security Groups and Firewalls.
+- Allow connections only from authorized application servers.
+- Perform regular database backups.
+
+------------------------------------------------------------
+
+## Complete Story
+
+Create MySQL EC2
+        ↓
+Install MySQL Server
+        ↓
+Start MySQL
+        ↓
+Enable MySQL during every reboot
+        ↓
+Configure Root Password
+        ↓
+Create Application Users (Later)
+        ↓
+Applications connect securely

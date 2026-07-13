@@ -59,8 +59,9 @@ To connect to the server:
 
 *)ssh ec2-user@public-Ip-address of instance
 
+---------------
 SESSION-22:
------------
+---------------
 
 *)Ansible is a configuration management and automation tool used to manage and configure many servers from one place or one server.
 
@@ -222,9 +223,9 @@ Example-2: How to install a package or software, start the service and auto rest
 *)-i inventory : inventory file name specify chestunnav
 *)PlayBook-filename.yml : playbook name
 
-
+------------------
 SESSION-23:
------------
+-------------------
 
 ##)Multiple-PLAYS in a single playbook:
 ----------------------------------------
@@ -288,7 +289,7 @@ NOTE:
 ---------------------
 
 1) PLAY level Variables :
------------------------
+-------------------------
 
 *)Variables declared at play level are accessible only to all the tasks within that PLAY.
 
@@ -868,6 +869,10 @@ Example-2:
 *) {{ item.key_name }} is used when the loop contains dictionary (key-value pair) data.
 
 
+-------------
+SESSION-24
+-------------
+
 #)Filters:
 ----------
 
@@ -1410,3 +1415,203 @@ It does not modify anyting in the target system.
 
 changed_when: false --> It tells Ansible Even though the command ran successfully, do not mark this task as changed because
                         it is not changing anything in the target server or remote server.
+
+
+
+---------------------
+SESSION-25
+---------------------
+
+
+## ansible.builtin.replace Module
+
+Purpose:
+
+The replace module searches the entire file for the given regular expression (regexp) and replaces every matching occurrence with the value specified in replace.
+
+Syntax:
+
+- name: Replace text
+  ansible.builtin.replace:
+    path: <file_path>
+    regexp: <pattern_to_search>
+    replace: <replacement_text>
+
+Parameters:
+
+path: Specifies the file in which Ansible should perform the replacement.
+
+Example:
+
+path: /etc/redis/redis.conf
+
+------------------------------------------------------------
+
+regexp: Specifies the text or regular expression to search for inside the file.
+
+Example:
+
+regexp: 127.0.0.1
+or
+regexp: Megham
+
+------------------------------------------------------------
+
+replace: Specifies the new text that should replace every matching occurrence.
+
+Example:
+
+replace: 0.0.0.0
+or
+replace: muddule-muddulu
+
+------------------------------------------------------------
+
+How it works?
+
+Step 1: Open the specified file.
+Step 2: Search the entire file using the regexp.
+Step 3: Replace every matching occurrence with the replace value.
+Step 4: Save the file.
+
+Example:
+
+Input:
+
+Megham
+Megham is my wife
+
+Playbook:
+
+replace:
+  regexp: Megham
+  replace: muddule-muddulu
+
+Output:
+
+muddule-muddulu
+muddule-muddulu is my wife
+
+Observation:
+
+- Searches the entire file.
+- Replaces every matching occurrence.
+- Replaces only the matched text.
+- Does NOT replace the complete line.
+
+
+Real Example:
+
+- name: Replace bind IP
+  ansible.builtin.replace:
+    path: /etc/redis/redis.conf
+    regexp: 127.0.0.1
+    replace: 0.0.0.0
+
+Purpose: Replace the default localhost IP with 0.0.0.0 so Redis listens on all available network interfaces.
+
+============================================================
+
+## ansible.builtin.lineinfile Module
+
+Purpose:
+
+The lineinfile module searches for a matching line using regexp and replaces the entire line with the value specified in line.
+
+Syntax:
+
+- name: Replace line
+  ansible.builtin.lineinfile:
+    path: <file_path>
+    regexp: <pattern_to_search>
+    line: <new_line>
+
+Parameters:
+
+path: Specifies the file in which Ansible should search.
+
+Example:
+
+path: /etc/redis/redis.conf
+
+------------------------------------------------------------
+
+regexp: Specifies the text or regular expression used to identify the matching line.
+
+Example:
+
+regexp: protected-mode
+or
+regexp: Megham
+
+------------------------------------------------------------
+
+line: Specifies the complete line that should replace the matching line.
+
+Example:
+
+line: "protected-mode no"
+or
+line: muddule-muddulu
+
+------------------------------------------------------------
+
+How it works?
+
+Step 1: Open the specified file.
+Step 2: Search for the line matching the regexp.
+Step 3: Replace the entire matching line with the line value.
+Step 4: Save the file.
+
+
+Example:
+
+Input:
+
+Megham
+Megham is my wife
+
+Playbook:
+
+lineinfile:
+  regexp: Megham
+  line: muddule-muddulu
+
+Output:
+
+Megham
+muddule-muddulu
+
+Observation:
+
+- Searches for matching lines.
+- Replaces the entire matching line.
+- If multiple lines match, lineinfile replaces the last matching line.
+- Does NOT replace every occurrence of the matched word.
+
+
+Real Example:
+
+- name: Disable protected mode
+  ansible.builtin.lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: protected-mode
+    line: "protected-mode no"
+
+Purpose: Find the line containing protected-mode and replace the entire line with protected-mode no.
+
+============================================================
+
+## Understanding regexp
+
+Purpose:
+
+The responsibility of regexp is only to find the matching pattern but What happens after finding the pattern is depends on the module.
+
+replace module
+↓
+Replaces every matching occurrence.
+
+lineinfile module
+↓
+Replaces the matching configuration line.
