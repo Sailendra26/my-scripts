@@ -772,3 +772,443 @@ Configure Root Password
 Create Application Users (Later)
         ↓
 Applications connect securely
+
+
+------------------------------------------------------------
+
+4. RabbitMQ
+
+------------------------------------------------------------
+
+## What is RabbitMQ?
+
+*)RabbitMQ is an open-source Message Broker (Message Queue) that enables applications to communicate asynchronously.
+
+*)Instead of one application directly calling another, it sends a message to RabbitMQ. RabbitMQ temporarily stores the message in a queue and 
+  delivers it to the destination application whenever it is ready.
+
+
+## Before RabbitMQ (Interview Perspective) :
+--------------------------------------------
+
+1. Before RabbitMQ, how was this handled?
+
+*)Applications communicated directly using synchronous API calls. If one service became slow or unavailable, dependent services also became slow or failed.
+
+2. Why was RabbitMQ introduced?
+
+*)RabbitMQ was introduced to decouple applications. Instead of communicating directly, applications exchange messages through RabbitMQ. 
+  This improves reliability, scalability and fault tolerance.
+
+3. What is RabbitMQ responsible for?
+
+- Receiving messages from producers.
+- Storing messages in queues.
+- Delivering messages to consumers.
+- Managing queues, exchanges, routing, users and permissions.
+
+4. What is RabbitMQ NOT responsible for?
+
+*)RabbitMQ does not process business logic, store application data permanently like a database, or replace APIs. It only transports messages between applications.
+
+------------------------------------------------------------
+
+##) Scenario :
+
+Payment Service completes payment.
+
+Instead of directly calling Shipping Service, it sends a message to RabbitMQ.
+
+RabbitMQ stores the message in a queue.
+
+Shipping Service consumes the message later and starts shipment processing.
+
+------------------------------------------------------------
+
+## Step 1 - Create RabbitMQ EC2
+
+First, we create an EC2 instance which will act as the RabbitMQ server.
+
+AWS provides:
+
+- Private IP
+- Public IP (optional)
+
+RabbitMQ will be installed and configured on this Linux server.
+
+------------------------------------------------------------
+
+## Step 2 - Copy RabbitMQ Repository
+
+Task:
+
+copy:
+  src: rabbitmq.repo
+  dest: /etc/yum.repos.d/
+
+Question: Why?
+
+Answer: Linux doesn't know where RabbitMQ packages are available. The repository file tells Linux where to download RabbitMQ packages.
+
+Without this file:
+
+dnf install rabbitmq-server
+
+may fail or install an outdated version.
+
+------------------------------------------------------------
+
+## Step 3 - Install RabbitMQ
+
+Task:
+
+package:
+  name: rabbitmq-server
+  state: present
+
+Question: Why use package module?
+
+Answer: The package manager downloads RabbitMQ, resolves dependencies and installs it automatically.
+
+Why state: present?
+
+Ansible first checks whether RabbitMQ is already installed.
+
+YES → Do nothing
+NO → Install RabbitMQ
+
+This makes the playbook idempotent.
+
+------------------------------------------------------------
+
+## Step 4 - Start RabbitMQ
+
+Task:
+
+service:
+  name: rabbitmq-server
+  state: started
+
+Question: Why?
+
+Answer: Installing RabbitMQ only copies the software. Starting the service makes RabbitMQ available for applications immediately.
+
+------------------------------------------------------------
+
+## Step 5 - Enable RabbitMQ
+
+Task:
+
+enabled: yes
+
+Question: Why?
+
+Answer: If the EC2 instance reboots, RabbitMQ should automatically start. Otherwise someone must manually start the service every time.
+
+------------------------------------------------------------
+
+## Step 6 - Create RabbitMQ User
+
+Task:
+
+community.rabbitmq.rabbitmq_user
+
+user: roboshop
+password: roboshop123
+
+Question: Why?
+
+Answer: Roboshop applications cannot connect anonymously. RabbitMQ requires authentication before allowing applications to publish or consume messages.
+
+Important:
+
+' community.rabbitmq.rabbitmq_user ' creates a RabbitMQ application user. It does NOT create a Linux user.
+
+ansible.builtin.user → Linux User
+community.rabbitmq.rabbitmq_user → RabbitMQ User
+
+------------------------------------------------------------
+
+## Step 7 - Grant Permissions
+
+Task:
+
+permissions:
+  vhost: /
+  configure_priv: .*
+  read_priv: .*
+  write_priv: .*
+
+Question: Why?
+
+Answer: After authentication, RabbitMQ checks whether the user has permission to perform operations.
+
+*)configure_priv → Create or modify queues, exchanges and bindings.
+*)read_priv → Consume messages.
+*)write_priv → Publish messages.
+
+Meaning:
+
+vhost: /
+
+Uses the default Virtual Host.
+
+' .* ' means allow all queues, exchanges and routing keys inside that Virtual Host.
+
+------------------------------------------------------------
+
+## Step 8 - How do Roboshop Services know RabbitMQ?
+
+RabbitMQ does NOT broadcast its address. We configure the RabbitMQ server's Private IP or DNS name inside the application.
+
+Example:
+
+RABBITMQ_HOST=172.31.10.50
+(or)
+RABBITMQ_HOST=rabbitmq.devopsmegham.fun
+
+Applications initiate the connection. RabbitMQ simply waits, authenticates the user and accepts the connection.
+
+------------------------------------------------------------
+
+## Step 9 - Why use DNS instead of Private IP?
+
+Private IP may change if the server is recreated.
+
+Instead of using: 172.31.10.50 , we use: rabbitmq.devopsmegham.fun
+
+Route53 resolves the DNS name to the current Private IP. so that Applications never need to change.
+
+------------------------------------------------------------
+
+## Important Concepts Learned
+
+RabbitMQ Repository
+
+Package Installation
+
+Idempotent Installation
+
+Service Management
+
+RabbitMQ Authentication
+
+RabbitMQ User
+
+Virtual Host (vhost)
+
+Read / Write / Configure Permissions
+
+Application Users vs Linux Users
+
+Dedicated Ansible Modules
+
+------------------------------------------------------------
+
+## Understanding RabbitMQ Permissions :
+
+RabbitMQ permissions are based on Regular Expressions (Regex). The permissions decide what resources (queues, exchanges and routing keys) a user can access.
+
+------------------------------------------------------------
+
+### What does .* mean?
+
+Meaning: .* matches everything. It gives permission to all matching resources.
+
+Example:
+
+configure_priv: .*
+read_priv: .*
+write_priv: .*
+
+Result:
+
+✔ Can configure all queues and exchanges.
+✔ Can consume messages from all queues.
+✔ Can publish messages to all exchanges.
+
+------------------------------------------------------------
+
+### What does ^$ mean?
+
+Meaning: ^$ matches no resource names, so RabbitMQ denies access to all resources.
+
+Example:
+
+configure_priv: ^$
+read_priv: ^$
+write_priv: ^$
+
+Result:
+
+✘ Cannot configure anything.
+✘ Cannot consume messages.
+✘ Cannot publish messages.
+
+
+## Example 1 - Read Only User :
+
+permissions:
+  vhost: /
+  configure_priv: ^$
+  read_priv: .*
+  write_priv: ^$
+
+Result:
+
+✔ Can consume messages.
+✘ Cannot publish messages.
+✘ Cannot create or modify queues/exchanges.
+
+Suitable for: Consumer applications.
+
+
+## Example 2 - Write Only User :
+
+permissions:
+  vhost: /
+  configure_priv: ^$
+  read_priv: ^$
+  write_priv: .*
+
+Result:
+
+✔ Can publish messages.
+✘ Cannot consume messages.
+✘ Cannot configure queues/exchanges.
+
+Suitable for: Producer applications.
+
+------------------------------------------------------------
+
+## Example 3 - Administrator :
+
+permissions:
+  vhost: /
+  configure_priv: .*
+  read_priv: .*
+  write_priv: .*
+
+Result:
+
+✔ Full access.
+
+Can configure, publish and consume.
+
+Suitable for: RabbitMQ administrators.
+
+------------------------------------------------------------
+
+## Real-Time Company Practice
+
+For learning:
+
+Most tutorials use:
+
+configure_priv: .*
+read_priv: .*
+write_priv: .*
+
+Reason: Easy to understand and avoids permission-related issues.
+
+------------------------------------------------------------
+
+Production:
+
+Companies follow the Principle of Least Privilege. Every application receives only the permissions it actually needs.
+
+Example:
+
+Payment Service 
+
+write_priv: .*
+
+Reason: Payment only publishes payment events.
+
+------------------------------------------------------------
+
+Shipping Service
+
+read_priv: .*
+
+Reason: Shipping only consumes payment events.
+
+------------------------------------------------------------
+
+RabbitMQ Administrator
+
+configure_priv: .*
+read_priv: .*
+write_priv: .*
+
+Reason: Administrators manage queues, exchanges, bindings, users and permissions.
+
+------------------------------------------------------------
+
+## Interview Perspective
+
+Q: Why do companies avoid giving .* permissions to every application?
+
+Answer:
+
+*)Giving full permissions violates the Principle of Least Privilege. If an application's credentials are compromised, 
+  the attacker gains complete control over RabbitMQ resources. Production environments grant only the minimum permissions required for each application's role.
+
+------------------------------------------------------------
+
+## Complete Story
+
+Producer
+        │
+        ▼
+Write Permission
+        │
+        ▼
+RabbitMQ Queue
+        │
+        ▼
+Read Permission
+        │
+        ▼
+Consumer
+
+
+Administrator Manages the entire RabbitMQ environment.
+
+Configure + Read + Write
+
+------------------------------------------------------------
+
+## Production Perspective
+
+For learning: User receives full permissions (.*) on the default Virtual Host.
+
+In production, we usually:
+
+- Use strong passwords or Secret Managers.
+- Create separate Virtual Hosts.
+- Follow Least Privilege permissions.
+- Create dedicated users for each application.
+- Store credentials securely instead of inside playbooks.
+
+------------------------------------------------------------
+
+## Complete Story
+
+Create RabbitMQ EC2
+        ↓
+Copy RabbitMQ Repository
+        ↓
+Install RabbitMQ
+        ↓
+Start RabbitMQ Service
+        ↓
+Enable RabbitMQ after reboot
+        ↓
+Create RabbitMQ application user
+        ↓
+Grant read/write/configure permissions
+        ↓
+Configure RabbitMQ DNS in Roboshop services
+        ↓
+Applications authenticate and exchange messages through RabbitMQ successfully
