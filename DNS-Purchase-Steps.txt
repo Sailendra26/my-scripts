@@ -1,0 +1,126 @@
+**IMP****)
+
+#)Making an application available to the public: 
+------------------------------------------------
+
+If you want users on the internet to access your application, you must use a domain name.
+
+1)Buy a Domain (from a Domain Registrar):
+------------------------------------------
+
+A domain registrar is a place where you buy domain names like ( google.com, facebook.com, amazon.com ).
+
+Common Domain Registrars:
+
+*)GoDaddy
+*)Namecheap
+*)Hostinger
+*)Domain.com
+
+You can choose any registrar based on cost and service.
+
+2)Purchase a Domain (example: Hostinger):
+-----------------------------------------
+
+Steps:
+
+1)Open Hostinger
+2)Go to Domains → Get a Domain
+3)Enter the desired domain name
+4)Select domain type (.com, .in, .org, etc.) so For practice, you selected .fun --> Complete the purchase
+
+👉 Domain purchase is done.
+
+3)Give DNS authority to AWS (Route 53):
+---------------------------------------
+
+Now, DNS management should be done in AWS Route 53.
+
+Steps:
+
+1)Open AWS Route 53
+2)Go to Hosted Zones
+3)Create Hosted Zone
+4)Enter your domain name which is ' devopsmegham.fun '
+5)' Public hosted zone ' is selected because the application should be accessible from the internet
+6)Create the hosted zone
+
+AWS will generate 4 Name Servers (NS records).
+
+4)Update Name Servers in Hostinger :
+------------------------------------
+
+Steps:
+
+1)Go to Hostinger --> Domains → DNS
+2)Choose Change Nameservers
+3)Select Change Nameservers
+4)Remove Hostinger default nameservers
+5)Paste the 4 AWS Name Servers
+6)Save changes
+
+👉 From now on, DNS is managed by AWS Route 53.
+
+5)Create A Records (after servers are ready):
+----------------------------------------------
+
+*)Assume you have 3 servers: (All servers are already set up with required software/code)
+
+
+A)Frontend server
+B)Backend server
+C)Database server
+
+A)Database (internal access only):
+
+1)Go to Route 53 → Hosted Zone → Create record
+2)Record name: database
+3)Record type: A
+4)Value: Private IP of database server
+5)Create record
+
+B)Backend (internal access):
+
+1)Go to Hosted Zone → Create record
+2)Record name: backend
+3)Record type: A
+4)Value: Private IP of backend server
+5)Create record
+
+(Used only by backend, not public users)
+
+C)Frontend (public access):
+
+*)This is what users access from the internet.
+
+1)Go to Hosted Zone → Create record
+2)Record name: leave blank for root domain ( because public always use " devopsmegham.fun " this Domain)
+3)Record type: A
+4)Value: Public IP of frontend server
+5)Create record
+
+#)Final Result:
+
+1)DNS is managed by AWS Route 53
+2)Internal services use private IPs
+3)Users access the application using the public domain
+4)Application is now accessible from the internet
+
+
+*****IMP****)Common interview questions that lead to this explanation:
+
+How do you configure DNS in AWS?”
+How do you expose an application to the internet using Route 53?”
+How do you connect a domain to AWS?”
+How do you manage DNS for your application in AWS?”
+Explain how Route 53 is used in your project.”
+
+HIGH-LEVEL ANSWER FROM YOUR END TO THE INTERVIEWER:
+---------------------------------------------------
+
+First, I purchase a domain from a registrar like Hostinger or GoDaddy.
+Then I create a public hosted zone in AWS Route 53 for that domain.
+AWS gives me name servers, which I update in the registrar so DNS is managed by Route 53.
+After that, I create DNS records like A records to point the domain or subdomains to the required IP addresses
+
+##)One-Line Memory Trick: Domain → Route 53 → Records
