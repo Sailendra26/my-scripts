@@ -1,0 +1,60 @@
+AWS CLI: 
+--------
+
+*)AWS CLI is a command-line tool that allows users to interact with and manage AWS services directly from the terminal without need of 
+  logging to the AWS portal.
+  
+
+Configure AWS CLI to connect with AWS account:
+----------------------------------------------
+#)Step 1: Login to AWS Console
+#)Step 2: Open IAM Service
+#)Step 3: Go to Users
+#)Step 4: Create a New User
+#)Step 5: Provide User Name
+
+#)Step 6: 
+
+Set Permissions :
+
+*)Choose the following:
+
+1)Attach policies directly
+
+Example policy:
+AdministratorAccess or required limited permissions.
+
+#)Step 7: 
+
+Create the User
+
+#)Step 8: 
+
+Generate Access Keys :
+
+After the user is created:
+1)Open the user
+2)Go to Security credentials tab
+3)Click Create access key --> select "command line interface" and Confirmation tick box --> click next -->
+
+#)Step 9: 
+
+Copy the Keys and download .CSV file because keys shown only once so u have to download.
+
+#)Step 10: 
+
+Connect to the EC2 server and then configure below details 
+
+Install AWS CLI and Use Keys 
+
+*)sudo yum install awscli -y
+*)Check Instalation: aws --version
+*)aws configure --> this is the command we use to configure, once this command is executed it will ask you the below details.
+ 
+AWS Access Key ID: 
+AWS Secret Access Key: 
+Default region name: 
+Default output format: 
+
+If all the requested deatails submitted then the configuration will be done with this step.
+

@@ -822,9 +822,7 @@ After the user is created:
 2)Go to Security credentials tab
 3)Click Create access key --> select "command line interface" and Confirmation tick box --> click next -->
 
-Step 9: Copy the Keys and download .CSV file 
-
-*)because keys shown only once so u have to download.
+Step 9: Copy the Keys and download .CSV file because keys shown only once so u have to download.
 
 Step 10: Install AWS CLI and Use Keys 
 
@@ -839,7 +837,7 @@ AWS Secret Access Key:
 Default region name: 
 Default output format: 
 
-if all the requested deatails submitted then it will be configured with this step.
+if all the requested deatails submitted then the configuration will be done with this step.
 
 
 #)SESSION-18:
