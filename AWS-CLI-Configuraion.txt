@@ -11,7 +11,7 @@ Configure AWS CLI to connect with AWS account:
 #)Step 2: Open IAM Service
 #)Step 3: Go to Users
 #)Step 4: Create a New User
-#)Step 5: Provide User Name
+#)Step 5: Provide User Name --> click Next 
 
 #)Step 6: 
 
@@ -22,7 +22,7 @@ Set Permissions :
 1)Attach policies directly
 
 Example policy:
-AdministratorAccess or required limited permissions.
+AdministratorAccess --> click Next
 
 #)Step 7: 
 
@@ -35,7 +35,7 @@ Generate Access Keys :
 After the user is created:
 1)Open the user
 2)Go to Security credentials tab
-3)Click Create access key --> select "command line interface" and Confirmation tick box --> click next -->
+3)Click Create access key --> select "command line interface" and tick the " Confirmation "  box --> click next --> click " create access key " 
 
 #)Step 9: 
 
