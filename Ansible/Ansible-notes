@@ -1,5 +1,7 @@
 
-#)Join-Devops AMI: search " devops-practice " and select " Redhat-9-DevOps-Practice "
+#)Join-Devops AMI: 
+
+Go to community AMIs --> search " devops-practice " --> select " Redhat-9-DevOps-Practice ( ami-0220d79f3f480ecf5 ) "
 
 Default username: ec2-user
 Password: DevOps321
