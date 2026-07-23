@@ -18,7 +18,7 @@
     ansible.builtin.user:
       name: roboshop
       comment: RoboShop System user
-      system: true
+      system: true # if you want to make the user as system user, we should give it as true
       shell: /sbin/nologin
       home: /app
 # safe to remove the directory because when we run the file second time then it wil downlaod the fresh code else it wont download even there are latest changes asansible thinks that it is already exist

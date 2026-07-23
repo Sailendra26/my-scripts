@@ -50,4 +50,17 @@
       value: "{{ item.instances[0].private_ip_address }}"
       overwrite: true
     loop: "{{ ec2_output.results }}"
+
+# we are creating one record with public-ip only for frontend
+  - name: create route53 record
+    amazon.aws.route53:
+      state: present
+      zone: "{{ DOMAIN_NAME }}"
+      record: "{{ DOMAIN_NAME }}" # devopsmegham.fun
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].public_ip_address }}"
+      overwrite: true
+    when: item.item == "frontend"
+    loop: "{{ ec2_output.results }}"
     
