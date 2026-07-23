@@ -4,14 +4,14 @@
 
   vars:
     AMI_ID: "ami-0220d79f3f480ecf5"
-    SG_ID: "sg-00f8aad7ab69831fd" # replace with your SG-ID
-    ZONE_ID: "Z04223522WLWW3RAUWSAN" # this is your Hosted zone-ID
+    SG_ID: "sg-0ef71eb68bbd4adce" # replace with your SG-ID
+    ZONE_ID: "Z04480772QAAF3A1ZAZY0" # this is your Hosted zone-ID
     DOMAIN_NAME: "devopsmegham.fun" # this is your domain name
 
     instances:
-    - mondodb
-    - redis
-    - mysql
+    # - mondodb
+    # - redis
+    # - mysql
 
   tasks:
   - name: create ec2 instances 
