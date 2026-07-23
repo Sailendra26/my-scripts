@@ -48,7 +48,7 @@ Connect to the EC2 server and then configure below details
 Install AWS CLI and Use Keys 
 
 *)sudo yum install awscli -y
-*)Check Instalation: aws --version
+*)Check Installation: aws --version
 *)aws configure --> this is the command we use to configure, once this command is executed it will ask you the below details.
  
 AWS Access Key ID: 
@@ -56,5 +56,5 @@ AWS Secret Access Key:
 Default region name: 
 Default output format: 
 
-If all the requested deatails submitted then the configuration will be done with this step.
+If all the requested details submitted then the configuration will be done with this step.
 

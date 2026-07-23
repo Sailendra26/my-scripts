@@ -1,0 +1,142 @@
+########) AWS EC2 vCPU Quota Issue (Roboshop Project)
+-----------------------------------------------------
+
+## Problem
+
+While creating 9 EC2 instances using an Ansible playbook, the following error occurred:
+
+```
+VpcLimitExceeded:
+You have requested more vCPU capacity than your current vCPU limit of 8.
+```
+
+## Root Cause
+
+- This was a newly created AWS account.
+- The default EC2 On-Demand Standard vCPU quota was **8 vCPUs**.
+- The Roboshop project requires **9 t3.micro instances**.
+- Each **t3.micro** instance uses **2 vCPUs**.
+
+### Calculation
+
+```
+9 EC2 Instances × 2 vCPUs = 18 vCPUs
+```
+
+Since the account quota was only **8 vCPUs**, AWS rejected the instance creation request.
+
+---
+
+## Check Current EC2 vCPU Quota
+
+```bash
+aws service-quotas get-service-quota \
+  --service-code ec2 \
+  --quota-code L-1216C47A
+```
+
+Example Output:
+
+```json
+"Value": 8.0
+```
+
+---
+
+## Request EC2 vCPU Quota Increase
+
+```bash
+aws service-quotas request-service-quota-increase \
+  --service-code ec2 \
+  --quota-code L-1216C47A \
+  --desired-value 18
+```
+
+Example Output:
+
+```text
+Status: PENDING
+```
+
+---
+
+## Check Quota Increase Request Status
+
+```bash
+aws service-quotas list-requested-service-quota-change-history-by-quota \
+  --service-code ec2 \
+  --quota-code L-1216C47A
+```
+
+Possible Status Values:
+
+- PENDING
+- CASE_OPENED
+- APPROVED
+- DENIED
+
+Example:
+
+```text
+Status: CASE_OPENED
+```
+
+---
+
+## Verify Updated Quota
+
+```bash
+aws service-quotas get-service-quota \
+  --service-code ec2 \
+  --quota-code L-1216C47A
+```
+
+After approval:
+
+```json
+"Value": 18.0
+```
+
+---
+
+## Learning
+
+- AWS limits **vCPUs**, not the number of EC2 instances.
+- Quota increases are **free**.
+- Running EC2 instances may incur charges depending on your account and usage.
+- New AWS accounts often start with a lower default vCPU quota.
+- This issue commonly occurs when launching multiple EC2 instances for infrastructure automation projects like Roboshop.
+
+---
+
+## Interview Question
+
+### Q: Why did you request 18 instead of requesting 9 instances?
+
+**Answer:**
+
+AWS enforces an **On-Demand Standard vCPU quota**, not an instance-count quota. Since each **t3.micro** instance uses **2 vCPUs**, launching **9 instances** requires **18 vCPUs**. Therefore, I requested an increase from **8 vCPUs** to **18 vCPUs**.
+
+---
+
+## Real-Time Troubleshooting Performed
+
+✔ Identified the EC2 creation failure.
+
+✔ Read the AWS error message:
+```
+VpcLimitExceeded
+```
+
+✔ Verified the current EC2 vCPU quota.
+
+✔ Calculated the required vCPUs.
+
+✔ Submitted a quota increase request using AWS CLI.
+
+✔ Verified the request status until it changed from:
+```
+PENDING → CASE_OPENED → APPROVED (expected)
+```
+
+This was a real AWS infrastructure issue encountered while deploying the Roboshop project using Ansible.
