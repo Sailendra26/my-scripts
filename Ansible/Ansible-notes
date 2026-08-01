@@ -94,6 +94,56 @@ Play → Defines target hosts and tasks
 Task → Single action that will be performed on the managed nodes or remote servers by Ansible.
 Module → Performs the actual work
 
+## VERY-IMPORTANT ##) ANSIBLE TASK EXECUTION Flow:
+--------------------------------------------------
+
+*)For every task, the control node (Ansible server) transfers the appropriate Ansible module to the managed node (remote server) through SSH. 
+  The module executes locally on the managed node, collect the execution result of a module and then sends the structured result(output) to the control node, 
+  and then the temporary module is removed from the manage node(remote server).
+
+1. Read the playbook.
+
+↓
+
+2. Parse(Read) the current task.
+
+↓
+
+3. Read the module name mentioned in the task (eg: yum, shell, service, copy...)
+
+↓
+
+4. Load that module (eg: yum, shell, service, copy...) from the Ansible module library on the control node (or) Ansible server.
+
+↓
+
+5. Establish an SSH connection to the managed node (or) remote server.
+
+↓
+
+6. Transfer the loaded module to the managed node (or) remote server.
+
+↓
+
+7. Execute the module on the managed node (or) remote server.
+
+↓
+
+8. Collect the execution details and prepare a structured output (dictionary i.e stdout, stderr, rc, changed, failed...)
+
+↓
+
+9. Send output back to the control node (or) Ansible server.
+
+↓
+
+10. Delete the transferred temporary module (eg: yum, shell, service, copy...) from the managed node (or) remote server.
+
+↓
+
+11. Continue with the next task.
+
+
 
 Explanation of Playbook with an example:
 ----------------------------------------
@@ -1090,6 +1140,8 @@ In such cases, we use:
 
 Used to run a simple Linux command on a remote server.
 
+command module -> a simple command no need of access to shell environment like variables, bash, piping, etc..
+
 *)Syntax:
 
 - name: Run command
@@ -1190,9 +1242,18 @@ Command module does NOT use a shell.
 #)ANSIBLE SHELL MODULE
 ======================
 
-*)Definition:
+**)Definition:
+---------------
 
-Used to run Linux commands through a shell. Use shell module only when you need shell features like |, >, >>, $HOME, &&.
+*)Used to run Linux commands through a shell. Use shell module only when you need shell features like |, >, >>, $HOME, &&.
+
+*)When we use the shell module, Ansible establishes an SSH connection to the remote server. It transfers a temporary module, 
+  executes the shell command through the remote shell, collects the command output such as stdout, stderr, and return code, 
+  sends the result back to the control node, and finally cleans up the temporary files.
+  
+*)shell will take remote login -> execute command and comeout (or) login inside the server and execute the command
+
+
 
 SHELL MODULE SUPPORTS
 ======================
@@ -1421,7 +1482,7 @@ changed_when: false --> It tells Ansible Even though the command ran successfull
 
 
 ---------------------
-SESSION-25
+#)SESSION-25
 ---------------------
 
 
@@ -1617,3 +1678,261 @@ Replaces every matching occurrence.
 lineinfile module
 ↓
 Replaces the matching configuration line.
+
+*)Ansible Register & Results
+-----------------------------
+
+1. Ansible module returns output as Dictionary format .
+
+2. register stores complete module output.
+
+3. register variable datatype = Dictionary.
+
+4. If a task uses loop, Ansible adds a "results" key inside the register variable.
+
+5. results value datatype = List.
+
+6. Each element inside results = Dictionary.
+
+7. loop expects List.
+
+# Aaranya DevOps Handbook
+--------------------------
+
+1. Every Ansible module returns its output as a Dictionary.
+
+2. register stores the complete module output.
+
+Example:
+
+- command: hostname
+  register: output
+
+output
+│
+├── changed
+├── stdout
+├── rc
+└── ...
+
+Datatype:
+
+output ---> Dictionary
+
+
+-------------------------------------------------------
+
+When loop is NOT used
+
+Module datatype
+   │
+   ▼
+Dictionary
+   │
+   ▼
+register (Dictionary)
+
+
+-------------------------------------------------------
+
+When loop IS used
+
+loop
+ │
+ ├── Iteration 1
+ │      │
+ │      ▼
+ │   Dictionary
+ │
+ ├── Iteration 2
+ │      │
+ │      ▼
+ │   Dictionary
+ │
+ └── Iteration N
+        │
+        ▼
+     Dictionary
+
+
+Ansible cannot overwrite every Dictionary.So it stores all iteration outputs inside one key called "results".
+
+
+register variable
+
+output
+│
+├── changed
+├── failed
+└── results
+      │
+      ├── Dictionary (Iteration 1)
+      ├── Dictionary (Iteration 2)
+      └── Dictionary (Iteration N)
+
+
+-------------------------------------------------------
+
+Remember
+
+Module Output datatype
+        │
+        ▼
+Dictionary
+
+register variable datatype
+        │
+        ▼
+Dictionary
+
+results datatype
+        │
+        ▼
+List
+
+Each element inside ' results '
+        │
+        ▼
+Dictionary
+
+loop expects
+        │
+        ▼
+List
+
+
+-------------------------------------------------------
+
+Production:
+
+✔ Don't memorize module outputs.
+
+✔ Use:
+
+- debug:
+    msg: output
+
+Inspect the output.
+
+Find the required key and Use it.
+
+Remember:
+
+Module → Dictionary
+register → Dictionary
+results → List
+
+---------------------------------------------------------
+
+
+---------------------
+#)SESSION-26
+---------------------
+
+
+
+#)ROLES:
+--------
+
+Definition:
+
+*)An Ansible role is a way to keep everything required in a standard directory structure for organizing playbooks, which makes the automation easier to maintain and reuse. 
+  Instead of maintaining all services in one large playbook, we can maintain each service as an individual role.
+  
+*)A role can contain directories such as tasks, files, vars, defaults, handlers, and templates. 
+  Ansible automatically looks for main.yml, which acts as the default entry point in directories such as tasks, vars, defaults, handlers, and meta.
+  The files and templates directories contain supporting files, so they don't require a main.yml because their files are referenced by tasks when required.
+
+
+Ansible introduced Roles to improve the maintainability of automation. Instead of keeping all services in a single playbook, 
+each service can be maintained as a separate role. This makes it easier to locate and modify a specific service without affecting others. 
+If an issue occurs in one service, we can directly work on its role instead of searching through a large playbook. 
+In a team environment, multiple DevOps engineers can work on different roles simultaneously, which reduces Git merge conflicts and minimizing 
+the risk of deployment failures caused by accidental changes to unrelated services.
+
+
+Without Roles:
+
+❌ Huge playbook
+❌ Difficult to navigate
+❌ Difficult to maintain
+❌ Risk of accidental modifications
+❌ Git merge conflicts when multiple engineers work
+
+With Roles:
+
+✅ Each service is independent.
+✅ Easy maintenance.
+✅ Better readability.
+✅ Reusable.
+✅ Multiple engineers can work simultaneously.
+
+
+Role Structure:
+---------------
+
+A role can contain directories such as:
+
+1)tasks/
+2)files/
+3)handlers/
+4)templates/
+5)vars/
+6)defaults/
+7)meta/
+
+
+
+1.Tasks
+--------
+
+Definition:
+
+The tasks directory contains the actual automation steps (tasks that we normally write in a playbook) that need to be performed for that particular role. 
+These tasks are written in tasks/main.yml, which Ansible uses as the default entry point when the role is executed.
+
+Playbook lo tasks ela rastamo, role lo ave tasks → tasks/main.yml lo rastam.
+
+Example:
+
+frontend/
+└── tasks/
+    └── main.yml
+	
+main.yaml contains tasks
+
+
+- name: Install nginx
+  ansible.builtin.dnf:
+    name: nginx
+    state: present
+
+- name: Start nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+	
+	
+2.files
+--------
+
+Definition:
+
+The files directory stores static files required for the role. These files are not automatically executed or loaded by Ansible. 
+They are used by a task whenever required, for example, to copy a file to the managed node. This files folder stores ready-made files.
+
+Example:
+
+
+frontend/
+├── tasks/
+│   └── main.yml
+└── files/
+    └── nginx.conf
+	
+Here nginx.conf is a ready-made file and Ansible just uses/copies it when the task asks for it.
+
+- name: Copy nginx configuration
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
