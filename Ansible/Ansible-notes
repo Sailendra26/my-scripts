@@ -1936,3 +1936,516 @@ Here nginx.conf is a ready-made file and Ansible just uses/copies it when the ta
   ansible.builtin.copy:
     src: nginx.conf
     dest: /etc/nginx/nginx.conf
+	
+	
+3. Handlers
+-----------
+
+Definition:
+
+*)A handler is a special task that runs only when a task with a 'notify' parameter reports a change.
+  In a role, handler tasks are written in handlers/main.yml.
+  
+*)Handlers are used for actions that should be performed only when another task makes an actual change. 
+  Restarting or reloading a service after a configuration change is one of the most common use cases.
+
+*) The name specified in 'notify' should match the handler task 'name'.
+
+Tip line: Handler tasks are executed only when another task makes a change and notifies the handler.
+---------
+
+
+Important Points:
+-----------------
+
+*) notify does not execute the handler immediately. It notifies and queues the handler to run later.
+
+*) If the task does not make any change, the handler is not notified.
+
+*) If multiple tasks notify the same handler, the handler normally executes only once.
+
+*) A handler is also an Ansible task. The difference is that a normal task executes in the
+   normal task flow, whereas a handler executes only when it is notified by a changed task.
+
+Example:
+
+tasks/main.yml
+
+- name: Copy nginx configuration
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+  notify: Restart nginx
+
+
+handlers/main.yml
+
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+
+
+## Handler Flow:
+----------------
+
+First, the normal task executes.
+↓
+Did the task make a change?
+↓
+If YES
+↓
+Notify the handler.
+↓
+Handler is queued.
+↓
+Remaining tasks continue to execute.
+↓
+At the end of the play, the handler executes. ✅
+
+
+
+##)vars/:
+---------
+
+*)vars/ directory stores the variables that are required for that particular role, so the tasks in that role can use those values instead of hard-coding them.
+
+*)Instead of hard-coding the same value in multiple tasks, we can store it in a variable and manage it from one place. 
+  If the value changes, we only need to update the variable.
+  
+vars/
+└── main.yml
+
+
+Example:
+--------
+Suppose our role has multiple tasks that need the same package name:
+
+frontend/
+├── vars/
+│   └── main.yml
+└── tasks/
+    └── main.yml
+
+
+vars/main.yml:
+
+package_name: nginx
+
+
+tasks/main.yml:
+
+- name: Install package
+  ansible.builtin.dnf:
+    name: "{{ package_name }}"
+    state: present
+
+- name: Start service
+  ansible.builtin.service:
+    name: "{{ package_name }}"
+    state: started
+
+
+Here, both tasks use the same variable:
+
+package_name → nginx
+
+For example, In future if the package/service name changes then we only need to update it in vars/main.yml instead of changing it in every task.
+
+
+##)defaults/
+------------
+
+*)defaults/ directory is also used to define variables, but it stores the default values for variables used by a role. 
+  These are default values. If we provide a different value, the provided value will be used instead of the default value. ✅
+
+*)understanding liner: use this value unless someone provides a different value.
+
+
+
+Example:
+
+frontend/
+├── defaults/
+│   └── main.yml
+└── tasks/
+    └── main.yml
+
+
+defaults/main.yml:
+
+http_port: 80
+
+
+tasks/main.yml:
+
+- name: Configure application
+  ansible.builtin.template:
+    src: app.conf.j2
+    dest: /etc/app.conf
+
+app.conf.j2 → this could contain default value
+
+
+Normally: http_port → 80
+
+If we provide a different value: http_port → 8080
+
+Then: http_port becomes → 8080
+
+
+
+##)Difference between vars/ & defaults/ :
+-----------------------------------------
+
+*) Both vars/ and defaults/ are used to define variables for a role, but they have different variable precedence.
+
+*) vars/main.yml has higher precedence than defaults/main.yml. So, if the same variable is defined in both vars/main.yml and defaults/main.yml,
+   the value from vars/main.yml will be used as this has higher precedence .
+
+
+*)vars/
+    ↓
+  Variables with higher precedence
+
+
+*)defaults/
+    ↓
+  Default values with lower precedence
+    ↓
+  Easily overridden
+
+
+Example:
+
+frontend/
+├── vars/
+│   └── main.yml
+└── defaults/
+    └── main.yml
+
+
+vars/main.yml:
+
+http_port: 8080
+
+
+defaults/main.yml:
+
+http_port: 80
+
+
+Both files have the same variable name: 'http_port'
+
+
+Ansible gives higher priority to vars/main.yml than defaults/main.yml.
+
+So:
+
+vars/main.yml       → http_port = 8080   ← Higher priority
+defaults/main.yml   → http_port = 80     ← Lower priority
+
+
+Final value used by Ansible: http_port → 8080
+
+
+#)templates/
+-------------
+
+Definition:
+
+*)The templates directory stores template files that contain variables/placeholders.
+  Ansible templates are Jinja2-formatted files that contain placeholders/variables instead of hard-coded values.
+  Ansible takes the template, gets the actual values from variables, and creates the required file on the managed node.
+
+*)Template files are created with the .j2 extension.
+
+
+{{ MONGODB_HOST }} → placeholder / variable
+
+
+
+Example:
+
+catalogue/
+├── vars/
+│   └── main.yml
+├── templates/
+│   └── catalogue.service.j2
+└── tasks/
+    └── main.yml
+
+
+vars/main.yml :
+
+MONGODB_HOST: mongodb.roboshop
+
+
+templates/catalogue.service.j2 :
+
+[Unit]
+Description = Catalogue Service
+
+[Service]
+User=roboshop
+Environment=MONGO=true
+Environment=MONGO_URL="mongodb://{{ MONGODB_HOST }}:27017/catalogue"
+Environment=TOOL="ANSIBLE"
+ExecStart=/bin/node /app/server.js
+SyslogIdentifier=catalogue
+[Install]
+WantedBy=multi-user.target
+
+
+Here, {{ MONGODB_HOST }} is a variable/placeholder in the template.
+The actual value is provided through the role's variables.
+
+The template module processes the template and replaces {{ MONGODB_HOST }} with its
+actual value before placing the final file on the managed node.
+
+
+tasks/main.yml:
+
+- name: Create catalogue service
+  ansible.builtin.template:
+    src: catalogue.service.j2
+    dest: /etc/systemd/system/catalogue.service
+
+
+Flow:
+
+vars/main.yml
+      ↓
+MONGODB_HOST: mongodb.roboshop
+      ↓
+templates/catalogue.service.j2
+      ↓
+{{ MONGODB_HOST }} is replaced with the actual value
+      ↓
+template module
+      ↓
+Final configuration file
+      ↓
+Managed node
+
+
+Difference between files/ and templates/:
+------------------------------------------
+
+files/
+→ Stores static/ready-made files.
+→ The copy module copies the file as it is.
+→ Variables inside the file are not replaced.
+
+templates/
+→ Stores template files containing variables/placeholders.
+→ The template module processes the file.
+→ Variables are replaced with their actual values.
+→ The final file is placed on the managed node.
+
+
+Simple memory:
+
+files/     → Copy the file as it is.
+templates/ → Generate the file using variables.
+
+
+#)meta/
+-------
+
+Definition:
+
+The meta directory contains information about a role. It is mainly used to define the role dependencies.
+We define the roles that need to be executed before the current role in meta/main.yml.
+
+
+Example:
+
+catalogue/
+└── meta/
+    └── main.yml
+
+
+meta/main.yml:
+
+dependencies:
+- common
+
+
+Here, the catalogue role depends on the common role.
+
+So, when the catalogue role is executed, Ansible will execute the common role first
+and then execute the catalogue role.
+
+
+#) ANSIBLE CONFIGURATION
+------------------------
+
+---> ansible.cfg
+
+Definition:
+
+*) ansible.cfg is a configuration file which contains the default settings or default configurations
+   that control how Ansible should behave.
+
+*) We use ansible.cfg to define settings that we repeatedly use while working with Ansible instead of specifying them every time
+   we can configure them as defaults in ansible.cfg.
+
+Sections in ansible.cfg:
+------------------------
+
+Ansible configuration file can contain different sections.
+Each section is used to group related configuration settings.
+
+[defaults] is one of the sections in ansible.cfg and contains the default
+settings for Ansible.
+
+Example:
+--------
+
+[defaults]
+
+inventory = ./inventory.ini
+remote_user = ec2-user
+private_key_file = ~/.ssh/roboshop.pem
+
+Some commonly used sections are:
+--------------------------------
+
+*)Not every company project will have all of these sections. A project only includes the sections/settings based on their requirement.
+
+[defaults]
+→ General/default Ansible settings.
+
+[privilege_escalation]
+→ Settings related to privilege escalation such as become.
+
+[ssh_connection]
+→ Settings related to SSH connections.
+
+[persistent_connection]
+→ Settings related to persistent connections.
+
+[colors]
+→ Settings related to Ansible output colors.
+
+
+##)Common Settings In ansible.cfg:
+----------------------------------
+
+*)inventory
+→ Defines the default inventory file/location.
+
+Example:
+inventory = ./inventory.ini
+
+
+*)remote_user
+→ Defines the default user Ansible uses to connect to managed nodes.
+
+Example:
+remote_user = ec2-user
+
+
+*)private_key_file
+→ Defines the default SSH private key Ansible uses to connect to managed nodes.
+
+Example:
+private_key_file = ~/.ssh/roboshop.pem
+
+
+##)Ansible Configuration File Location:
+---------------------------------------
+
+
+1) ANSIBLE_CONFIG environment variable:
+
+   Example:
+
+   export ANSIBLE_CONFIG=/home/roboshop/custom-ansible.cfg
+
+   → ANSIBLE_CONFIG is an environment variable that points to the configuration file.
+
+
+2) ansible.cfg in the current directory:
+
+   Example:
+
+   /home/roboshop/ansible/ansible.cfg
+
+   If we are currently inside:
+
+   /home/roboshop/ansible/
+
+   → Ansible can use the ansible.cfg present in the current directory.
+
+
+3) ~/.ansible.cfg:
+
+   Example:
+
+   /home/roboshop/.ansible.cfg
+
+   Here:
+   ~ → /home/roboshop
+
+   → This is the ansible.cfg file in the current user's home directory.
+
+
+4) /etc/ansible/ansible.cfg:
+
+   Example:
+
+   /etc/ansible/ansible.cfg
+
+   → This is the system-level Ansible configuration file.
+
+
+##)Ansible Configuration file Precedence(preference order):
+-----------------------------------------------------------
+
+*) When you run a playbook, Ansible looks for the ansible.cfg configuration file in the following order of preference.
+
+ANSIBLE_CONFIG( environment variable ) - First place where ansible searches for ansible.cfg
+      ↓
+./ansible.cfg( current directory ) - Second place where ansible searches for ansible.cfg if it is not found in 'ANSIBLE_CONFIG(environment variable)'
+      ↓
+~/.ansible.cfg( home directory ) - Third place where ansible searches for ansible.cfg if it is not found in './ansible.cfg( current directory)'
+      ↓
+/etc/ansible/ansible.cfg - Fourth place where ansible searches for ansible.cfg if it is not found in ~/.ansible.cfg( home directory)
+
+Ansible uses the first applicable configuration file it finds.
+
+Core Memory:
+
+ANSIBLE_CONFIG → Current Directory → Home Directory → /etc/ansible
+
+
+Important:
+----------
+
+The settings in ansible.cfg are defaults. A different value can be provided explicitly which can override the defaults for that particular execution.
+
+Simple memory:
+--------------
+
+ansible.cfg → How Ansible should behave/configure itself.
+
+
+
+##)Ansible Logs:
+----------------
+
+*) Ansible logs are records of Ansible execution.
+*) Logs are useful for troubleshooting and checking what happened during Ansible execution.
+
+*) We can use log_path in ansible.cfg to specify where Ansible should store its logs.
+
+Example:
+
+ansible.cfg
+
+[defaults]
+log_path = /var/log/roboshop/ansible.log
+
