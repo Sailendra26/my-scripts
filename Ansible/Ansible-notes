@@ -2279,6 +2279,10 @@ So, when the catalogue role is executed, Ansible will execute the common role fi
 and then execute the catalogue role.
 
 
+---------------------
+#)SESSION-28
+---------------------
+
 #) ANSIBLE CONFIGURATION
 ------------------------
 
@@ -2449,3 +2453,105 @@ ansible.cfg
 [defaults]
 log_path = /var/log/roboshop/ansible.log
 
+
+#) import_role vs include_role modules:
+---------------------------------------
+
+##)import_role:
+---------------
+
+*) import_role is a static role import.
+
+*)import_role → Role tasks are loaded into the playbook BEFORE tasks execution begins.
+
+*) Ansible processes/reads the playbook first. When it sees import_role, it loads the tasks
+   from the specified role into the playbook's task list.
+
+*) Then Ansible starts executing the resulting task list one by one.
+
+Example:
+---------
+
+Playbook:
+
+1. copy task
+2. import_role: common
+3. install dependencies task
+
+
+Here common is a role, If common role contains:
+
+task A
+task B
+task C
+
+
+Ansible processes/reads the playbook first and then loads the common role tasks into the playbook task list:
+
+1. copy task
+2. common → task A
+3. common → task B
+4. common → task C
+5. install dependencies task
+
+and Then execution starts:
+
+copy task
+   ↓
+common task A
+   ↓
+common task B
+   ↓
+common task C
+   ↓
+install dependencies task
+
+
+
+##)include_role:
+----------------
+
+*) include_role is a dynamic role inclusion.
+
+*) Ansible starts executing the playbook tasks one by one. when it reaches the include_role task, it loads the specified role tasks at that point.
+
+*)include_role → Role tasks are loaded into the playbook AT RUNTIME when Ansible reaches include_role.
+
+Example:
+
+Playbook:
+
+1. copy task
+2. include_role: common
+3. install dependencies task
+
+
+If common role contains:
+
+task A
+task B
+task C
+
+
+Execution:
+
+copy task
+   ↓
+include_role reached
+   ↓
+common role tasks are loaded
+   ↓
+common task A
+   ↓
+common task B
+   ↓
+common task C
+   ↓
+install dependencies task
+
+
+Simple difference:
+
+import_role → Load the role tasks first, then execute the task list.
+
+include_role → Reach the include_role task, load the role tasks, then execute them.
