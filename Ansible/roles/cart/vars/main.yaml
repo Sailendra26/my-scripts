@@ -1,0 +1,3 @@
+CART_HOST: cart.devopsmegham.fun
+REDIS_HOST: redis.devopsmegham.fun
+CATALOGUE_HOST: catalogue.devopsmegham.fun

@@ -1,0 +1,9 @@
+MONGODB_HOST: mongodb.devopsmegham.fun
+REDIS_HOST: redis.devopsmegham.fun
+CATALOGUE_HOST: catalogue.devopsmegham.fun
+CART_HOST: cart.devopsmegham.fun
+USER_HOST: user.devopsmegham.fun
+RABBITMQ_HOST: rabbitmq.devopsmegham.fun
+MYSQL_HOST: mysql.devopsmegham.fun
+SHIPPING_HOST: shipping.devopsmegham.fun
+PAYMENT_HOST: payment.devopsmegham.fun
