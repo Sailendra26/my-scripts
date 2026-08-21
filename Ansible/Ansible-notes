@@ -2555,3 +2555,139 @@ Simple difference:
 import_role → Load the role tasks first, then execute the task list.
 
 include_role → Reach the include_role task, load the role tasks, then execute them.
+
+
+##) Tags:
+---------
+
+*) Tags are used to run the specific tasks from a playbook instead of running all the tasks.
+
+Example:
+
+- name: Install nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+  tags:
+    - deployment
+
+- name: service start
+  ansible.builtin.service:
+    name: nginx
+    state: started
+ 
+- name: Copy nginx configuration
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+
+- name: Create application directory
+  ansible.builtin.file:
+    path: /opt/myapp
+    state: directory
+  tags:
+    - deployment
+	
+	
+ansible-playbook main.yml --tags deployment -->  So the tasks only that are with the tag 'deployment' will be executed
+
+*)Usually, If we run the playbook normally without tags then all the tasks in the playbook will execute in the order they are written.
+
+ansible-playbook main.yml
+
+
+
+#) --tags:
+----------
+
+*) We use '--tags' while running the playbook to run tasks with a particular tag.
+
+Example:
+
+ansible-playbook main.yml --tags deployment
+
+#) --skip-tags:
+----------------
+
+*)we can also skip the tasks that are with the tags if we don't want to run them So we use '--skip-tags' while running the playbook to skip tasks with a particular tag.
+
+Example:
+
+ansible-playbook main.yml --skip-tags config
+
+So, the tasks that are with the tag 'config' will be skipped 
+
+
+##) Tags can be applied at different levels:
+--------------------------------------------
+
+1) Task level:
+
+- name: Install nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+  tags:
+    - deployment
+
+
+2) Block level:
+
+- block:
+
+    - name: Install nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Start nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+
+  tags:
+    - nginx
+
+
+3) Play level:
+
+- hosts: frontend
+  tags:
+    - web-setup
+
+  tasks:
+
+    - name: Install nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+
+4) Role level:
+
+- hosts: frontend
+  roles:
+    - role: nginx
+      tags:
+        - nginx
+
+
+*) We can run and skip the tags that are applied at task, block, play and role levels whenever we want based on our need.
+
+
+##) Simple Memory:
+-------------------
+
+1)tags:   → To give a name
+
+tags:
+    - deployment
+	
+2)--tags  → To Run that specific tag
+
+ansible-playbook main.yml --tags deployment  
+
+
+3)--skip-tags  → To Skip that specific tag
+
+ansible-playbook main.yml --skip-tags config  
