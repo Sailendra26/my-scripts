@@ -15,46 +15,46 @@ keyed_groups:
     prefix: "Roboshop" 
     separator: "_"
 
-# Dynamic inventory using AWS EC2 inventory plugin
+# # Dynamic inventory using AWS EC2 inventory plugin
 
-# AWS EC2 inventory plugin ni use chestunnam
-plugin: amazon.aws.aws_ec2
-
-
-# EC2 instances ye AWS region lo unnayo aa region ni specify chestunnam
-regions:
-  - us-east-1
+# # AWS EC2 inventory plugin ni use chestunnam
+# plugin: amazon.aws.aws_ec2
 
 
-# Required instances maatrame inventory lo teesukovadaniki filters use chestunnam
-filters:
-
-  # Name tag 'frontend' unna instances maatrame teesukuntundi
-  tag:Name: frontend
-
-  # Running state lo unna instances maatrame teesukuntundi
-  instance-state-name: running
+# # EC2 instances ye AWS region lo unnayo aa region ni specify chestunnam
+# regions:
+#   - us-east-1
 
 
-# Hostname ga private IP address ni use chestunnam
-hostnames:
-  - private-ip-address
+# # Required instances maatrame inventory lo teesukovadaniki filters use chestunnam
+# filters:
+
+#   # Name tag 'frontend' unna instances maatrame teesukuntundi
+#   tag:Name: frontend
+
+#   # Running state lo unna instances maatrame teesukuntundi
+#   instance-state-name: running
 
 
-# Ansible connect avvadaniki use chese ansible_host value ni
-# private IP address tho set chestunnam
-compose:
-  ansible_host: private_ip_address
+# # Hostname ga private IP address ni use chestunnam
+# hostnames:
+#   - private-ip-address
 
 
-# AWS instance information ni use chesi Ansible groups create chestunnam
-keyed_groups:
+# # Ansible connect avvadaniki use chese ansible_host value ni
+# # private IP address tho set chestunnam
+# compose:
+#   ansible_host: private_ip_address
 
-  # Instance yokka Name tag value ni group creation kosam use chestunnam
-  - key: tags.Name
 
-    # Group name mundu 'Roboshop' ane prefix add chestunnam
-    prefix: "Roboshop" # Final group name is: Roboshop_frontend
+# # AWS instance information ni use chesi Ansible groups create chestunnam
+# keyed_groups:
 
-    # Prefix and tag value madhya '_' use chestunnam
-    separator: "_"
+#   # Instance yokka Name tag value ni group creation kosam use chestunnam
+#   - key: tags.Name
+
+#     # Group name mundu 'Roboshop' ane prefix add chestunnam
+#     prefix: "Roboshop" # Final group name is: Roboshop_frontend
+
+#     # Prefix and tag value madhya '_' use chestunnam
+#     separator: "_"
