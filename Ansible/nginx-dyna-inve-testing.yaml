@@ -1,0 +1,10 @@
+# dynamic inventory testing on nginx installation
+- name: nginx installation
+  hosts: Roboshop_frontend
+  become: yes
+
+  tasks:
+  - name: install nginx
+    ansible.builtin.dnf:
+      name: nginx
+      state: present

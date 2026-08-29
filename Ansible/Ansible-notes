@@ -2743,6 +2743,8 @@ frontend → 6 servers
 
 1) Inventory Script:
 
+*) The script queries the external source and provides the host information to Ansible.
+
 External source
       ↓
 Inventory script
@@ -2750,21 +2752,15 @@ Inventory script
 Ansible
 
 
-*) The script queries the external source and provides the host
-   information to Ansible.
-
-
 2) Inventory Plugin:
+
+*) Modern Ansible uses inventory plugins to get host information dynamically from external sources.
 
 External source
       ↓
 Inventory plugin
       ↓
 Ansible
-
-
-*) Modern Ansible uses inventory plugins to get host information
-   dynamically from external sources.
 
 
 Example of AWS EC2 inventory plugin:
@@ -2785,10 +2781,83 @@ regions:
   EC2 host information.
 
 
-##) STATIC vs DYNAMIC INVENTORY
-------------------------------
+1) Verify the Dynamic Inventory:
+--------------------------------
 
-Static Inventory:
+*) This command is used to verify whether the dynamic inventory is generating
+   the expected hosts and groups correctly.
+   
+Syntax: 
+-------
+
+ansible-inventory -i inventory-fileName --graph
+
+Ex:
+
+ansible-inventory -i Dynamic-inventory-aws.aws_ec2.yaml --graph
+
+
+Example output:
+
+@all:
+  |--@Roboshop_frontend:
+  |  |--172.31.24.86
+  |  |--172.31.22.140
+  |  |--172.31.30.190
+  |  |--172.31.30.45
+  |  |--172.31.27.204
+
+*) From this output, we can verify that:
+   - Hosts are discovered from AWS.
+   - Roboshop_frontend group is created.
+   - Expected hosts are present in that group.
+
+*) This command only verifies the inventory. It does not run the playbook.
+
+
+2) Run the Playbook using Dynamic Inventory:
+--------------------------------------------
+
+Syntax:
+-------
+
+ansible-playbook -i <dynamic-inventory> <playbook>
+
+Ex:
+
+ansible-playbook -i Dynamic-inventory-aws.aws_ec2.yaml -e ansible_user=ec2-user -e ansible_password=Devops321 nginx-dynamic-inventory.yaml
+
+*) Here:
+
+   -i Dynamic-inventory-aws.aws_ec2.yaml
+        ↓
+   Dynamic inventory file
+
+   nginx-dynamic-inventory.yaml
+        ↓
+   Playbook
+
+*) Ansible uses the dynamic inventory to get the hosts and then runs
+   the playbook against those hosts.
+
+
+##) Simple Memory:
+-------------------
+
+ansible-inventory --graph
+        ↓
+Verify inventory
+
+ansible-playbook -i <dynamic-inventory> <playbook>
+        ↓
+Run playbook using dynamic inventory
+
+
+
+##) STATIC vs DYNAMIC INVENTORY
+-------------------------------
+
+#)Static Inventory:
 
 Inventory file
       ↓
@@ -2797,7 +2866,7 @@ We manually maintain hosts
 Ansible
 
 
-Dynamic Inventory:
+#)Dynamic Inventory:
 
 External source
       ↓
