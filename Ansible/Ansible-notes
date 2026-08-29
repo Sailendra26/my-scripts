@@ -2691,3 +2691,128 @@ ansible-playbook main.yml --tags deployment
 3)--skip-tags  → To Skip that specific tag
 
 ansible-playbook main.yml --skip-tags config  
+
+
+#) DYNAMIC INVENTORY
+--------------------
+
+*) In static inventory, we manually maintain the hosts/servers in the
+   inventory file.
+
+Example:
+
+[frontend]
+10.0.0.10
+10.0.0.11
+
+[mongodb]
+10.0.0.20
+
+
+*) In dynamic inventory, we don't manually maintain the hosts in the
+   inventory file.
+
+*) Ansible gets the current hosts information dynamically from an
+   external source.
+   
+*) Dynamic inventory is useful when servers are frequently created,
+   terminated, or changed in cloud environments.
+
+
+Example:
+
+Today:
+
+frontend → 3 servers
+
+Tomorrow:
+
+frontend → 6 servers
+
+*)Instead of manually updating the inventory file, Ansible can get the current host information from the external source.
+
+
+##) HOW DYNAMIC INVENTORY PROVIDES HOST INFORMATION
+---------------------------------------------------
+
+*) Dynamic inventory can provide host information to Ansible through:
+
+1) Inventory script - Old Method ( just for your knowledge ChatGpt covered this method)
+2) Inventory plugin - Modern/Current Method - you can learn and follow this method as this is recommended
+
+
+1) Inventory Script:
+
+External source
+      ↓
+Inventory script
+      ↓
+Ansible
+
+
+*) The script queries the external source and provides the host
+   information to Ansible.
+
+
+2) Inventory Plugin:
+
+External source
+      ↓
+Inventory plugin
+      ↓
+Ansible
+
+
+*) Modern Ansible uses inventory plugins to get host information
+   dynamically from external sources.
+
+
+Example of AWS EC2 inventory plugin:
+
+plugin: amazon.aws.aws_ec2
+regions:
+  - ap-south-1
+
+
+*) Here:
+
+plugin: amazon.aws.aws_ec2
+→ Tells Ansible to use the AWS EC2 inventory plugin.
+
+regions:
+  - ap-south-1
+→ Specifies the AWS region from which Ansible should obtain
+  EC2 host information.
+
+
+##) STATIC vs DYNAMIC INVENTORY
+------------------------------
+
+Static Inventory:
+
+Inventory file
+      ↓
+We manually maintain hosts
+      ↓
+Ansible
+
+
+Dynamic Inventory:
+
+External source
+      ↓
+Dynamic inventory script/plugin
+      ↓
+Ansible
+
+
+##) IMPORTANT
+--------------
+
+*) Dynamic inventory is not an Ansible module.
+
+*) A module performs an action on a host, whereas inventory tells
+   Ansible which hosts are available.
+
+*) Dynamic inventory provides the host information dynamically
+   from an external source.
