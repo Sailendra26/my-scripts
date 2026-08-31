@@ -1,5 +1,5 @@
 - name: configure mysql
-  hosts: mysql
+  hosts: localhost
   become: yes
 
   tasks:
