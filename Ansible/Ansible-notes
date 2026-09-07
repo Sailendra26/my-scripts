@@ -2742,6 +2742,7 @@ frontend → 6 servers
 
 
 1) Inventory Script:
+--------------------
 
 *) The script queries the external source and provides the host information to Ansible.
 
@@ -2753,6 +2754,7 @@ Ansible
 
 
 2) Inventory Plugin:
+--------------------
 
 *) Modern Ansible uses inventory plugins to get host information dynamically from external sources.
 
@@ -2772,13 +2774,11 @@ regions:
 
 *) Here:
 
-plugin: amazon.aws.aws_ec2
-→ Tells Ansible to use the AWS EC2 inventory plugin.
+plugin: amazon.aws.aws_ec2 → Tells Ansible to use the AWS EC2 inventory plugin.
 
 regions:
   - ap-south-1
-→ Specifies the AWS region from which Ansible should obtain
-  EC2 host information.
+→ Specifies the AWS region from which Ansible should obtain EC2 host information.
 
 
 1) Verify the Dynamic Inventory:
@@ -2797,7 +2797,28 @@ Ex:
 ansible-inventory -i Dynamic-inventory-aws.aws_ec2.yaml --graph
 
 
-Example output:
+Example:
+
+# Dynamic inventory using AWS EC2 inventory plugin :
+----------------------------------------------------
+
+plugin: amazon.aws.aws_ec2
+regions:
+- us-east-1
+filters:
+  tag:Name: frontend
+  instance-state-name : running
+hostnames:
+  - private-ip-address
+compose:
+  ansible_host: private_ip_address
+keyed_groups:
+  - key: tags.Name
+    prefix: "Roboshop" 
+    separator: "_"
+
+O/P:
+----
 
 @all:
   |--@Roboshop_frontend:
@@ -2885,3 +2906,217 @@ Ansible
 
 *) Dynamic inventory provides the host information dynamically
    from an external source.
+
+ANSIBLE VAULT:
+---------------
+
+Ansible Vault is used to store sensitive data such as passwords
+in encrypted form instead of plain text.
+
+WHY DO WE USE VAULT?
+--------------------
+
+If we store passwords directly in a YAML file, anyone who can read
+the file can see the password.
+
+Vault encrypts the sensitive data so it is not readable.
+
+
+CREATING A VAULT FILE and VAULT PASSWORD:
+-----------------------------------------
+
+##IMP##) We have used mysql role example for practice to make you understand the ANSIBLE_VAULT concept
+
+Example:
+
+ansible-vault create mysql-test.yaml
+
+--> Creates the file directly in encrypted Vault format.
+--> We enter the sensitive data inside the file.
+
+    MYSQL_ROOT_PASS: Roboshop@1
+
+After saving, the file is stored in encrypted form.
+
+If we try to read the vault file: cat mysql-test.yaml
+
+we will see encrypted content like below :
+
+$ANSIBLE_VAULT;1.1;AES256
+63333565643965623234326533623131633734313365306239303665386462353439383563373230
+3566356463376261383533376332373738656630613039390a626562313538323931653032633965
+33336132653638343634393965353931393237643838316434303235643634333565326361623332
+6336663362353439320a336135643862323336343164373730366336666338373162316536323533
+39306366366262386365633535363563303337626464356536316634396563663866
+
+
+
+VAULT PASSWORD:
+---------------
+
+While creating the Vault file, we provide a Vault password.
+
+Ansible uses this Vault password to decrypt the encrypted file
+when the playbook needs to use the variables.
+
+
+ROLE + VAULT:
+-------------
+
+roles/
+└── mysql/
+    ├── tasks/
+    │   └── main.yaml
+    └── vars/
+        └── main.yaml   🔐
+
+
+FLOW of our practiced Ansible-vault example :
+---------------------------------------------
+
+
+##IMP##) We have used mysql role example for practice to make you understand the ANSIBLE_VAULT concept
+
+1) We run the playbook:
+
+ansible-playbook -i inventory.ini instances.yaml -e "component=mysql"
+                    ↓
+
+2) Ansible reads instances.yaml
+                    ↓
+
+3) component=mysql
+   So:
+   hosts: mysql
+   role: mysql
+                    ↓
+
+4) Ansible enters the mysql role
+                    ↓
+
+5) Role's variables are loaded automatically from:
+
+roles/mysql/vars/main.yaml
+                    ↓
+
+6) Ansible sees that vars/main.yaml is Vault-encrypted
+                    ↓
+
+7) Ansible checks 'ansible.cfg' for the Vault password:
+
+[defaults]
+vault_password_file = /etc/ansible/mysql_vault_pass.txt
+
+We will only create this 'mysql_vault_pass.txt' file to save the vault password 
+                    ↓
+
+8) Ansible gets the Vault password from:
+
+/etc/ansible/mysql_vault_pass.txt
+                    ↓
+
+9) Using that Vault password, Ansible decrypts:
+
+roles/mysql/vars/main.yaml
+
+For your Understanding you have written below information:
+
+In this main.yaml, we have placed encrypted code of vault file. the variable {{ MYSQL_ROOT_PASS }} value is present inside the vault file
+so to get the variable value, you need the vault password to decrypt this vault file 
+                    ↓
+
+10) Now the variable becomes available:
+
+MYSQL_ROOT_PASS: Roboshop@1
+                    ↓
+
+11) After variables are loaded/decrypted,
+    Ansible starts executing:
+
+roles/mysql/tasks/main.yaml
+                    ↓
+
+12) Task uses:
+
+{{ MYSQL_ROOT_PASS }}
+                    ↓
+
+13) The actual value is used by the MySQL task.
+
+
+IMPORTANT:
+----------
+
+Vault password ≠ MYSQL_ROOT_PASS
+
+Vault password
+    → Used to decrypt the encrypted Vault file
+
+MYSQL_ROOT_PASS
+    → Actual MySQL password stored inside the encrypted file
+	
+	
+ANSIBLE VAULT COMMANDS:
+-----------------------
+
+1) CREATE:
+
+ansible-vault create fileName
+
+--> Creates a new file.
+--> Add the required data inside the file.
+--> After adding the data, we need to set the Vault password.
+--> The file will be stored in encrypted format.
+
+
+2) ENCRYPT:
+
+ansible-vault encrypt fileName
+
+--> Encrypts an existing plain-text file.
+--> Need to set the Vault password.
+--> The file will be converted into encrypted format.
+
+
+3) DECRYPT:
+
+ansible-vault decrypt fileName
+
+--> Decrypts an encrypted Vault file.
+--> Need to provide the Vault password.
+--> The file will be converted back to readable format.
+
+
+4) VIEW:
+
+ansible-vault view fileName
+
+--> Displays the data from the encrypted file.
+--> Need to provide the Vault password to view the data.
+--> The file remains encrypted.
+
+
+5) REKEY:
+
+ansible-vault rekey fileName
+
+--> Changes the Vault password of an encrypted file.
+--> Need to provide the current Vault password.
+--> Then set the new Vault password.
+
+
+6) EDIT:
+
+ansible-vault edit fileName
+
+--> Opens the encrypted file for editing.
+--> Need to provide the Vault password to edit the data.
+--> After saving, the file remains encrypted.
+
+
+7) DELETE:
+
+rm fileName
+
+--> Deletes the Vault file.
+--> Vault password is NOT required.
