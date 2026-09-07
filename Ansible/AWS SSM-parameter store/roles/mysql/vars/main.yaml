@@ -1,0 +1,6 @@
+
+
+# using AWS Parameter Store concept ( similar to secrets manager) 
+# Lookup ssm parameter store in specified region
+
+MYSQL_ROOT_PASS: "{{ lookup('amazon.aws.aws_ssm', '/roboshop/mysql_vault_password', region='us-east-1', decrypt=False ) }}"
