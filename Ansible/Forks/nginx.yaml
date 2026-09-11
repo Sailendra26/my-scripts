@@ -3,15 +3,9 @@
  
 
   tasks:
-    - name: Install Nginx
-      ansible.builtin.dnf:
-        name: nginx 
-        state: present 
-
-    - name: start nginx service
-      ansible.builtin.service:
-        name: nginx
-        state: started
-        enabled: yes
-
+    - name: Test parallel execution
+      ansible.builtin.shell: |
+        echo "Started {{ inventory_hostname }}"
+        sleep 20
+        echo "Finished {{ inventory_hostname }}"
 
