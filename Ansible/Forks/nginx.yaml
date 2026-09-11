@@ -1,5 +1,5 @@
 - name: Nginx installation
-  hosts: localhost
+  hosts: test
  
 
   tasks:
