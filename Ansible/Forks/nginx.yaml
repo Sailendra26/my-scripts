@@ -5,7 +5,6 @@
   tasks:
     - name: Test parallel execution
       ansible.builtin.shell: |
-        echo "Started {{ inventory_hostname }}"
+        echo "Started {{ inventory_hostname }} at $(date +%T)"
         sleep 20
-        echo "Finished {{ inventory_hostname }}"
-
+        echo "Finished {{ inventory_hostname }} at $(date +%T)"
