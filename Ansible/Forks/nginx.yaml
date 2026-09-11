@@ -9,4 +9,4 @@
 
     - name: Show execution details
       ansible.builtin.debug:
-        var: result.stdout
+        msg: "{{ result.stdout }}"
