@@ -4,7 +4,12 @@
 
   tasks:
     - name: Test parallel execution
-      ansible.builtin.shell: |
+      ansible.builtin.debug: |
         echo "Started {{ inventory_hostname }} at $(date +%T)"
         sleep 20
         echo "Finished {{ inventory_hostname }} at $(date +%T)"
+      register: result
+
+    - name: Show execution details
+      ansible.builtin.debug:
+        var: result.stdout
