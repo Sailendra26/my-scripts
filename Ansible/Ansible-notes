@@ -1238,8 +1238,12 @@ mkdir test && cd test
 
 Command module does NOT use a shell.
 
+---------------------------------------------------------------------------------------------------------------------
 
-#)ANSIBLE SHELL MODULE
+
+
+
+##)ANSIBLE SHELL MODULE
 ======================
 
 **)Definition:
@@ -1258,8 +1262,14 @@ Command module does NOT use a shell.
 SHELL MODULE SUPPORTS
 ======================
 
-*) SHELL module supports: |   --> Pipe,  >   --> Output Redirection, >>  --> Append Redirection, <   --> Input Redirection, 
-   $HOME --> Environment Variable and && --> Command Chaining
+*) SHELL module supports: 
+
+|   --> Pipe,  
+>   --> Output Redirection, 
+>>  --> Append Redirection, 
+<   --> Input Redirection, 
+$HOME --> Environment Variable 
+and && --> Command Chaining
 
 
 1) |   --> Pipe
@@ -1372,8 +1382,11 @@ MEMORY TRICK
   redirection (>), append (>>), environment variables ($HOME), or command chaining (&&), then I use the shell module."
   
   
-#)Ansible error handling methods:
----------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
+ 
+ 
+##)Ansible Error Handling methods:
+----------------------------------
 
 
   
@@ -1501,6 +1514,7 @@ Syntax:
     replace: <replacement_text>
 
 Parameters:
+-----------
 
 path: Specifies the file in which Ansible should perform the replacement.
 
@@ -1508,7 +1522,6 @@ Example:
 
 path: /etc/redis/redis.conf
 
-------------------------------------------------------------
 
 regexp: Specifies the text or regular expression to search for inside the file.
 
@@ -1518,7 +1531,6 @@ regexp: 127.0.0.1
 or
 regexp: Megham
 
-------------------------------------------------------------
 
 replace: Specifies the new text that should replace every matching occurrence.
 
@@ -1590,6 +1602,7 @@ Syntax:
     line: <new_line>
 
 Parameters:
+-----------
 
 path: Specifies the file in which Ansible should search.
 
@@ -1597,7 +1610,6 @@ Example:
 
 path: /etc/redis/redis.conf
 
-------------------------------------------------------------
 
 regexp: Specifies the text or regular expression used to identify the matching line.
 
@@ -1607,7 +1619,6 @@ regexp: protected-mode
 or
 regexp: Megham
 
-------------------------------------------------------------
 
 line: Specifies the complete line that should replace the matching line.
 
@@ -2436,6 +2447,7 @@ Simple memory:
 
 ansible.cfg → How Ansible should behave/configure itself.
 
+-----------------------------------------------------------------------------------------------------------------------
 
 
 ##)Ansible Logs:
@@ -2452,6 +2464,8 @@ ansible.cfg
 
 [defaults]
 log_path = /var/log/roboshop/ansible.log
+
+-----------------------------------------------------------------------------------------------------------------------
 
 
 #) import_role vs include_role modules:
@@ -2555,6 +2569,8 @@ Simple difference:
 import_role → Load the role tasks first, then execute the task list.
 
 include_role → Reach the include_role task, load the role tasks, then execute them.
+
+-----------------------------------------------------------------------------------------------------------------------
 
 
 ##) Tags:
@@ -2691,6 +2707,9 @@ ansible-playbook main.yml --tags deployment
 3)--skip-tags  → To Skip that specific tag
 
 ansible-playbook main.yml --skip-tags config  
+
+
+-----------------------------------------------------------------------------------------------------------------------
 
 
 #) DYNAMIC INVENTORY
@@ -2906,9 +2925,14 @@ Ansible
 
 *) Dynamic inventory provides the host information dynamically
    from an external source.
+   
+   
+   
+-----------------------------------------------------------------------------------------------------------------------
 
-ANSIBLE VAULT:
----------------
+
+##)ANSIBLE VAULT:
+-----------------
 
 Ansible Vault is used to store sensitive data such as passwords
 in encrypted form instead of plain text.
@@ -3120,3 +3144,352 @@ rm fileName
 
 --> Deletes the Vault file.
 --> Vault password is NOT required.
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+##)AWS SSM PARAMETER STORE:
+---------------------------
+
+*)AWS SSM Parameter-Store is used to store secrets ( configuration values and sensitive values) such as passwords.
+
+Instead of hardcoding a password directly in Ansible like below:
+
+MYSQL_ROOT_PASS: Roboshop@1
+
+we store the value in AWS SSM Parameter Store.
+
+Examples of values that can be stored:
+--------------------------------------
+
+- Configuration values
+- Environment names
+- Endpoint URLs
+- Resource identifiers
+- AMI IDs
+- Passwords
+- API keys
+- Tokens
+
+Parameter Store supports three parameter types:
+-----------------------------------------------
+
+String       → Plain-text value
+StringList   → Comma-separated values
+SecureString → Encrypted sensitive value using AWS KMS
+
+*)Multiple secrets can be stored by creating separate parameters for each secret value.
+
+Example:
+
+/app/mysql_password       → MySQL password
+/app/rabbitmq_password    → RabbitMQ password
+/app/redis_password       → Redis password
+/app/api_key              → API key
+
+*)Each secret is stored as a separate parameter and can be retrieved individually when required.
+
+Example Parameter:
+
+Parameter Name:
+ /roboshop/mysql_vault_password
+
+Parameter Value:
+ Roboshop@1
+
+
+STEPS TO CREATE AN AWS SSM PARAMETER
+-------------------------------------
+
+1. Open AWS Management Console.
+
+2. Search for "Systems Manager".
+
+3. Open "Systems Manager".
+
+4. From the left-side menu, select "Parameter Store".
+
+5. Click "Create parameter".
+
+6. Enter the parameter name:
+
+   /roboshop/mysql_vault_password
+
+7. Select the parameter tier:
+
+   Standard
+
+8. Select the parameter type:
+
+   SecureString
+
+9. Enter the required value:
+
+   Roboshop@1
+
+10. Leave the remaining options as default.
+
+11. Click "Create parameter".
+
+
+ANsible INTEGRATION:
+--------------------
+
+Ansible can retrieve the parameter value from AWS SSM Parameter Store using the 'amazon.aws.aws_ssm lookup' plugin.
+
+Syntax:
+
+VARIABLE_NAME: "{{ lookup('amazon.aws.aws_ssm',
+'PARAMETER_NAME',
+region='AWS_REGION',
+decrypt=True/False) }}"
+
+
+Example:
+
+MYSQL_ROOT_PASS: "{{ lookup('amazon.aws.aws_ssm',
+'/roboshop/mysql_vault_password',
+region='us-east-1',
+decrypt=False) }}"
+
+This means Ansible looks for the parameter "/roboshop/mysql_vault_password" in AWS SSM Parameter Store in the "us-east-1" region and assigns the retrieved value to
+the "MYSQL_ROOT_PASS" variable.
+
+The variable "MYSQL_ROOT_PASS" is defined in: roles/mysql/vars/main.yaml
+
+
+TASK USAGE:
+
+The same variable is available in the tasks of the mysql role.
+
+Example:
+
+- name: set the root password
+  ansible.builtin.command: mysql_secure_installation --set-root-pass {{ MYSQL_ROOT_PASS }}
+
+
+COMPLETE FLOW:
+
+AWS SSM Parameter Store
+        ↓
+/roboshop/mysql_vault_password
+        ↓
+Parameter value
+        ↓
+amazon.aws.aws_ssm lookup
+        ↓
+MYSQL_ROOT_PASS
+        ↓
+roles/mysql/tasks/main.yaml
+        ↓
+{{ MYSQL_ROOT_PASS }}
+        ↓
+mysql_secure_installation
+        ↓
+MySQL root password is set
+
+
+IMPORTANT POINT:
+
+SSM Parameter-Store stores the value.
+
+lookup() plugin retrieves the value from SSM.
+
+MYSQL_ROOT_PASS holds the retrieved value in Ansible.
+
+The task uses {{ MYSQL_ROOT_PASS }} variable.
+
+
+MAIN PURPOSE:
+
+*)The main purpose is to avoid hardcoding sensitive values directly inside Ansible files and retrieve them from a centralized AWS
+  Parameter Store when required.
+  
+--------------------------------------------------------------------------------------------------------------------------
+
+ANSIBLE FORKS:
+--------------
+
+*)Forks define the maximum number of hosts Ansible can process in parallel at the same time.
+
+*)The forks value is configured in ansible.cfg
+
+Example:
+
+[defaults]
+forks = 3
+
+
+Suppose the inventory contains 10 hosts:
+
+Host 1
+Host 2
+Host 3
+Host 4
+Host 5
+Host 6
+Host 7
+Host 8
+Host 9
+Host 10
+
+
+If forks = 3:
+
+Ansible can process a maximum of 3 hosts parallelly.
+
+Initially:
+
+Process 1 → Host 1   (running)
+Process 2 → Host 2   (running)
+Process 3 → Host 3   (running)
+
+The remaining hosts wait:
+
+Host 4
+Host 5
+Host 6
+...
+Host 10
+
+
+Suppose Host 2 finishes first:
+
+Process 1 → Host 1   (running)
+Process 2 → FREE
+Process 3 → Host 3   (running)
+
+Now the free process can be used for the next waiting host:
+
+Process 1 → Host 1   (running)
+Process 2 → Host 4   (running)
+Process 3 → Host 3   (running)
+
+Here, still only 3 hosts being processed parallelly.
+
+
+Therefore:
+
+forks = 3
+→ Maximum 3 hosts can be processed in parallel.
+→ Remaining hosts wait for an available process.
+→ When a process becomes free, the next waiting host can use it.
+→ The number of simultaneously processed hosts never exceeds 3.
+
+
+Important:
+----------
+
+It means Ansible can process up to 3 hosts concurrently.
+
+For fixed batches, Ansible has a separate concept called "serial".
+
+
+-------------------------------------------------------------------------------------------------------------
+
+
+##)ANSIBLE SERIAL:
+------------------
+
+*)Serial is used when we want Ansible to work on hosts in batches.
+*)Serial is mainly useful for controlled or rolling deployments.
+*)It controls how many hosts Ansible handles in one batch before moving to the next batch.
+
+
+Example:
+
+- hosts: webservers
+  serial: 2
+
+--> Assume that Suppose there are 10 web servers
+
+Ansible handles them like:
+
+Batch 1 → Server 1, Server 2
+           ↓
+        tasks complete
+           ↓
+Batch 2 → Server 3, Server 4
+           ↓
+        tasks complete
+           ↓
+Batch 3 → Server 5, Server 6
+           ↓
+        tasks complete
+           ↓
+Batch 4 → Server 7, Server 8
+           ↓
+        tasks complete
+           ↓
+Batch 5 → Server 9, Server 10
+
+
+If one server finishes early in the current batch, Ansible does not bring another server into that batch.
+It waits until the current batch is completed before moving to the next batch.
+
+Q)Why do we use serial?
+
+A)Serial is mainly useful for controlled or rolling deployments.
+
+
+Important Example and this can click the serial topic:
+------------------------------------------------------
+
+We have 10 production web servers and want to deploy a new
+application version.
+
+Instead of changing all 10 servers at once, if u set as below
+
+serial: 2
+
+→ Deploy to 2 servers and Check whether the application is working.
+  If the current batch is healthy, Ansible automatically moves to the next 2 servers and Continue until all servers are updated.
+
+→ If the current batch fails, the play can fail and the rollout can stop, so the remaining servers are not updated.
+
+
+Example with health check:
+--------------------------
+
+- hosts: webservers
+  serial: 2
+
+  tasks:
+
+    - name: Deploy application
+      ansible.builtin.shell: ./deploy.sh
+
+    - name: Check application health
+      ansible.builtin.uri:
+        url: "http://localhost/health"
+        status_code: 200
+      register: health_check
+
+    - name: Fail if application is unhealthy
+      ansible.builtin.fail:
+        msg: "Application health check failed"
+      when: health_check.status != 200
+
+
+Flow:
+-----
+
+Batch 1 → Server 1, Server 2
+             ↓
+       Deploy application
+             ↓
+       Health check
+             ↓
+   If healthy → next batch
+   If unhealthy → fail/stop rollout
+
+
+There is no separate task to move to the next batch of hosts.
+When the current batch of servers or hosts completes successfully, Ansible automatically moves to the next batch of servers.
+
+
+Important:
+----------
+
+*)serial = controls the batch size.
+*)forks = controls how many hosts Ansible can process in parallel.
