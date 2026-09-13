@@ -1,0 +1,903 @@
+https://www.chiark.greenend.org.uk/~sgtatham/putty/releases/0.77.html -->putty download link
+
+
+---> ec2-user@public-ip---> while connecting to putty server. eg:ec2-user@10.98.97.4 
+
+---> clickOn putty-logo-->change settings--->appearence--> for Font modification.
+
+---> clickOn putty-logo-->change settings--->colors--> for color settings.
+
+
+if putty got stuck-->putty-logo-->duplicate session-- you will get the duplicate terminal.
+
+SSH --->SSH or Secure Shell is a network communication protocol that enables two computers to communicate. (or) ssh is used to connect linux machine.
+
+
+##. EC2 instance creation
+--------------------------
+
+##. If you want to make changes inside the instance,before making the changes inside the instance you should stop the server(instance).
+
+// you can change these two even our instance is in running state --> 1. instance type 2.Name tags.//
+
+1.AMI(amazon machine image) ---> if you want to change your current operating system to new operating system , you cannot change it once we created it 
+
+2.Instance-type(RAM and CPU) ---> if we want to improve our RAM and CPUS , yes we can modify. 
+
+*i.e--> select the instance-->actions-->instance settings-->change instance type.
+
+3.Configure instance-type(adding volume) ---> vpc, subnets etc.. we can change
+
+4.Add storage ---> if we want to increase volume we can modify . eg: 10GB to 25GB.
+
+*i.e--> select the instance-->storage-->clickOn volume ID-->select volume ID-->actions-->modify volume.
+
+5.Name tags ---> we can rename it.
+
+6.Security groupName ---> we can change this too.
+
+*i.e select instance-->actions-->security-->change security groups-->enter the security group-->add security group-->save.
+
+If you want remove the security group
+
+*i.e select instance-->actions-->security-->change security groups-->enter the security group-->add security group-->save.
+
+7.Review & Launch.
+
+LINUX COMMANDS - DAY 01
+-------------------------
+
+*)Linux is a free and open source operating system with high security.Linux is multi-user based OS.
+
+1.sudo yum update ---> to get all the latest updates if there is any.
+i.e sudo - super user do, yum - package management, yum - yellowdog updater modifier
+
+To install any software in linux OS we will use ' yum ' 
+
+*)yum install tree -y --> it will install tree package.
+
+*)yum install httpd -y --> it will install httpd ( web server )
+
+In latest version we have got DNF( Dandified yum ) - Inplace of ' yum ' we can use ' dnf '
+ 
+eg : *) dnf install tree -y --> it will install tree package.
+
+
+sudo -i : used to go to the root user
+or
+sudo su - (or) sudo su : used to login into root
+
+exit : used to logout from the current user
+
+clear: used to clear the screen
+or
+ctrl + l : used to clear the screen
+
+(-i, -n, -c etc.. these are the flags.)
+
+----------------------------------------------------------------------------------------------------------------------
+SYSTEM COMMANDS:
+*)uname : used to get the type of the OS
+
+*)uname -r : used to get version of OS
+
+*)uname -a : get all info about OS
+
+*)uptime : used to get the info since how long our server is in running state
+
+*)hostname : used to get the system name
+
+*)hostname -i : only system name
+
+*)last reboot : used to get the info about when we reboot our server last time
+
+*)ip addr or ip route or ifconfig : used to get ip address of a system
+
+*)date : used to get todays date
+
+*)timedatectl : used to get local, rtc, universal time timezones
+
+*)timedatectl set-timezone Asia/Kolkata : used to change UTC to IST
+
+*)date +"%d" : used to get only day
+
+*)date +"%m" : used to get only month
+
+*)date +"%y" : used to get only year
+
+*)date +"%H" : used to get only Hours
+
+*)date +"%M" : used to get only minutes
+
+*)date +"%S" : used to get only seconds
+
+*)date +"%D" : used to get only date in (mm/dd/yyyy)
+
+*)date +"%F" : used to get only date in (yy-mm-dd)
+
+*)date +"%A" : used to get only day (Mon - Sunday)
+
+*)date +"%B" : used to get only month (Jan - Dec)
+
+*)whoami : used to get current login user
+
+*)who or w : to get the default user
+
+1) sudo yum update ---> to get all the latest updates if there is any.
+i.e sudo - super user do, yum - package management, yum - yellowdog updater modifier
+
+2) top --> to know the Resources utilization( like CPU usage , Memory usage ) of the running processes in our system, 
+from here press "ctrl+c" to go back to the user.
+
+3) history --> you will see the all commands which you have entered till now.
+
+*)kill pid ( process id ) --> to kill the particular process.
+
+
+Service related commands : 
+-----------------------------
+
+*)systemctl status httpd --> to see if it's running or not 
+
+*)systemctl start httpd   --> to start the service , also you should start whenever you restart the service.
+
+*)systemctl enable httpd --> service will be started automatcally whenever the system restart happens.
+
+*)systemctl stop httpd --> to stop the service.
+
+*)systemctl restart httpd --> to restart the service.
+
+##LINUX COMMANDS - DAY 02
+----------------------------
+
+HARDWARE COMMANDS:
+--------------------
+*)cat /proc/cpuinfo : used to get cpu information
+cat ---> used to read a data in a file
+/proc/cpuinfo : path of the file
+so here proc ---> it's a folder which contains processor related data
+cpuinfo ---> this is the file which contains cpu information
+or
+
+*)lscpu : this also used to get the cpu information.
+
+*)cat /proc/meminfo : used to get RAM information
+
+*)free : used to get RAM information in KB.
+
+*)free -m : used to get RAM information in MB.
+
+*)free -g : used to get RAM information in GB.
+
+*)fdisk -l : used to get volume information
+
+*)df -h : It shows disk space usage in your Linux system in a human-readable format (GB, MB)like  total size, used, available, and mount point chupisthundi.
+
+df : disk free
+-h : human-readable 
+------------------------------------------------------------------------------------------------------
+
+FILE COMMANDS:
+---------------
+
+*)ll(long list) : to check the files/folders along with the properties like time and date etc..
+
+*)ls(short list) : to check the list of files/folder
+
+*)diff b/w ll & ls
+  if we use ll (long list), we will get full information about the file and folder.
+  if we use ls (short list), we will get only file and folder names.
+
+*) ls( short list ) --> it will list the files and folders 
+
+*) ls -l --> it will list the files and folders with details( owner name and Group name, size, permissions, Last modified Date & Time ) of files and folders 
+   in an alphabetical order.
+
+*) ls -lr --> it will show you all the files and folders in reverse alphabetical order.
+
+*) ls -lt --> it will show you the latest files on top 
+
+*) ls -ltr --> it will show you the oldest files on top
+
+*)ls folder1 ---> it will list the folders and files which are inside the folder1.
+
+*)ls -a --> It lists all files and directories, including hidden files in the current directory.
+
+
+*)touch filename : used to create a file
+
+*)touch .filename : it will create a hidden file
+
+*)touch folder/file ---> it will craete a file inside the folder.
+
+*)touch aws azure gcp : to create multiple files at a time
+
+*)rm filename : used to remove file with permission
+*)rm file1 file2 file3 - to remove multiple files but it will ask permission ((Y/N) for each file
+
+*)rm -f filename : used to remove file without permission
+                   here -f means forcefully
+                   rm is nothing but remove
+
+*)touch aws{1..5} : it will create five serialized files with name aws.
+  
+*)rm -f file{2..7} : this command will remove files from 2 to 7 forcefully.
+
+*)rm -f * : it will remove all the files that are there in the current directory.
+
+*)mkdir foldername : used to create a directory (folder)
+
+mk = make
+dir = directory
+
+*)mkdir IBM : used to create a folder
+
+*)mkdir tcs infosys infotech : used to create 3 folders at a time
+
+*)mkdir folder1/folder2 ---> it will create folder2 inside folder1.
+
+*)mkdir -p folder1/folder2/folder3 ---> creates folder1, inside it creates folder2, inside it creates folder3. Nested folders ( folder inside folder )
+
+*)mdkir folder{1..5} : used to create 5 series of folders with the same name at a time
+
+*)mkdir .foldername : it will create a hidden folder
+
+*)rmdir foldername : used to remove a folder if it is empty
+
+*)rmdir f1 f2 f3 : used to remove multiple folders if they are empty folders
+
+*)rmdir folder{2..7} : used to delete 2 to 7 folders at a time if they are empty folders
+
+*)rmdir * : it will remove all the folders that are there in the current directory, only if they are empty folders.
+
+*)rm -rf folder1 --> removes the directory and everything inside it recursively.
+
+*)rm -rf fileName folderNmae : it will delete one fileName & one folderName , deletes files also if there are any inside the folder.
+                               ( r - Recursively , it fetch folders,sub-folders & files and then delete)
+
+*)rm -rf * : it will remove all files and folders in the current directory, also the files in the directory without your permission.
+             ( r - Recursively , it fetch folders,sub-folders & files and then delete)
+			 
+
+SYNTAX : cp source-file destination-path (i.e where you want to copy)  
+
+*) cp file1 file2 -->
+
+1)If the destination file exists and is empty, the source file data will be copied into Dest-file but it will ask " Overwrite Y/N " before copying it
+  even the Dest-file is empty.
+  
+2)If the destination file already has data, If you give ' Y ' cp will overwrite it directly.
+3)If the destination file does not exist, cp will create it and then copy the source file data into it.
+
+*)cp file folder --> it will copy the file into a folder.
+
+*)cp file1 file2 folder --> copying multiple files at a time into a folder.
+
+
+SYNTAX: mv source-file destination-path ---> This is like cut and paste i.e. Move files or directories from one location to another
+                                             Rename a file or directory
+
+*)mv file folder --> it will move the file from one location to specified location.
+
+*)mv folder1 folder2  --> it will move the folder from one location to specified location.
+    
+*)mv first.txt NewFile --> mv command is also used to rename the file-name.
+
+*)mv folder1 newfolder --> it rename the folder name.
+
+
+*)history --> it lists all the commands which you have typed in your system.
+
+SYNTAX : man any-linux-command --> it gives us the command purpose information if we specify any Linux command with " man ".
+
+*)man ls --> it gives us the command purpose information if we specify any Linux command with " man ".
+ 
+
+##LINUX COMMANDS - DAY 03
+----------------------------
+##)CAT COMMAND: Using CAT command we can create a file, add the data and view the data..  
+---------------
+
+*)cat > file1 --> if this file is not exist, it will create the file and open that file then you can enter data if you want to type. 
+                  if the file is exist then it will just open the file and then you can enter data if you want to type.
+
+*)ctrl + d --> is used to save the data inside a file.
+
+*)cat file1 --> through this we can read or view the data of a file. 
+
+*)cat source-file >> destination-file ---> It appends source file data to the destination file.
+
+*)cat file1 file2 file3 --> through this we can read the data of multiple files but the data is displayed one after another without file names,
+                            so it can feel mixed and hard to identify which data belongs to which file.
+							
+*)more file1 file2 file3 ---> displays the file name and data, then file2, then file3 page by page and you use Space-Bar
+                              after each file for next page to see the next files data
+	 
+
+*)cat Durga/file1 --> we can read the data of a file which is inside directory by giving the path. 
+
+*)cat -n file1 --> displays the content of the file with line numbers. i.e it will assign numbers to the data.
+
+*)cat >> file1 --> you can append the data to a file.
+
+*)cat file1 >> file2 --> through this way we can copy one file data to other file. It appends.
+
+*)cat file1 file2 >> file3 --> it will append file1 and file2 data to the file3 data.
+
+*)cat file1 | tee file2 file3 file4 --> it will show you the file1 data first and overwrite the data of file2 file3 file4 with file-1 data. 
+                                        ( i.e . " tee " overwrite the data here ) if they are empty files then it will copy the file1 data to all the files.
+
+*)cat file1 | tee -a file2 file3 file4 --> it will copy the file1 data into file2 file3 file4 without overwritten.
+
+*)echo folder{2..7} | xargs -n 1 cp -v folder1/* --> it will copy the folder1 files into multiple directories
+
+*)echo " Hello Good!! " > file1.txt --> it will append the data if it's an existed file with the data
+                                      if we don't have the file then it will create a file and add the data 
+									  
+*)echo " Doing Good " > file1.txt	--> if we adding second time then it will override the data.you will not see the old data because here we are 
+                                        using only single greater than symbol(>)
+
+*)echo " Hello Good!! " >> file1.txt --> if we use double greater than symbol then a new data will append to the existed data in the file.
+								  
+*)cat file1.txt --> it will show all the file data at a time 
+*)more file1.txt --> it will show the data page by page , to see the next page data press "space" it will move to another page on the screen.
+
+ZIP COMMAND:
+------------
+
+*)zip = pack + compress together at a time
+
+*)zip MyZipFile.zip  file1 file2 file3 --> all the files we given will be zipped with the name " MyZipFile.zip "
+                                       i.e you can give any name and can give the files you want to zip
+									   
+*)zip AllFiles.zip  *  --> it will zip all the files available in that particular location.
+
+*)zip -r Sample.zip  Folder1/  --> it will zip all the files along with the directory if we have any sub-folders or files in the given directory.
+
+*)unzip Sample.zip  --> it will unzip the fie.
+
+TAR COMMAND:
+------------
+
+*)tar = first pack + later compress
+
+*)tar -czvf backup.tar.gz file1 file2 folder1 --> it also zip the files 
+
+c → create
+z → gzip (zip / compress)
+v → show files
+f → file name
+backup.tar.gz → output file
+
+*)tar -xzvf MyFile.tar.gz  --> it will unzip the tar-zip file .
+
+DIFFERENCE B/W TAR AND ZIP : tar keeps Linux permissions correctly but zip does not guarantee that.
+
+*)ps aux --> it will list all the processes like system processes + user processes.
+
+a → processes from all users
+u → shows user-friendly, detailed output
+x → includes processes not attached to a terminal
+
+*)ps aux | grep httpd --> to see info aboot partcular process ( here i just gave ' httpd ' for example purpose, you can give any other process)
+
+*)ps aux | grep root --> to see info aboot partcular process ( here i just gave ' root ' for example purpose, you can give any other process)
+
+Disadvantages of CAT command:
+-----------------------------
+1)if there is any mistake in the data in a file we cannot modify that content after saving using CAT command.
+
+2)we cannot create multiple files at a time using CAT command.
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+
+*)cd foldername ---> it will go to the current folder to new folder.
+
+*)cd .. --> one folder back
+
+*)cd ../.. ---> two folders back.
+
+*)cd ../../.. ---> three folders back.
+
+*)head filename ---> it will print you the first 10 lines.
+
+*)head -n 16 file1 --> it will show you the first 16 lines data
+
+*)tail filename ---> it will print you the last 10 lines.
+
+*)tail -n 16 file1 --> it will show you the last 16 lines data.
+
+##) SED ( Stream editor ) :
+---------------------------
+
+*)sed (Stream Editor) is used to read a file line by line and view, filter and modify text without opening the file, 
+mainly used in automation and scripting.
+
+*)sed -n "5,15p" aws ---> it will print between 5 to 15 lines data of aws file without opening the file.
+
+*) sed -n '/error/p' logfile.txt --> This command searches for the word "error" in the file and displays all lines that contain it, 
+                                     without opening or modifying the file.
+									 
+*) sed -i 's/old sentence/new sentence/' file.txt - it will replace the whole line without opening a file. 
+                                                    i - permanently, s-substitute.
+
+*) sed -i 's/old-word/new-word/' file.txt - it will replace the first occurence in each line without opening a file.
+
+*)sed -i 's/old/new/g' file.txt → it will replace all the occurrences in each line permanently
+
+*)sed '1i Hello SED' <file-name> -> insert before first line
+
+*)sed '1a Hello' -> insert after first line
+
+*)sed '2d' -> delete 2nd line
+
+*)sed '/Hello/d' -> delete the lines where there is Hello
+
+*)sed '3c Hello change' -> replace 3rd line
+
+*)sed '/error/ c NO-ERROR' -> change the line based on pattern
+
+
+
+*)wc filename ---> used to get no.of chracters, no.of words, no.of lines in a file.
+
+wc -l filename ---> no.of lines in a file.
+
+wc -c filename  ---> no.of chracters
+
+wc -w filename ---> no.of words.
+
+## root/folder1/folder2/folder3/folder4 ---> currently we are at folder4,If we want to go to the root-user --> use cd and enter it will take you to the root user.
+                                             if you want to go back to the last working directory where you come from,
+					                         then use "cd -" then it will take you to the oldfolder where you come from.
+
+LINUX COMMANDS - DAY 04
+------------------------
+
+##)VI EDITOR:
+-------------
+    
+'VI EDITOR' is a text editor only keyboard will work but mouse will not work.
+	
+Difference between 'VI Editor' & 'VIM Editor':
+----------------------------------------------
+
+*)Using VI EDITOR we can create single file and multiple files.
+  
+VI EDITOR: If the content is in color, it will not show the content in color, it will show only in black and white.If the
+content is in black and white then it will show in black and white only. By-default it will show in black and whit
+VIM EDITOR: If the content is in color, it will show the content in color,If the content is in black and white then 
+it will show the content in black and white.
+
+	VI Editor contains 3 modes are 1) ESC mode. 2) Insert mode. 3) Colon/Command Mode.
+	
+	*)When you enter into "VI EDITOR", you look at the bootom of the file. if you see 'filename (or) blank' at bottom of the file that means you are in 
+	" ESC Mode ".
+
+	*)If you see 'INSERT' at the bottom of the file that means you are at the 'INSERT mode'.
+	
+	*)If you see :(colon) at bootom of the file that means you are at the  Colon/Command mode.
+	
+	press i (or) a --> to go to 'INSERT' mode
+ 
+	when you are in 'INSERT' mode, to go to ESC mode press 'ESC' 
+	
+	press :(colon) --> to go to 'Colon/Command' mode
+	
+	
+1)ESC mode:
+------------
+
+In ESC mode we can do copy,paste,delete,undo,redo,searching word.
+	
+*)yy --> to copy the data line.
+	
+*)nyy --> we can copy number of lines of data. 
+  eg: 5yy --> it will copy 5 lines of data from the position of cursor.
+	
+*)p --> to paste the copied data.
+	
+*)dd --> to delete the data	line
+
+*)4dd --> we can delete multiple lines of data.
+  eg:4dd --> it will delete 4 lines of data from the position of cursor.
+	
+*)u --> to undo
+
+*)ctrl + r --> to redo
+	
+*)gg --> to go to first line.
+
+*)G --> to go to last line.
+	
+*)9gg (or) 9G --> to go to particular line 
+	
+*)/word  & enter --> to search a word,intially it will go to the first occurrence word. if the word is at multiple places press 'n' to go next word 
+	
+*)$ : used to go the end of the line
+	
+*)0 ( zero ) : used to go to the starting of the line
+
+*)O : used to create new line (above)
+
+*)o : used to create new line (below)
+
+	
+2)INSERT mode:
+---------------
+
+we will do modifications(editing) in the file in 'INSERT' mode.
+
+3)Colon/Command Mode:
+---------------------
+
+In  Colon/Command mode we can set the numbers & we can unset the numbers, we can replace the word and we can save and quit.  	
+
+*): se nu --> it sets the numbers to the each line in a file 
+
+*): se nonu --> to remove the numbers
+
+*) :noh -> no highlight
+
+*):<line-number>d -> deletes that line
+
+*):<line-number> -> cursor will go that line
+
+*):/<word-to-search> -> search from top
+
+*):?<word-to-search> -> search from bottom
+
+*):1,$s/thursday/friday & enter --> to replace the word. i.e : 1 --> from first line, $ --> till last line , s --> to set, /old-word/new-word  
+    
+   eg:1 --> :3,$s/aws/devops & enter --> replace the word from 3rd line till the last line.
+
+   eg:2 --> :4,12s/vy/by & enter --> replace the word from 4th line to till the 12th line.
+
+*):28s/root/ROOT -> line number 28, replace root with ROOT. It replaces the first occurence in that line
+
+*):29s/root/ROOT/g -> g for global. means 29th line all root occurences should be replaced with ROOT
+	
+*):w --> to save 
+	
+*):q --> to quit
+	
+*):wq --> to save and quit.
+
+*):q! --> to quit forcefully without saving.
+
+*):wq! --> to save and quit forcefully.
+
+##)Difference between "kill" and "stop"
+----------------------------------------
+
+kill                                                                  stop
+
+1) it stops the container immediately.                                1) it stops the container after couple of seconds.
+
+
+
+
+
+SEARCH COMMANDS:
+-----------------
+
+GREP : Global Regular Expression Print
+This command is used to search for a word in a file
+
+SYNTAX: grep -flat "word" filename
+
+grep "word" filename : used to search a word in a file
+
+grep -n "word" filename : it tells us in which lines the searching word is available
+
+grep -i "word" filename: used to search a word with case-sensitive
+
+grep -c "word" filename: used to count the word along with the case-sensitive in a file.
+
+grep -ci "word" filename: used to count the word along with the case-sensitive in a file.
+
+grep -n "word" filename : used to print the words along with the line numbers
+
+grep -e "word1" -e "word2" -e "word3" filename : used to find multiple words in a single file
+
+grep -n -e "word1" -e "word2" -e "word3" filename : used to find multiple words in a single file
+
+grep "word" file1 file2 file3 : used to search a single word in multiple files
+
+cmp file1 file2 : it will compare 2 files data same or different.
+
+diff file1 file2: it will display the data which is different in 2 files.
+
+
+------------------------------------------------------------------------------------------------------
+
+Eg: -rw-r--r-- 1 root root 0 Apr 7 14:16 file1
+----
+
+*)TYPE OF THE FILE:
+  hyphen (-) : regular file (this contains normal text data)
+  d : directory file (folder)
+  c : character file
+  b : blocked file
+
+*)PERMISSIONS:
+  rw-r--r--
+  r : read
+  w : write
+  x : execute
+  hyphen (-) : nothing
+*)ACL (Access Control List)
+  file -----> 1 - it's a default value you will see when you create a file.
+  folder ---> 2 - - it's a default value you will see when you create a folder.
+
+*)OWNERS : root root
+  NO OF CHARACTERS IN A FILE : 0
+  FILE CREATION DETAILS : Apr 7 14:16
+  FILE NAME : file1
+------------------------------------------------------------------------------------------------------
+
+LINUX - DAY 05
+---------------
+
+USER COMMANDS:
+---------------
+
+*) An user in Linux must have 1 primary group and atleast 1 secondary group ( i.e. you can have N number of secondary groups )
+
+
+*)useradd username : used to add user in linux machine
+
+*)when you create an user in Linux, by default it will create one group with same username
+
+*)cat /etc/passwd : used to get list of users in linux
+
+*)cat /etc/group --> it will show you the list of groups.
+
+*)su - username : used to login into the user  
+
+*)passwd username : used to set a password to user
+
+##***)usermod -aG wheel Sailendra --> user will get the SUDO permissions if we add him to the ' wheel' group , intially user will not have 
+                                      SUDO permissions , so that using sudo command infront of any command user can perform the things.
+
+*)id --> you will just get the current user information
+
+*)id username : used to get UID, GID & Groups of the user
+
+*)userdel username : used to delete the user but if we delete user using this command, user will gets deleted but the directory will
+                     not gets deleted which got created in /home directory with the username, to overcome this we are using -r
+					 
+*)userdel -r username : deletes the user along with the user directory which was created in home directory.
+
+*)useradd -e yyyy-mm-dd username : creating user along with the expiry date
+
+*)groupadd groupname : used to create a group in linux machine.
+
+*)groupdel groupname : used to delete the group,if we created a separate group. By default one group gets created with the same user name 
+                       when we create an user. If you delete the user then the defalut group also gets deleted.
+					   
+*)usermod -g <group-name> <user-name> --> To add primary group to the user
+*)usermod -aG <group-name> <user-name> --> To add secondary group to the user. we create secondary group for temporary access pupose,
+                                           once work done we will remove user from the secondary group.
+
+
+
+*)frontlinesmedia:x:1001:1001::/home/frontlinesmedia:/bin/bash
+
+frontlinesmedia : user name
+
+x : it stores the password if we set but it is encrypted.
+
+1001 : UserID
+
+1001 : GroupID
+
+/home/frontlinesmedia : path, one folder will gets created in home directory
+
+/bin/bash : Shell, it stores the executable commands(performed commands)
+
+
+
+PERMISSION COMMANDS:
+--------------------
+In real-time we do execute scripts.
+
+Permissions is used to to provide executable permissions to the files and folders.
+
+default permissions : rw-r--r--
+
+rw-r--r-- = 644
+
+r : read : 4
+w : write : 2
+x : execute : 1
+hyphen(-) : nothing : 0
+
+first 3 (rw-) are USER PERMISSIONS : 4 + 2 + 0 = 6
+
+second 3(r--) are GROUP PERMISSIONS: r--
+4 + 0 + 0 = 4
+
+last 3 (r--) are OTHERS PERMISSIONS: r--
+4 + 0 + 0 = 4
+-------------------------------------------------------------------------------------------------------
+EX:
+rwx = 7
+r-x = 5
+--x = 1
+--- = 0
+-w- = 2
+rw- = 6
+--------------------------------------------------------------------------------------------------------------------
+CHANGING PERMISSIONS TO THE FILE:
+
+*)chmod --> it is a command used to change permission of a file or folder
+
+**) chmod -> either the owner of the file or root can use this command
+
+*)chmod 777 filename : used to provide full permissions to a file ( users,group,others permissions i.e rwxrwxrwx )
+
+*)chmod 777 foldername/file1 file2 : used to provide full permissions to particular files inside a folder .
+
+*)chmod 666 filename : used to provide only read&write permissions to a file.
+
+*)chmod 754 filename : used to provide permissions to a file. ( 7- for 'user' will have full permissions, 5- for 'group' will have only 
+                       read & execute, 4- for others will have only read permissions)
+
+*)chmod +x filename : used to add executable permissions to existing permissions to a file.
+
+*)chmod -R 777 foldername : ( 'R' is recursive) used to change the permissions of a folder including files that are present inside the folder
+
+CHANGING OWNERS TO THE FILE:
+------------------------------
+
+**)chown --> not even owner ( user ) can change the ownership, only root user can use " chown " command.
+
+*)chown username filename : used to change owner(user) of the file
+
+*)chgrp groupname filename : used to change group of the file
+
+*)chown username:groupname filename : both user and group will change at a time.
+
+*)chown -R sailendra:reddy cloud-computing/ --> both user and group will change at a time for folder and files which are in same folder 
+
+LINUX - DAY 06 :
+-----------------
+*)locate  filename or foldername --> it is used to find the file in linux system overall on database system.
+                   before using this  "locate command" make sure you need to update the DB. use command "updatedb" or " sudo updatedb" to update the file in DB.
+                   but you cannot locate a file in other user, you can locate a file in same user whereever you created a file or folder.
+
+*)locate -i filename or foldername --> you can find the file or folder  even the file or folder is case-sensitive. 
+
+*)locate *.txt --> it will list all text files which are in our linux system.
+
+##) Difference between 'locate' and 'find' command:
+
+           locate                                                                              find
+	  
+	  1)when we use 'locate command' it will                                        1)when we use 'find command' you should give path to 
+	    search a file or folder in overall linux system.                              search a file or folder in linux system
+	  
+	  
+
+*)find file or folder --> this is also used to search a file based on the path which we specify.
+
+*)find . -type d --> it will list the all directories which are in current directory( . means current directory)
+
+eg : find devops/ -type d --> it will display the all directories which are inside of "devops folder"
+
+*)find . -type f --> it will list the all the files which are in current directory( . means current directory.)
+
+*)find devops/ -type f --> it will display all the files which are inside of "devops folder"
+
+*)find . -user username --> it will list the all files whichever files  are under particular user. 
+
+*)find . -group groupname--> it will list the all files whichever files  are under particular group.
+
+*)find -mtime 10 --> it will dispaly the all files or folders which are created 10 days back.
+
+*)find -mmin -60 --> it willdisplay the all files which are created within 60 mins .
+
+*)vim -o file1 file2 file3 --> we can compare the files using 'vim command'
+
+*)vim -O file1 file2 --> we can compare files side by side using 'vim command' 
+----------------------------------------------------------------------------------
+
+##) NETWORK AND ARCHIVE COMMANDS are PENDING.
+
+----------------------------------------------------------------------------------
+
+*)yum install tree -y --> it will install tree package.
+
+*)tree --> it will list the directories and files in graphical representaion format.
+
+-----------------------------------------------------------------------------------
+
+LINUX FILE DIRECTORY SYSTEM :
+------------------------------
+*)cd / --> it will display the default folders which are in linux system.
+
+*)/bin --> this directory contains executable files (exexutable files means it has x permissions which are in green color)
+
+*)/dev --> which contains device details, which represent hardware devices in the system.
+
+*)/home --> home directory storage for user files, each user has a sub-directory in /home.
+
+*)lib --> contains shared library files that are required to boot the system.
+
+*)etc --> contains configuration files for the system and applications.
+
+*)root --> it is the home directory for root user.
+
+*)temp --> temporary folder. used by the operating system and many programs to store the temporary files.
+
+*)usr--> contains user applications and files, such as libraries, documentaion and executable files.
+
+IMP**)var --> variable data files are stored here.this can include things like logs files, MYSQL and other database files.
+
+CONVERTING .PEM FILE TO PUTTY FILE:
+-----------------------------------
+
+## create instance with .PEM file-->open puttygen in local machine-->click-on Load and select your .PEM file--> here, 
+we can set password for instance if we want or-else-->click on save private key. 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+INTERVIEW EXPECTED SCENARIO :
+------------------------------
+
+****1)How do you change the default port number to another port number ?
+
+If you want to change the port number for your service , the below one is just the example for your understanding but the process is same.
+
+for Example, i am installing httpd(apache webserver ) yum install httpd -y 
+
+httpd default port number is : 80
+
+cd /etc/httpd/ ( httpd folder will be created inside /etc folder when you install httpd) -->  
+--> ls --> cd /conf/ --> cd httpd.conf --> vim httpd.conf --> go to 47th line and change the port number to 8080 and save it --> her you must 
+restart the service first because if we do any modifications in the ' conf ' folder we must restart the service and then
+just try to access that webpage using ' instance public-ip address: 8080 ', it will not show the result because you have 
+changed the port number in ' conf ' folder, we need to change the port number in ' Security Group ' in inbound rules(incoming traffic)
+
+**select instance-->security-->security-group-->edit inbound-rules --> select "custom TCP" and "port-number(eg:8080)" --> select all-traffic .
+
+Now,try to access it on browser with ' instance public-ip address: 8080 ' , you will access now.
+
+
+***** - 2) you have an EC2 istance, you made it as a webserver and trying to access that webpage but somehow you are not able to access it ,
+           how do you trobleshoot it?
+		   
+First we will check the port number in the Security Group to see if the port number is opened or not and then will check status of the service to see
+if it's running or not and then we will check the ' conf ' folder to see on which port number our service service is running.
+
+***IMP)How to connect to the EC2 instance with the users we created in Linux ?
+
+
+First you should enable the Paasword Authentication in /etc/sssh 
+
+cd /etc/sssh --> give ' ls ' --> open sshd_config ( vim sshd_config ) --> go to the ' Paasword Authentication ' line and give ' yes ' and save it -->
+Restart the service with this command ' systemctl restart sshd ' 
+NOTE: you should restart the service whenever you make the changes in ' config ' file
+Now, try to connect to the EC2 instance through command prompt with the user credentials ( username and password ) , you will connect now.
+
+*)lsblk --> you will get volume information of server
+
+*)df -h --> you will get all the volumes information of your instance(server)
+
+
+
+##) telenet command - research on your own.
+
+
+
+useradd
+su Sailendra 
+passwd
+id
+groups
+usermod -aG wheel Sailendra
