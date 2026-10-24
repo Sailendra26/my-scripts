@@ -11,7 +11,13 @@ SSH - Secure Shell
 Client-Server Architecture :
 ----------------------------
 
-*)Whoever provide the service they are called as servers
+The client sends a request for service and the server process that request and provde required response back to the client.
+
+*)Whoever sends the request is called as 'Client'
+*)Whoever provide the service they are called as 'Server'
+
+facebook.com - server 
+Browser(chrome, edge etc..) - client
 
 Example: 
 --------
@@ -19,10 +25,8 @@ Example:
 Lawyers - Server
 Public - Client
 
-facebook.com - server 
-Browser(chrome, edge etc..) - client
 
-##)Ways companies connect to Linux machines today
+##)Ways to connect to Linux machines today:
 
 1) AWS SSM Session Manager (very common now) because No SSH, No port 22, No keys
 
@@ -40,7 +44,7 @@ Keys rotated periodically
 we need client software - Putty, Mobaxterm, Gitbash, Windows-cmd etc..
 
 Gitbash is one of the SSH clients and a mini linux in windows.
-usually when we open Gitbash, it will open in user directory.In Gitbash, you can run basic linux commands, not completely.
+usually when we open Gitbash, it will open in user directory.In Gitbash, you can run basic linux commands, not all the commands.
 
 Example: C:\users\<your-lap-username>
 
@@ -54,6 +58,7 @@ Public key → stored on EC2 (authorized_keys). this will be stored in the ec2-u
 
 *)SSH inbound rule allows incoming connections on port 22 so that users can remotely log in to the EC2 instance.
 
+
 Generate Public key and Private key :
 ---------------------------------------
 
@@ -64,9 +69,9 @@ Syntax :
 
 Open gitbash --> go to the directory in which you want to generate the keys and then give below command
 
-Eg: go to cd /E/Devops/
+Eg: 1)go to cd /E/Devops/
 
-ssh-keygen -f daws-86s --> when you execute this command, a public key and private key will be generated and available in the directory 
+2)ssh-keygen -f daws-86s --> when you execute this command, a public key and private key will be generated and available in the directory 
                              in which directory you executed this command in Gitbash.
 							 
 Import public key instead of creating a new key-pair in AWS at the time of instance creation:
@@ -93,7 +98,11 @@ Compare to SSH (to fix it in your mind) :
 SSH - Login : 
 -------------
 
-*)SSH is used to connect to a Linux server from our laptop using tools like GiBash, MobaXterm and Putty etc.
+*) SSH (Secure Shell):
+
+SSH is a network protocol used to securely connect to and manage a remote server over a network
+(or)
+SSH is used to securely connect to a remote Linux server.
 
 How it works:
 
@@ -136,12 +145,12 @@ IMP**) Important clarity:
 
 
 
-Connect to the Linux instance through Gitbash:
+#)Connect to the Linux instance through Gitbash:
 -----------------------------------------------
 
 ec2-user - this is default user you see when you launch a Linux-instance.
 
-*)While you are connecting to Linux instance through Gitbash,If you are giving private-key-file name( Relative path ) directly 
+1)While you are connecting to Linux instance through Gitbash,If you are giving private-key-file name( Relative path ) directly 
 then make sure that you must be there in the directory where your private-key-file is present,so then only you can connect.
 
 
@@ -152,7 +161,7 @@ Syntax-1: ssh -i <private-key-file-name> ec2-user@public-ip of instance
 
 *)Relative Path - daws-86s/ 
 
-*)If you are giving complete path( Absolute Path ) of private-key-file while you are connecting to Linux instance through Gitbash then you can be in any 
+2)If you are giving complete path( Absolute Path ) of private-key-file while you are connecting to Linux instance through Gitbash then you can be in any 
 directory,still you can connect.
 
 
@@ -198,34 +207,36 @@ Session - 03:
 
 *) grep -c <word> <file-name>  --> it will show you count of the word that how many times the word is repeating in a file 
 
-*) wget <url> --> helps to download a file or image or etc.. from internet
 
-*) curl <url> --> it will dispaly the information of the URL on the screen itself without downloading.
+------------------------------------------------------------------------------------------------------------------------------------------
 
-IMP**) 
--------
+##)CUT:
+--------
 
-*)CUT:
+*)cut is used to extract specific fields(columns) or characters from a line of text or file.
 
-The cut command is used to extract sections of text from each line in a file or input.
+Syntaxes:
+
+cut -c<character_range> <filename> --> Extracts specified character positions.
+cut -d'<delimiter>' -f<field_number> <filename> --> Extracts specified fields using a delimiter.
+
 
 You can extract by:
 
 1)Bytes/Characters
-
 2)Fields (columns)
 
 Main options:
 --------------
 
 -c → select characters
-
 -f → select fields(columns) with delimiter
-
 -d → specify delimiter ( Seperator )
 
 1. Extract characters by "Range":
 --------------------------------
+
+Range means 2-6,4-9 , 5-10
 
 If " file.txt " has below content
 
@@ -235,23 +246,20 @@ linux
 
 *)cut -c1-3 file.txt ( file name )
 
-Explanation:
-------------
 
 -c = characters
-
-1-3 = take characters from position 1 to 3 (inclusive).
-
+1-3 = takes characters from position 1 to 3 (inclusive).
 file.txt = file name
 
 Output:
 -------
+It prints first 3 characters from each line.
 
 hel
 wor
 lin
 
-it prints first 3 characters from each line.
+
 
 2. Extract specific characters:
 --------------------------------
@@ -262,7 +270,12 @@ hello
 world
 linux
 
-*)cut -c2,4 file.txt( file name )
+*)cut -c2,4 file.txt
+
+-c = characters
+2,4 = takes 2 and 4 characters only
+file.txt( file name )
+
 
 Output:
 -------
@@ -270,36 +283,31 @@ el
 ol
 iu
 
-3. Extract fields with delimiter ( Seperator ):
-------------------------------------------------
 
-Delimiter ( Seperator ) is nothing but which seperates the words or sentences.
+3. Extract fields(columns) with delimiter ( Seperator ):
+---------------------------------------------------------
 
-Here delimiter ( Seperator ) is " comma( , ) " 
+#)Example-1:
+
+
+*)cut -d, -f1 data.csv ( file name )
+
+Delimiter ( Seperator ) is nothing but which seperates the words or sentences. Here delimiter  is " comma( , ) " 
 
 name,age,city
 ravi,25,hyd
 sita,30,delhi
 
-*)cut -d, -f1 data.csv ( file name )
-
-#) Explanation:
----------------
-
-
-Step 1: -d,
------------
-
 -d means delimiter( separator ).
+-f means field(column)
+1(one) - column number
 
-Here we tell cut that the delimiter (separator) between fields is a comma (,).
+Here we tell cut, that the delimiter (separator) between fields is a comma (,).
 
 So the line is split into:
 
 Field 1 → name
-
 Field 2 → age
-
 Field 3 → city
 
 Output:
@@ -311,20 +319,23 @@ name
 ravi
 sita
 
+
+#)Example-2:
+
 *) cut -d, -f2 data.csv ( file name )
 
 
 Output:
 -------
 
-Extracted second field.
+Extracted second column.
 
 age
 25
 30
 
 
-4. Extract Multiple fields:
+4. Extract Specific fields:
 ---------------------------
 
 Suppose your data.csv file has this content:
@@ -335,64 +346,391 @@ sita,30,delhi
 
 *)cut -d, -f1,3 data.csv
 
-#)Explanation:
----------------
-
-Step 1: -d,
------------
-
--d means delimiter( separator ).
-
-Here we tell cut that the delimiter (separator) between fields is a comma (,).
-
-So the line is split into:
-
-Field 1 → name
-
-Field 2 → age
-
-Field 3 → city
-
-Step 2: -f1,3
---------------
-
--f means fields (columns).
+Here we tell cut, that the delimiter (separator) between fields is a comma (,).
 
 -f1,3 means: select field 1 and field 3.
-
 That ignores field 2 (age).
 
-Output:
---------
+-d means delimiter( separator ).
+-f means field(column)
+1(one) & 3 - column numbers
 
-*)Only the 1st and 3rd columns are shown, separated by the delimiter (,).
+
+Output:
+
+Only the 1st and 3rd columns are shown, separated by the delimiter (,).
 
 name,city
 ravi,hyd
 sita,delhi
+
+
+5. Extract a range of fields:
+-----------------------------
+
+#)Example-1:
+
+Range means 1-2, 4-6, 3-9 like that 
+
+Suppose your data.csv file has this content:
+
+name,age,city,roll-no
+ravi,25,hyd,
+sita,30,delhi,
+
+
+*)cut -d, -f1-2 data.csv --> Extracts columns 1 and 2.
+
+-d means delimiter( separator ).
+-f means field(column)
+1(one) & 2 - column numbers
+
+
+Output:
+
+name,age
+ravi,25,
+sita,30
+
+
+##)Example-2: Real Devops scenario, processing a deployment report generated by a CI/CD pipeline  ###
+
+Suppose deployments.csv contains:
+
+BuildID,Application,Environment,Status
+101,nginx,Production,Success
+102,catalogue,Testing,Failed
+
+*)cut -d, -f2- deployments.csv --> Extracts column 2 to till last column
+
+-d means delimiter( separator ).
+-f means field(column)
+2- means column 2 to till last column.
+
+Output:
+
+Application,Environment,Status
+nginx,Production,Success
+catalogue,Testing,Failed
+
 
 So basically:
 -------------
 
 -d, = split using comma
 
--f1,3 = take only field 1 and field 3
+-f2- = take only field 2 to till last column except clumn 1.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+#)awk command:
+---------------
+
+*)AWK is a text-processing programming language used as a command line toool to read text line by line, filter lines based on patterns or conditions, 
+  extract fields, and perform calculations. 
+*)The reason why we call it as a programming language means because it supports conditions, variables, loops, arrays and calculations.
+  
+Syntax:
+
+awk 'pattern { action }' filename
+
+pattern — decides which lines to select.
+action — decides what to do with those lines.
+filename — the file to process.
+
+My recommendation concepts is this order:
+-----------------------------------------
+1. $0, $1, $2, print
+2. Patterns and conditions
+3. NR, NF
+4. Arithmetic and comparisons
+5. BEGIN, END
+6. Counting and arrays
+
+
+
+
+1.) $0, $1, $2, print
+---------------------
+
+Definition:
+$0    -> Stores the entire current line AWK is processing.
+$1    -> Stores the first field in the current line.
+$2    -> Stores the second field in the current line.
+print -> Prints the specified data.
+
+
+Sample file: deployments.txt
+
+nginx SUCCESS
+catalogue FAILED
+mongodb SUCCESS
+
+
+#)Example-1: Print the entire line
+
+Command:
+awk '{print $0}' deployments.txt
+
+Output:
+nginx SUCCESS
+catalogue FAILED
+mongodb SUCCESS
+
+Explanation:
+$0 prints the entire current line.
+
+
+
+#)Example-2: Print the first field
+
+Command:
+awk '{print $1}' deployments.txt
+
+Output:
+nginx
+catalogue
+mongodb
+
+Explanation:
+$1 prints the first field from each line.
+
+
+
+#)Example-3: Print the second field
+
+Command:
+awk '{print $2}' deployments.txt
+
+Output:
+SUCCESS
+FAILED
+SUCCESS
+
+Explanation:
+$2 prints the second field from each line.
+
+
+
+#)Example-4: Print the first and second fields
+
+Command:
+awk '{print $1, $2}' deployments.txt
+
+Output:
+nginx SUCCESS
+catalogue FAILED
+mongodb SUCCESS
+
+Explanation:
+$1 prints the first field.
+$2 prints the second field.
+The comma separates them with a space.
+
+
+
+2.) Patterns and Conditions
+----------------------------
+
+Definition:
+Pattern   -> Matches lines containing specified text.
+Condition -> Checks whether a requirement is true.
+{print}   -> Prints the entire matching line.
+
+
+#)Example-1: Print lines containing FAILED
+
+Command:
+awk '/FAILED/ {print}' deployments.txt
+
+Output:
+catalogue FAILED
+
+Explanation:
+/FAILED/ matches lines containing the word FAILED.
+{print} prints only the matching lines.
+
+
+
+#)Example-2: Print lines where the second field is FAILED
+
+Command:
+awk '$2 == "FAILED" {print}' deployments.txt
+
+Output:
+catalogue FAILED
+
+Explanation:
+$2 == "FAILED" checks whether the second field is FAILED.
+If the condition is true, {print} prints the entire line.
+
+Note:
+== means "is equal to".
+
+
+Use Case:
+Identify failed application deployments so a DevOps
+engineer can troubleshoot them.
+
+
+
+#)Example-3: Find HTTP 500 errors in an application log
+
+File: access.log
+
+10.0.0.5 GET /health 200
+10.0.0.8 GET /login 500
+10.0.0.9 GET /home 200
+10.0.0.7 GET /api 500
+
+Command:
+
+awk '$4 == 500 {print}' access.log
+
+Output:
+10.0.0.8 GET /login 500
+10.0.0.7 GET /api 500
+
+Explanation:
+
+$4 == 500 → Pattern: selects lines where the fourth field is 500.
+{print}   → Action: displays the matching lines.
+access.log → Input file.
+
+
+3.) NR and NF
+--------------
+
+Definition:
+NR -> Stores the number of the current line AWK is processing.
+NF -> Stores the number of fields in the current line AWK is processing.
+$0    -> Stores the entire current line AWK is processing.
+
+
+
+#)Example-1: Print line numbers along with each line
+
+Command:
+awk '{print NR, $0}' deployments.txt
+
+Input:
+nginx SUCCESS
+catalogue FAILED
+mongodb SUCCESS
+
+Output:
+1 nginx SUCCESS
+2 catalogue FAILED
+3 mongodb SUCCESS
+
+Explanation:
+NR gives the current line number.
+$0 gives the entire current line.
+
+
+#)Example-2: Print the number of fields along with each line
+
+Command:
+awk '{print NF, $0}' deployments.txt
+
+Input:
+nginx SUCCESS
+catalogue FAILED
+mongodb SUCCESS
+
+Output:
+2 nginx SUCCESS
+2 catalogue FAILED
+2 mongodb SUCCESS
+
+Explanation:
+Each line has 2 fields, so NF gives 2 for every line.
+$0 gives the entire current line.
+
+
+
+#)Example-4:
+
+Real task: Supoose Your team lead asks, “How many deployments failed?”
+----------
+
+File deployments.txt contains below:
+
+nginx SUCCESS
+catalogue FAILED
+mongodb FAILED
+
+
+Command:
+
+awk '$2 == "FAILED" {count++} END {print count+0}' deployments.txt
+
+Output:
+2
+
+
+Explanation:
+
+awk → Runs the AWK text-processing tool.
+$2 == "FAILED" → Checks whether the second field of each line is FAILED.
+{count++} → Increments count by 1 whenever the condition is true; AWK initializes an unassigned variable to zero in this numeric context.
+END → Executes the following action once after all input lines have been processed.
+{print count+0} → Prints the final count; +0 ensures zero is printed if no lines match.
+deployments.txt → The input file AWK processes.
+
+
+
+#)Example-5:
+
+Real-world DevOps example — checking disk usage:
+--------------------------------------------------
+
+
+Use case:
+Identify filesystems with disk usage at or above 80% when investigating disk-space issues.
+
+
+Command:
+
+df -h | awk 'NR==1 || $5+0 >= 80 {print}'
+
+Explanation:
+
+df -h → Displays filesystem disk usage in human-readable format.
+| → Passes the output of df -h to AWK.
+awk → Runs the AWK text-processing tool.
+NR==1 → Selects the first line (header).
+|| → Means OR; either condition can be true.
+$5+0 >= 80 → Converts the fifth field (e.g., 85%) to a number and checks whether it is 80 or higher.
+{print} → Displays the entire line if the condition is true.
+NR==1 || $5+0 >= 80 → Keeps the header OR any line where disk usage is 80% or higher.
+
+
+Note:
+The +0 makes a value like 85% numeric (85) for comparison.
+
+
+
 
 
 Session - 05:
 --------------
 
-Package Management:
+#)Package Management:
 -------------------
 
 Package management is the process of installing, updating, removing, and managing software packages in a Linux system.
 It ensures that the required software and its dependencies are properly maintained for the system to run applications smoothly
+
+Package = software + its files + dependencies.
 
 
 Package:
 ---------
 
 A package is a software program in Linux.
+
 Example: Apache (httpd), Nginx, Python, Git, Docker — anni packages.
 
 Package = software + its files + dependencies.
@@ -414,20 +752,23 @@ Meaning: Completely removes Apache from the system.
 
 4.) dnf list installed httpd
 
-Meaning: Shows only installed version of httpd.If it is not installed → it won’t show anything.
+Meaning: Shows only installed version of httpd package. If it is not installed → it won’t show anything.
 
 5.) dnf list available httpd 
 
-Meaning: shows both installed and available versions of the httpd package
+Meaning: Shows httpd package versions available in enabled repositories but not installed.
 
 6.) dnf list httpd
 
-Meaning: shows both installed and available versions of the httpd package
+Meaning: Shows the installed httpd package and any matching versions available in enabled repositories.
+
+installed → 2.4.57
+available → 2.4.58
 
 7.) dnf info httpd
 
-Meaning: gives complete details about the httpd package, including version, repository, size, summary, and description.
-It is used to verify package details before installation or upgrade in real-time environments.
+Meaning: It is used to verify package details before installation or upgrade in real-time environments.
+gives complete details about the httpd package, including version, repository, size, summary, and description.
 
 8.) Syntax: dnf search <keyword>
 
@@ -441,12 +782,17 @@ Ans) Shows dependencies of a package.
 
 Example: dnf deplist httpd
 
-Service Management:
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#)Service Management:
 --------------------
 
-systemctl is the command used to manage the running state of services.
+systemctl is the command used to manage system services and check their status.
 
-After installing software, it must run as a service in background.
+Some software, such as Apache and Nginx, runs as a background service and can be managed using systemctl.
 
 Example:
 httpd → Apache service
@@ -456,12 +802,11 @@ jenkins → Jenkins service
 
 1.) systemctl status httpd
 
-Checks the Service status - it will check whether the service is running or failed.
+Checks the Service status - it will check whether the service is running,stopped, or failed.
 
 Real-time use:
 
-Application team says:
-"Website down!"
+Application team says "Website down!"
 
 First thing a DevOps engineer checks is service status.
 
@@ -482,11 +827,9 @@ Eg: “Apache down”
 
 3.) systemctl stop httpd - Used to stop the Service
 
-Real-time use:
+Real-time use: While deploying new version, you stop service before replacing files.
 
-While deploying new version, you stop service before replacing files.
-
-4.) systemctl restart httpd - Used to restart the Service
+4.) systemctl restart httpd --> Stops the service and starts it again.
 
 Real-time use:
 
@@ -494,20 +837,19 @@ Real-time use:
 🔹 After installing module/plugin
 🔹 Most common fix in production
 
-Developer says:
-"I modified httpd.conf… restart once."
+Developer says: "I modified httpd.conf… restart once."
 
 5.) systemctl enable httpd
 
-Service will Auto-start after Server reboot.
+--> Configures the service to start automatically when the server boots happpens.
 
 Example : Web server || Docker || Monitoring agents
 
 6.) systemctl disable httpd
 
-Used when you don’t want service to auto-start on reboot.
+--> Configures the service not to start automatically when the server boots happpens.
 
-7.) journalctl -u httpd - To view Logs
+7.) journalctl -u httpd --> To view Logs
 
 Real-time use: When service keeps failing, logs are here.
 
@@ -516,9 +858,9 @@ Syntax error, permission issue, port conflict, etc.
 
 8.) systemctl reload httpd
 
-Ans) It tells Apache to re-read the configuration file without stopping the service.
+Ans) It tells Apache(httpd) to Apply the configuration changes without stopping the service..
      It reloads the configuration without stopping the service, ensuring zero downtime.
-The service continues running → users will not feel any downtime.
+The service continues running → users will not feel any interruption.
 
 Difference between Reload Vs Restart:
 --------------------------------------
@@ -527,154 +869,193 @@ Difference between Reload Vs Restart:
 
 • Stops the service
 • Starts it again
-→ Small downtime
+→ Small interruption or downtime
 
 🔹 Reload (reload)
 
 • Does NOT stop the service
-• Just re-reads the configuration
+• Just applies the configuration changes
 → Zero downtime
 
 That's the main difference.
 
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 #)Session - 06:
 ---------------
+ 
 
-*)Process Management : 
+# PROCESS MANAGEMENT
 -------------------------
 
-A process is a running program in Linux.
+A process is a running program in a system.
 
 Example:
 nginx, java app, python script → all run as processes.
 
-See running processes with PS Command: 
---------------------------------------
 
-*)ps → lists the processes running in current terminal.
-*)ps aux → it's a picture, shows all the running processes with CPU and memory usage.(most used in interview)
+## 1. Viewing Processes
+------------------------
+
+### See running processes with PS Command:
+
+*)ps --> Shows processes associated with the current terminal, including running and sleeping processes.
+
+*)ps aux --> Shows all existing processes(snapshot) across users at that moment with CPU and memory usage, including running and sleeping processes.
+             gives a one-time view of the processes present at that moment.
+
+a → processes from all users
+u → shows user-friendly, detailed output
+x → includes processes not attached to a terminal
+
+*)ps aux | grep httpd --> Displays only the process details that contain the word "httpd". ps aux displays many processes. This command filters that output 
+                          and shows only the lines containing httpd. ( here i just gave ' httpd ' for example purpose, you can give any other process)
+
+ps aux → Displays a snapshot of processes across users.
+| → Passes the output of the first command to the next command.
+grep httpd → Displays only lines containing httpd.
+
+*)ps aux | grep root --> Displays only the process details that contain the word 'root'. ps aux displays many processes.
+                         This command filters that output and shows only the lines containing root.
 
 
+### What happens:
 
-What happens:
-
-*)It shows running processes at that exact moment
+*)It shows running processes at that moment
 *)After it prints the output → command ends
 *)If a new process starts 1 minute later, ps will NOT show it
 
-TOP COMMAND:
--------------
 
-*) top --> it's a live video, shows all running processes with CPU and memory usage continuously until you quit from it. 
-   To quit use " q " then you will go back to the Linux prompt.
+###)TOP COMMAND:
 
-What happens:
+*) top --> it's a live stream or video. Shows processes across users, including running and sleeping processes, and updates their information every few seconds.
+           To quit from the command, use " q " then you will go back to the Linux prompt.
+		   
+For example, It will shows the processes that will start in next minute or sometime after the refresh.
 
-*)It shows running processes continuously
-*)Screen refreshes every few seconds
-*)New processes appear automatically
-*)Stopped processes disappear automatically
-*)It keeps running until you press q.
+### What happens:
 
-KILL COMMAND:
--------------
+*) It shows running processes continuously
+*) Process information refreshes every few seconds, New processes appear automatically
+*) Terminated processes disappear from the list after refreshing.
+*) It keeps running until you quit (press q to quit).
 
-1) kill sends signals to processes using PID, commonly used to stop or terminate processes.
 
-SYNTAX: kill PID 
+## 2. Process Termination
+-------------------------
 
-Eg-1) kill 1234
+### KILL COMMAND:
 
-2) kill -9 PID - this is for force kill the process if normal kill doesn't work. 
+*)kill commonly used to stop or terminate processes. It sends signal(SIGKILL) by default to processes using PID to terminate gracefully.
 
-TYPES OF PROCESSES:
--------------------
+SYNTAX: kill PID
+
+Eg: kill 1234
+
+2) kill -9 PID - --> Forcefully terminates the mentioned PID process using SIGKILL.
+
+kill -9 1234   --> Forcefully terminates process 1234
+kill -STOP PID --> Pauses the specified process.
+kill -CONT PID --> Resumes the specified paused process.
+
+
+
+## 3. Process Execution Types
+-----------------------------
+
+### TYPES OF PROCESSES:
 
 We have two types of processes are :
 
+
 1) Foreground Process:
 
-*)It Runs on the terminal, Takes keyboard control and You cannot type another command until it finishes. You stop it with " Ctrl + C "
-  
-*****)So Basically, any linux command that runs on the terminal is "Foreground Process".
+*)It Runs on the terminal by default, so it occupies the terminal while a command is running. You cannot type another command until it finishes (or) 
+  You stop it with " Ctrl + C "
 
-Eg-1: sleep 100 --> The systsem sleeps for 100 seconds. It runs on terminal that is why Terminal is blocked so You must wait or Ctrl+C.
-Eg-2: ping google.com 
-Eg-3: dnf install httpd
+Eg-1: sleep 100         --> The systsem sleeps for 100 seconds. It runs on foreground, that is why Terminal is blocked. so You must wait or use Ctrl+C to quit.
+Eg-2: ping google.com   --> Runs in the foreground by default and continuously displays ping results until stopped.
+Eg-3: dnf install httpd --> Runs in the foreground by default and displays installation progress.
 
 
 
 2) Background process:
 
-*)Runs behind the terminal so Terminal is free to use. It Started using " & "
+--> Runs in the background, allowing you to use the terminal for other commands. You should use ' & ' symbol to run any command in background.
 
-WHY YOU USE " & "?
+WHY " & "?
 
-ANS: To run a command in the background so the terminal remains usable.
+ANS: To run a command in the background, so the terminal remains usable.
 
-Eg-1: sleep 100 & --> It runs behind terminal that is why Terminal is free
-Eg-2: cp /data /backup &
-Eg-3: scripts with &
+Eg-1: sleep 100 &          --> It runs this command in the background, so that terminal will be free to use for other commands.
+Eg-2: cp /data /backup &   --> It runs this command in the background, so that terminal will be free to use for other commands.
+Eg-3: scripts with &       --> It runs this command in the background, so that terminal will be free to use for other commands.
 
 
-JOBS COMMAND:
---------------
+# JOB MANAGEMENT
+-----------------
 
-Job ( built-in command ) = Shell-level thing (created and tracked by your terminal)
+A Job is a command that the current shell tracks.
+Any command started with " & " or stopped with " Ctrl+Z " becomes a 'job'.
 
-Any command started with " & " or stopped with " Ctrl+Z " becomes a job because the shell starts tracking it.
 
-*) jobs --> when you type this command in your teminal, it lists background and stopped jobs started from the current terminal.
+1.)JOBS COMMAND:
+----------------
 
-Eg-1 : dnf install nginx -y &
+*) jobs --> It lists background and stopped jobs tracked by the current terminal when you type this command.
 
-when you type the above command it runs in background as you have used " & " and it consider as a job by the shell.
+Example: 
 
-fg and bg( built-in commands) : 
+dnf install nginx -y & --> starts the command in background as you have used " & " and the shell tracks it as a job.
 
-*) fg brings a background or stopped job back to the foreground in the current shell.
-*) bg resumes a stopped job and runs it in the background in the current shell. It works only on stopped jobs.
 
-*)Network Management Commands :
+2.) Job Control - fg and bg:
+----------------------------
+
+fg and bg( built-in commands) :
+
+fg --> Brings a background or stopped job to the foreground, if you type fg command on the terminal.
+
+bg --> Resumes a stopped job in the background, if you type bg command on the terminal. It works only on stopped jobs.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+#)Network Management Commands :
 -------------------------------
 
-*) ip addr --> ip addr is used to view IP address and network interface details on a Linux server.
+*) ip addr --> ip addr is used to check the IP address and network interface details of a Linux server.
 
-*) ip route ---> ip route shows the default route and gateway used for outbound network traffic.
-                 i.e . ip route shows where the server sends traffic first when going outside.
+*) ip route ---> It shows the configured network routes through which the traffic goes out to reach the destinations.
+                 i.e . Network Traffic destinations ki reach avvadaniki ye routes dwara velthundo 'ip route' chupistundi ra. 🌿
 				 
-*) ping ip address or server-name --> It tests the connectivity b/w two servers ( from the current server to a destination server ).
+*) ping ip-address or server-name --> It tests the connectivity b/w two servers ( from the current server to a destination server ).
 
-*) ss or netstat :
-------------------
+*) netstat (or) ss: --> Used to check network socket information (network connections, IP addresses, port numbers, and connection status).
 
-*)ss or netstat are used to check open ports and the processes using those ports on a Linux system.
+*) netstat -lntp (or) ss -lntp --> are used to check listening TCP ports and the processes using those ports on a Linux server.
 
-*) ss -lntp --> 
+Listening ports --> Incoming connection requests kosam wait chesthunna ports.
 
 -l → shows listening ports
 -n → shows numeric IPs and port numbers
--t → shows TCP ports only
--p → shows process name and PID using the port
+-t → shows TCP (Transmission Control Protocol) ports only
+-p → shows process name and PID using that port
 
-*) traceroute ip-address or server-name --> It shows the step-by-step(hops) path from your server to the destination server.
+*) traceroute IP-address (or) server-name --> Shows the hop-by-hop(step-by-step) network path from your server to the destination server.
+
+TELNET --> telnet is used to check whether a specific TCP port on a remote server is reachable or not.
+
+Example:
+
+telnet 12.34.16.10 80 --> Checks whether TCP port 80 on the remote server is reachable.
 
 
-
-CURL COMMAND --> curl is used to send a request to a URL and see the response. Sends a request and Prints the response on terminal.
-
-Eg-1: curl https://example.com
-
-Response: HTTP/1.1 200 OK
-
-WGET COMMAND --> wget is used to download files from a URL using the command line.
-
-Eg-1: wget https://example.com/file.zip
-
-TELNET --> telnet is used to check whether a specific port on a remote server is reachable or not.
-
-Eg-1 : telnet 12.34.16.10 80
-
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 ##)SESSION -09:
 ---------------
@@ -682,18 +1063,17 @@ Eg-1 : telnet 12.34.16.10 80
 AWS Route 53:
 -------------
 
-*)Route → it routes internet traffic to the correct place
-*)53 → it works on port 53
-👉 So Route 53 simply means: a service that routes DNS traffic using port 53.
+*) Route → It routes DNS queries (DNS requests) to the correct destination.
+*) 53 → It refers to the standard port number used by DNS.
 
-*) Route 53 is an AWS DNS ( Domain Name System ) service that helps to connect a website to the correct IP server,
-   When an user or someone search a domain name, Route 53 tells where that request should go.
-   
+*) Route 53 is an AWS DNS (Domain Name System) service that helps connect domain names to the appropriate destinations, such as the IP address of a web server.
+*) When a user searches for a domain name, DNS resolution helps find the appropriate destination for that domain. 
+  
 #)What is a Hosted Zone:
 -------------------------
 
-*)A hosted zone is a place where it contains all DNS records of a domain including name server records that define which DNS service manages the domain..
-  For one domain, all records are managed in a single hosted zone.
+*)A hosted zone is a container or place where it contains all DNS records.
+*) These records tell DNS how to handle queries(requests) for that domain, such as which IP address or destination to use.
 
 #)Types of Hosted Zones : 
 --------------------------
@@ -876,6 +1256,8 @@ After that, I create DNS records like A records to point the domain or subdomain
 
 ##)One-Line Memory Trick: Domain → Route 53 → Records
 
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 ##)SESSION - 10:
 ----------------
@@ -960,55 +1342,6 @@ Important Status Codes:
 *)504 – Gateway Timeout
 *)Server did not get a response from backend servers in time.
 
-#)Inode, Soft Link, Hard Link – 2-Minute Revision Notes:
----------------------------------------------------------
 
-**)Commnads for memory trick:
-
-*)Soft link → ln -s
-*)Hard link → ln
-
-
-1)Inode:
-
-*)An inode is a number where Linux keeps all the information about a file, like where it is stored, its permissions, and its owner.
-*)File name is just a label; Inode is the real file.
-
-*)ls -li --> it shows the file details(permissions, size, owner, etc.) including inode number.
-*)ls -l --> it shows the file details(permissions, size, owner, etc.)
-
-
-2)Soft Link (Symlink):
-
-*)A soft link (symlink) is a file that stores the path of actual file and points to that file, just like a shortcut. 
-  If the original file is removed, the link still exists but it will not work.
-*)Soft link has a different inode and the original file has different inode.
-
-*)Syntax: ln -s original-file-path softlink-name
- 
-Examples: 
-
-1)ln -s file1.txt link1.txt --> link1.txt becomes a shortcut to file1.txt.
-2)ln -s /home/user/file1.txt mylink.txt --> mylink.txt points to /home/user/file1.txt.
-
-
-3)Hard Link:
-
-*)A hard link is another name for the same file that points to the same inode on disk, 
-  The file will be deleted only when all the hard links of a file are removed.
-*)It uses the same inode for the all hardlink files and for the original file.
-
-*)Syntax: ln original-file-path hardlink-name
-
-Examples: 
-
-1)ln file1.txt hardlink1.txt --> Both file1.txt and hardlink1.txt refer to the same file.
-
-2)ln /home/user/file1.txt hardlink2.txt --> hardlink2.txt is another name for /home/user/file1.txt.
-
-
-###)Main Difference to remember:
-
-1)Soft link → points to file name
-2)Hard link → points to inode
+------------------------------------------------------------------------------------------------------------------------------------------------
 
