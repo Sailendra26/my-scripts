@@ -3,37 +3,36 @@
 
 What is Shell-Scripting?
 
-*)Shell scripting is used to automate repetitive administrative and operational tasks such as log cleanup, backups, health checks, monitoring 
-  in Linux systems by executing a sequence of shell commands through a script.
-  
-And if interviewer asks:
+*)Shell scripting is the process of writing a sequence of shell commands in a script file to automate the repetitive tasks. It also supports variables,
+  conditional statements, loops, functions, and error handling to build automation workflows.
 
-“Why shell scripting in DevOps?”
+And if interviewer asks: “Why shell scripting in DevOps?”
 
 You can naturally say:
 
-“We use shell scripting to automate operational tasks such as log cleanup, backups, health checks, monitoring, deployments, and file processing.”
+“We use shell scripting to reduce the manual effort, save time, Reusability and automate operational tasks such as log cleanup, backups, health checks, 
+ monitoring, deployments, and file processing.”
 
 
 Automation goals: Speed and Accuracy
 
 1. Speed
 2. Accuracy, no human errors
-3. Consistency
-4. Scalability, can work for infinite number of servers
-5. Documentaion. What happened including history
-6. Reusability.
+3. Reusability.
+4. Consistency
+5. Scalability, can work for infinite number of servers
+6. Documentaion. What happened including history
 
 What is Git? (simple)
 
-Git is a tool that helps you save versions of your code and track changes so that you can go back anytime.
+Git is a version control system that helps us track code changes , maintain different versions, and go back to an earlier version when needed.
 
-Why Git is used:
+Why do we use Git?
 
-1)To track who changed what
-2)To go back to older versions
-3)To work with a team safely
-4)To avoid losing code
+1. To track who changed what in the code.
+2. To restore an earlier version of the code when needed.
+3. To manage parallel development using branches.
+4. To maintain code history and reduce the risk of losing code.
 
 Basic Git + GitHub Workflow:
 -----------------------------
@@ -103,7 +102,7 @@ SHELL-SCRIPTING COMMANDS:
 
 *)echo --> prints the line of the data and goes to new line by default. 
 
-Ex: echo "Suresh: Hi Ramesh how are you"
+Ex: echo "Megham: Hi Aaranya how are you"
 
 
 
@@ -158,29 +157,29 @@ echo "$person1: Hi $person2, how are you"
 echo "$person2: Good,how are you $person1"
 
 
-During Script Exection : sh sample.sh Girish Prakash
+During Script Exection : sh sample.sh Megham Aaranya
 
 
 O/P: 
 ----
 
-Girish: Hi Prakash, how are you
-Prakash: Good,how are you Girish
+Megham: Hi Aaranya, how are you
+Aaranya: Good,how are you Megham
 
 
 #)Environment Variable:
 -----------------------
 
-*)An environment variable is used to set values from outside instead of changing them in the code, 
+*)An environment variable is used to set values from outside instead of changing them in the code, we use this variable in the scripts.
   This helps avoid typo mistakes, rebuilding and redeploying the application whenever a value changes.
   It is mainly used for dynamic or temporary configuration changes.
   Dynamic = values can change based on the situation
   
 *)This environment-variable will be active until the current terminal session is alive, you need to give that environment variable again once
-  you open new terminal or current terminal is closed.
+  you open new terminal or current terminal is closed if u want.
 *)when u execute the script, it uses the environment-variable that is declared outside the script.
 
-**)"export" is a command used to set environment variables.
+**)"export" is a command used to set environment variable.
 
 
 👉 Real-time example (important):
@@ -194,6 +193,7 @@ ENV-VAR:
 --------
 
 *)export Course=" DevSecOps with AWS "
+*)export tool ="Shell-Scripting"
 
 
 *)Assume "sample.sh" is your script containing below 
@@ -205,6 +205,7 @@ Ex:
 #!/bin/bash 
 
 echo "Training is $Course"
+echo "Tool is $tool""
 
 
 Exection: sh sample.sh 
@@ -236,7 +237,10 @@ echo $ENV
 
 
 
-**)read -s : read -s takes input from the user and stores it in a variable, but hides the text on the screen when user typing.
+#)read -s : 
+-----------
+
+read -s takes input from the user and stores it in a variable, but hides the text on the screen when the user is typing.
 
 read : takes input from user
 -s : silent (don’t show what user types)
@@ -288,10 +292,10 @@ O/P:
 timestamp is : Mon Feb  2 17:40:52 IST 2026
 timestamp is : 2026
 
-#)Special variables : 
----------------------
+#)Special variables or Parameters : 
+-----------------------------------
 
-*)Special variables are predefined variables that give information about the script, arguments, and system.
+*)Special variables are predefined Parameters that give information about the script, its's arguments, and it's exexcution.
 
 
 All arguments(variables) of the script are the values you pass after the script name when running it.
@@ -304,7 +308,7 @@ All arguments(variables) of the script are the values you pass after the script 
 | `$#`     | Displays count of Total  arguments        |
 | `$@`     | All arguments (separately)                |
 | `$*`     | All arguments (as one string)             |
-| `$?`     | Exit status of previous command (0 = success) |
+| `$?`     | Exit status code of previous command (0 = success) |
 | `$$`     | Process ID of the script or command       |
 | `$!`     | Process ID of last background command     |
 
@@ -363,8 +367,8 @@ PID of last background process: 3490
 
 
 
-***IMP***) - Practiced all commands in single script file:
-----------------------------------------------------------
+***IMP***) - Practiced all special parameters in single script file:
+--------------------------------------------------------------------
 
 
 #!/bin/bash
@@ -383,7 +387,7 @@ read -s -t 10 -p " enter your password: " password
 echo " "
 echo " "
 echo " exit status of password is: " $?
-echo " first argument : " $1
+echo " first argument : " $1 
 echo " second argument : " $2
 echo " total arguments count : " $#
 echo " Display all arguments: " $@
@@ -413,11 +417,11 @@ O/P:
 #)SESSION-16:
 -------------
 
-**IMP**)Rule No: 1  --> if there is a chance of displaying an error at any step then you must use the EXIT CODE( $? ) to stop the process there itself 
+**IMP**)Rule No: 1  --> if there is a chance of getting an error at any step then you must use the EXIT CODE( $? ) to stop the process there itself 
 because you should not move forward when it is errored out. in rare cases we can move forward when required.
 
 
-*)&? - Exit status of previous command 
+*)$? - Exit status of previous command 
 
 ****)Linux exit status range: 0–255
 
@@ -427,6 +431,7 @@ because you should not move forward when it is errored out. in rare cases we can
 
 1–255(non-zero) = different types of errors, u can use any exit code number randomly but default is 1 & 2 values
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 #)Conditions:
@@ -446,6 +451,7 @@ else
     commands
 fi
 
+1) Write a shell script to check whether a number is less than, greater than, or equal to 20.
 
 
 #!/bin/bash
@@ -479,6 +485,7 @@ fi
 
 root-user-id = 0
 ec2-user-id = 1001
+*)id -u: displays the numeric UID (User ID) of the current user.
 
 
 
@@ -516,13 +523,16 @@ else
         echo : " Git is not installed "
 fi
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-FUNCTIONS:
-----------
+
+#)FUNCTIONS:
+------------
 
 *)A function is a reusable block of code that performs a specific task and can be called multiple times in a script.
 *)Arguments( values ) are given only when calling a function, not when you write the function.
 *)Functions improve code reusability and readability.
+
 
 SYNTAX:
 -------
@@ -540,7 +550,7 @@ Example: Write Functions code using the conditions example which is installing t
 
 *)root-user-id = 0
 *)ec2-user-id = 1001
-
+*)id -u: displays the numeric UID (User ID) of the current user.
 
 
 #!/bin/bash
@@ -582,7 +592,7 @@ Example-2: First check if package is installed or not, if not then only install
 
 *)root-user-id = 0
 *)ec2-user-id = 1001
-
+*)id -u: displays the numeric UID (User ID) of the current user.
 
 #!/bin/bash
 
@@ -650,19 +660,25 @@ else
 	
 fi
 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 #)REDIRECTIONS & LOGS:
 ----------------------
 
-*)Redirections are used to send command output(either SUCCESS or FAILED i.e errors) to a log-file instead of displaying on the screen.
+*)Redirections are used to send command output(either SUCCESS or FAILED i.e errors) to a log-file instead of displaying on the terminal.
  
-*) 1 --> SUCCESS
-*) 2 --> FAILED
-*) & --> SUCCESS/FAILED
-*) > --> overwrite the data
-*) >> --> append the data
+*) 1 --> Sends standard output (normally the command's output).
+*) 2 --> Sends standard error (normally error messages).
+*) &> --> Sends both standard output and standard error but overwrite the existing data in a log file and saves the new data.
+*) &>> --> Sends both standard output and standard error, appends the data to a file 
 
-LOGS: Logs are records of what happens during the execution of an action and used for monitoring and troubleshooting.
------
+*) >   --> Overwrites the file if it exists, or creates it if it doesn't.
+*) >>  --> Appends data to the file, or creates it if it doesn't.
+
+
+LOGS: Logs are records of actions that occur during the execution of applications, processes, or systems and they are used for monitoring and troubleshooting.
 
 
 Examples:
@@ -671,9 +687,9 @@ Examples:
 
 *) ls -l 1> output.log --> it stores the command result in "output.log" only when it is success
 
-*) lsdfgg -l 2> output.log --> it stores the command result in "output.log" only when it is failure
+*) lsdfgg -l 2> output.log --> it stores the command result in "output.log" only when it fails
 
-*) ls -l &>> output.log --> it stores the command result in "output.log" irrespective of the failure or success.
+*) ls -l &>> output.log --> it appends the command result in "output.log" irrespective of the failure or success.
 
 
 Example-1: Assume your script file name is "Task.sh"
@@ -686,7 +702,10 @@ Assume you want create a "shell-script-logs" folder, as you are working as non-r
 sudo /var/log/shell-script-logs 
 
 
-*)| tee -a $LOG_FILE --> appends the data to the log file and also display the messages on the screen 
+*)| tee -a "$LOG_FILE" --> Appends the input data to the log file and also displays it on the terminal.
+                           tee → Writes input to a file and displays it on the terminal.
+                           -a → Appends data instead of overwriting the file.
+                           "$LOG_FILE" → The variable containing the log file path.
 
 *)example: echo " nginx is already exists...SKIPPING " | tee -a $LOG_FILE
 
@@ -740,10 +759,22 @@ else
 	echo " mysql already exists...SKIPPING " | tee -a $LOG_FILE
 fi
 
-COLOR CODING:
--------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-*)Colors are used to make logs readable (for example: red for errors, green for success, yellow for warnings).
+#)ANSI COLOR CODING:
+--------------------
+
+Colors are used to make terminal messages easier to read(for example, red for errors, green for success, and yellow for warnings).
+However, when these messages are stored in a log file, the text usually appears without colors and these ANSI codes will be stored 
+in the log file along with the text.
+
+ANSI color codes:
+
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+NORMAL="\e[0m"
+
 
 RED --> ERROR
 GREEN --> SUCCESS
@@ -768,10 +799,10 @@ echo -e "$YELLOW WARNING: Check this step $NORMAL"
 echo -e "$NORMAL INFO: Normal message $NORMAL"
 
 
-
 -e --> enable the color 
-$NORMAL --> if you dont use at the end then same color will continue for the next text so use white color code which is "\e[0m".
+$NORMAL --> if you dont use at the end then same color will continue for the next text also, so use white color code which is "\e[0m".
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #)SESSION-17:
 -------------
@@ -779,8 +810,8 @@ $NORMAL --> if you dont use at the end then same color will continue for the nex
 LOOPS:
 ------
 
-*)A for loop is used to execute a set of commands repeatedly for each item in a list, range. Use for loop when values/range are already known.
-*)It is mainly used to avoid repetition and automate tasks like processing files, checking services, or running commands on multiple inputs.
+*)A for loop is used to execute a set of commands repeatedly for each item in a list or range. Use for loop when the values or range are already known.
+*)It is mainly used to avoid code repetition and automate tasks like processing files, checking services, or running commands on multiple inputs.
 
 SYNTAX:
 -------
@@ -790,11 +821,13 @@ do
   commands
 done
 
-AWS CLI: 
---------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-*)AWS CLI is a command-line tool that allows users to interact with and manage AWS services directly from the terminal without need of 
-  logging to the AWS portal.
+#)AWS CLI: 
+----------
+
+AWS CLI is a command-line tool that allows users to interact with and manage AWS services directly from the terminal without needing
+to log in to the AWS Management Console.
   
 
 Configure AWS CLI to connect with AWS account:
@@ -815,9 +848,9 @@ Example policy:
 AdministratorAccess or required limited permissions.
 
 Step 7: Create the User
+
 Step 8: Generate Access Keys :
 
-After the user is created:
 1)Open the user
 2)Go to Security credentials tab
 3)Click Create access key --> select "command line interface" and Confirmation tick box --> click next -->
@@ -839,21 +872,25 @@ Default output format:
 
 if all the requested deatails submitted then the configuration will be done with this step.
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 #)SESSION-18:
 -------------
 
-*)set -euo pipefail --> Stops the script when an error occurs and prevents unsafe execution,
+*)set -euo pipefail --> stops the script when a command fails in the script except in certain contexts, such as conditions in if, while, and 'until, statements.
+                        Functions and loops are not automatically exempt; the behavior depends on the context.
+
 i.e. script will be stopped when an error occurs during the script execution 
 
 -e → stop the script and exit if any command fails
 -u → throw error if an undefined variable is used ( like any typo mistakes )
-pipefail → return failure ( exit status as non-zero ) if any command in a pipeline fails 
+pipefail → return failure if any command in a pipeline fails( if any command connected using | returns a non-zero exit status )
 
 
 *)trap --> 
 
-used to handle errors and display which line and command failed (i.e. it shows at which line we got error and which command failed) 
+used to handle errors where it display which line and command failed (i.e. it shows at which line we got error and which command failed) 
 Bash excecutes each command and checks its exit status, If any command returns a non-zero exit code, the "ERR trap" command gets triggered.
 
 SYNTAX: trap 'what to do' WHEN
@@ -868,6 +905,7 @@ IMP***) if we use trap command alone it will show at what line we got the error 
 and excecute other commands but script will not stop, so better use " set and trap " commands together.
 
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #)SESSION-19:
 -------------
@@ -879,7 +917,7 @@ Source Command:
 
 1)What is source?
 
-*)The source command is used to execute one script inside another script.
+*)The source command is used to call one script inside another script.
 *)It runs in the same shell environment, so new process will not be created and the PID remains the same.
 *)Variables and functions are shared between both scripts, and if any changes it affects the current shell.
 
@@ -907,7 +945,7 @@ echo "PID of SCRIPT-2: $$"
 ##)/dev/null:
 --------------
 
-***)Use this If you dont want to save the uncessary info in log-file or dont want to display on the screen 
+***)Use this If you dont want to save uncessary output in log-file or dont want to display on the terminal 
 
 *)/dev/null is a special file in Linux/Unix systems that acts as a null device.
 
@@ -952,34 +990,14 @@ do
   commands
 done
 
-SLEEP COMMAND:
---------------
-
-*)sleep command is used to pause(stop) the execution of a script or command for some time.
-
-In real-time scripting, sleep is mainly used to:
-
-*)add delay between operations
-*)avoid continuous looping
-*)wait for services/files/processes
-*)create countdowns or retries
-
-
-Example:
---------
-
-#!/bin/bash
-
-echo "tesing sleep command"
-sleep 3 
-echo "successfully tested sleep command"
 
 #)How to read file data line by line:
 -------------------------------------
 
 "<" --> input direction, giving the file as an input 
 
-*)when you read the file with this "IFS= read -r" IFS keeps the leading(spaces before line)/trailing(spaces after line) spaces as it is 
+*)when you read the file with this "IFS= read -r" IFS keeps the leading/trailing spaces as it is.
+*)leading(spaces before line)/trailing(spaces after line) 
 *)-r keeps the backslashes as it is 
 
 Example-1:
@@ -1005,23 +1023,46 @@ done < ./15-SCRIPT-2.sh
 
 *)touch -d 20260410 win.txt - to create a file in back date 
 
+#)SLEEP COMMAND:
+----------------
+
+*)sleep command is used to pause(stop) the execution of a script or command for a specified amount of time.
+
+In real-time scripting, sleep is mainly used to:
+
+*)add delay between operations
+*)avoid continuous looping
+*)wait for services/files/processes
+*)create countdowns or retries
+
+
+Example:
+--------
+
+#!/bin/bash
+
+echo "tesing sleep command"
+sleep 3 
+echo "successfully tested sleep command"
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 #)SESSION-21:
 -------------
 
-CronTab:
---------
+#)CronTab:
+----------
 
 What is Cron?
 
 *)Cron is a scheduler in Linux/Unix systems.
 *)It is used to schedule the scripts or commands to run automatically at specific times.
-*)Cron jobs are user specific but Root user can check another user's cron jobs
 *)CronTab Uses 24-Hour Format.
+*)Cron jobs are user specific but Root user can check another user's cron jobs
 *)Script should have execute permission. chmod +x test.sh
 *)CronJob redirection, Cron job outputs can be stored in log files. 
 Ex: */5 * * * * /home/ec2-user/test.sh &>> /home/ec2-user/output.scripts.log --> stores both normal output and errors in the same log file
----
 
 
 Examples:
@@ -1033,10 +1074,31 @@ Examples:
 *)Automated reports 📄
 *)health checks
 
+Cron Job Format:
+----------------
+
+This Cron Job format designed with 5 fields which are stars to define the schedule 
+
+* * * * * command/script 
+| | | | |
+| | | | +---- Day of Week (0-7) or (SUN-SAT)
+| | | +------ Month (1-12)
+| | +-------- Date of Month (1-31)
+| +---------- Hour (0-23)
++------------ Minute (0-59)
+
+# TIPS:
+-------
+
+*          → every value
+,(comma)   → multiple specific values
+-(hyphen)  → range / between values
+*/         → repeat at intervals
+
 Crontab Commands:
 -----------------
 
-*)crontab -e --> 
+*)crontab -e --> opens crontab editor.
 
 Used to add, edit or update cron jobs for the current user. It opens the crontab editor where scripts/commands can be scheduled/added or modified. 
 
@@ -1054,10 +1116,17 @@ Example:
 */5 * * * * /home/ec2-user/test.sh  --> this is how you schedule the scripts inside crontab editor. 
 
 
-*/5 * * * * --> cron schedule format
+--> */5 * * * * --> cron schedule format, 
+--> /home/ec2-user/test.sh --> script path
 
-/home/ec2-user/test.sh --> script path
+One more thing ra: If the script runs every 5 minutes, but the previous execution takes longer than 5 minutes, Cron can start another execution 
+while the previous one is still running.
 
+For example:
+- 10:00 AM → First execution starts.
+- 10:05 AM → First execution is still running, but Cron starts a second execution.
+- 10:10 AM → If the second execution is also still running, Cron can start a third execution.
+So, multiple instances of the same script can run simultaneously.
 
 
 *)systemctl status cron --> used to check whether cron service is running or not.
@@ -1068,33 +1137,39 @@ Example:
 
 *)crontab -u MeghamAaranya -l --> This is how root user can check other user cron jobs.
 
+##)CRON – HOUR RANGE BEHAVIOUR ##
+---------------------------------
+
+When we specify an hour range in Cron, the ending hour is also included completely. It does not stop at the beginning of the ending hour.
+
+Examples:
+
+1. Question: Run a script every 15 minutes between 9 AM and 11 AM.
+
+   */15 9-11 * * *
+
+   Explanation: Runs every 15 minutes from 9:00 AM to 11:45 AM.
+
+2. Question: Run a script every 20 minutes between 2 PM and 4 PM.
+
+   */20 14-16 * * *
+
+   Explanation: Runs every 20 minutes from 2:00 PM to 4:40 PM.
+
+3. Question: Run a script every 10 minutes between 6 AM and 8 AM.
+
+   */10 6-8 * * *
+
+   Explanation: Runs every 10 minutes from 6:00 AM to 8:50 AM.
+
+IMPORTANT:
+The ending hour is included completely.
+
+For example:
+9-11 means 9 AM, 10 AM, and the entire 11 AM hour.
 
 
-Cron Job Format:
-----------------
-
-This Cron Job format has 5 fields which are stars to define the schedule 
-
-* * * * * command/script 
-- - - - -
-| | | | |
-| | | | +---- Day of Week (0-7) or (SUN-SAT)
-| | | +------ Month (1-12)
-| | +-------- Date of Month (1-31)
-| +---------- Hour (0-23)
-+------------ Minute (0-59)
-
-# TIPS:
--------
-
-*          → every value
-,(comma)   → multiple specific values
--(hyphen)  → range / between values
-*/         → repeat at intervals
-
-
-
-*) * * * * * /home/ec2-user/test.sh --> script runs every minute 
+0) * * * * * /home/ec2-user/test.sh --> script runs every minute 
 
 1) */10 * * * *
    → every 10 mins, everyday
@@ -1177,6 +1252,9 @@ This Cron Job format has 5 fields which are stars to define the schedule
 #) Cron Practice Questions with Answers:
 ----------------------------------------
 
+0) Schedule a script to run every 3 hours, starting at 6 AM and ending at 6 PM, every day.
+   0 6-18/3 * * *
+
 1. Run a script every 2 hours
    0 */2 * * * /home/ec2-user/test.sh
 
@@ -1236,6 +1314,49 @@ This Cron Job format has 5 fields which are stars to define the schedule
 
 20. Run a script every Tuesday at 4:30 AM
     30 4 * * TUE /home/ec2-user/test.sh
+
+21. Schedule a script to run every 5 minutes, but only during the first 30 minutes of every hour.
+    0-29/5 * * * * 
+	
+#) MULTIPLE CRON ENTRIES FOR THE SAME SCRIPT
+---------------------------------------------
+
+When different time ranges require different minute intervals, we can use multiple Cron entries to schedule the same script.
+
+
+Example 1:
+
+Question: Run a script every 10 minutes from 8:00 AM to 10:30 AM on weekdays.
+
+Crontab entries:
+
+*/10 8-9 * * MON-FRI /home/devops/scripts/backup.sh
+0,10,20,30 10 * * MON-FRI /home/devops/scripts/backup.sh
+
+Explanation:
+- First entry runs every 10 minutes from 8:00 AM to 9:50 AM.
+- Second entry runs every 10 minutes from 10:00 AM to 10:30 AM.
+
+
+Example 2:
+
+Question: Run a script every 15 minutes from 2:00 PM to 5:45 PM
+on Sundays.
+
+Crontab entries:
+
+*/15 14-16 * * SUN /home/devops/scripts/cleanup.sh
+0,15,30,45 17 * * SUN /home/devops/scripts/cleanup.sh
+
+Explanation:
+- First entry runs every 15 minutes from 2:00 PM to 4:45 PM.
+- Second entry runs every 15 minutes from 5:00 PM to 5:45 PM.
+
+
+IMPORTANT:
+- We can use multiple Cron entries for the same script.
+- Each entry can have a different schedule.
+- The script path must be specified in every entry.
 	
 	
 	
@@ -1296,10 +1417,10 @@ CMD
 
 
 
-##)Running Shell Script Like a Command:
----------------------------------------
+##)Running Shell Script file Like a Command:
+--------------------------------------------
 
-*)Any scripts that are moved to  PATH/bin folders considered as a command. you can run the script names like ls, pwd, ls -l commands
+*)Any scripts that are moved to  PATH/bin folders considered as a command. you can run the script files like linux commands ls, pwd, ls -l 
 
 *)Normally shell scripts are created like:
 

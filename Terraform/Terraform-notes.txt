@@ -1,0 +1,178 @@
+SESSION-29:
+-----------
+
+##)Terraform:
+
+*)Terraform is an Infrastructure as Code (IaC) tool developed by HashiCorp. It is used to provision, manage, and modify
+  infrastructure resources across multiple platforms using configuration files that define the required infrastructure.
+
+*)It helps automate infrastructure provisioning, maintain consistency across environments, reuse infrastructure , reduce manual effort, 
+  and manage infrastructure through version-controlled code.
+  
+*) .tf is the file extension used for Terraform configuration files. These files contain the required configuration to define and manage infrastructure.
+   The configuration files written in HCL (HashiCorp Configuration Language). 
+
+
+Platforms supported by Terraform:
+
+1. Cloud Platforms:
+   - AWS
+   - Microsoft Azure
+   - Google Cloud (GCP)
+   - Oracle Cloud
+
+2. On-Premises & Virtualization Platforms:
+   - VMware vSphere
+   - OpenStack
+
+3. Container & Orchestration Platforms:
+   - Kubernetes
+
+4. Networking & DNS Services:
+   - Cisco ACI
+   - Cloudflare
+
+5. Other Services:
+   - Databases
+   - Monitoring Tools
+   - Version Control Systems
+   - Security & Identity Management Tools
+   
+
+NOTE: Terraform uses Providers to communicate with these platforms and manage their resources.
+
+-------------
+
+-> Provision:
+
+Creating and preparing the required resources so they are ready to use.
+
+-> Infrastructure Provisioning:
+
+Creating and preparing infrastructure resources such as EC2, VPC, S3, and Security Groups.
+
+-------------
+
+
+
+Providers:
+----------
+
+*)Providers are plugins that allow Terraform to communicate with different platforms and services to create and manage their infrastructure resources.
+
+Examples of Providers:
+
+-> AWS Provider
+-> Azure Provider
+-> Google Cloud Provider
+-> Kubernetes Provider
+-> VMware Provider
+
+
+
+Terraform Basic Commands:
+-------------------------
+
+1. terraform init:
+   
+*)Initializes the Terraform working directory and downloads the required provider plugins and modules.
+
+2. terraform plan:
+   
+*)Shows a preview of the changes that Terraform will make to create, modify, or destroy infrastructure resources.
+
+3. terraform apply:
+   
+*)Executes the planned changes and creates, modifies, or destroys infrastructure resources as required.
+  By default it asks for confirmation (unless auto-approved).
+  
+Note:
+Terraform apply command ask for user confirmation before executing the changes by default.
+
+To skip the confirmation, use the '-auto-approve' flag. 
+Remember: -auto-approve means Terraform executes without asking for your approval. 🫂
+
+Examples:
+terraform apply -auto-approve
+
+
+
+
+4. terraform destroy:
+   
+*)Used to Destroy the infrastructure resources managed by the current Terraform configuration and state.
+  By default it asks for confirmation (unless auto-approved).
+  
+Note:
+Terraform destroy commands ask for user confirmation before executing the changes by default.
+
+To skip the confirmation, use the -auto-approve flag.
+Remember: -auto-approve means Terraform executes without asking for your approval. 🫂
+
+Examples:
+terraform apply -auto-approve
+terraform destroy -auto-approve
+
+
+-> Terraform Execution Flow:
+
+1. terraform init    - Initialize the project.
+2. terraform plan    - Preview the infrastructure changes.
+3. terraform apply   - Execute the infrastructure changes.
+4. terraform destroy - Delete the managed infrastructure.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Terraform and AWS CLI V2 installations:
+---------------------------------------
+
+
+1)Terraform set up:
+
+Download terraform using below link for your windows version.
+
+https://developer.hashicorp.com/terraform/install 
+
+Extract the downloaded folder --> go to terraform.exe path --> go to "system environment variables" --> system variables --> click Path -->
+Click New and paste it --> Click OK
+
+2)AWS CLI set up:
+
+Download and set it up
+
+https://awscli.amazonaws.com/AWSCLIV2.msi
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Resource Block – General Syntax:
+--------------------------------
+
+resource "PROVIDER_RESOURCE_TYPE" "LOCAL_NAME" {
+    argument = value
+
+    nested_block {
+        argument = value
+    }
+}
+
+Explanation:
+
+
+1. resource --> Keyword used to define an infrastructure resource that Terraform should manage.
+
+2. PROVIDER_RESOURCE_TYPE --> Specifies the type of resource we want to create.
+   Example: aws_instance
+
+3. LOCAL_NAME --> A name given to identify the resource in the Terraform configuration.
+   Example: ec2-instance
+
+4. argument --> Specifies a setting name of the resource.
+   Example: instance_type
+
+5. value --> The value assigned to an argument.
+   Example: "t3.micro"
+
+6. nested_block --> Used to define additional configurations inside a resource block.

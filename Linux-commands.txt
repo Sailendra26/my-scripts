@@ -185,6 +185,8 @@ FILE COMMANDS:
 
 *)touch filename : used to create a file
 
+*)touch -d 20260410 win.txt - to create a file in back date 
+
 *)touch .filename : it will create a hidden file
 
 *)touch folder/file ---> it will craete a file inside the folder.
@@ -755,6 +757,9 @@ Eg: -rw-r--r-- 1 root root 0 Apr 7 14:16 file1
 	
 *)id --> you will get the current login user information ( Displays the current user's UID, primary GID, and 
          supplementary groups (additional groups the user belongs to apart from their primary group). ✅
+		 
+*)id -u: Displays the numeric User ID(UID) of the current user.
+
 
 *)id username --> it shows you that what all groups that the user is part of (like primary and secondary groups including UID, GID). 
 

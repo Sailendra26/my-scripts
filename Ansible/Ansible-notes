@@ -38,22 +38,6 @@ Its responsibilities include:
 
 ---
 
-## 4. What is NOT Ansible responsible for?
-
-Ansible is not responsible for provisioning cloud infrastructure.
-
-It does not create or manage resources such as:
-
-- VPC
-- EC2 Instances
-- Security Groups
-- Route53 Hosted Zones
-- Subnets
-
-These responsibilities belong to Infrastructure as Code (IaC) tools such as Terraform.
-
-
-
 
 
 To connect to the server:
@@ -67,27 +51,29 @@ SESSION-22:
 
 *)Ansible is a configuration management and automation tool used to manage and configure many servers from one place or one server.
 
+*)A control node is the main machine where Ansible is installed, managed nodes are the remote servers that are managed by the control node.
+
 *)Ansible is an agentless tool(No software installation needed on remote servers), which means it performs automation 
   without installing any agent or additional software in managed nodes(remote servers). It uses SSH (Secure Shell) protocol to communicate with remote servers.
-
-*)A control node is the main machine where Ansible is installed, managed nodes are the servers managed by the control node.
   
-*)Ansible playbooks are written in YAML format. We use YAML in Ansible because it is simple, human-readable, and easy to write.
-  Ansible playbooks are written in YAML format to define automation tasks in a structured way.
+*)Ansible playbooks are written in YAML format.
   
-#)Indentation: 
-
-*)Indentation is important in YAML because YAML uses spaces to define structure and hierarchy. Incorrect indentation can cause syntax errors and playbook failures.
-
 *)Playbook: A playbook is a collection of one or more plays that contains tasks.
 
 #)YAML:
 
-*)YAML is a simple and human-readable language used to write Ansible playbooks in a structured format.
+*)YAML is a simple and data serialization human-readable language used to organize configuration data in a structured way.
+
+Data Serialization:
+Serialization means converting data into a format so that it can be stored or sent from one system to another.
+
+#)Indentation: 
+
+*)Indentation is important in YAML because YAML uses spaces to define structure and hierarchy. Incorrect indentation can cause syntax errors and playbook failures.
 
 #)SSH:
 
-*)SSH stands for Secure Shell. It is a secure protocol used to connect and communicate with servers remotely over a network.
+*)SSH stands for Secure Shell. It is a secure protocol used to connect and communicate with remote servers over a network.
 
 Playbook → Collection of plays
 Play → Defines target hosts and tasks
@@ -97,58 +83,38 @@ Module → Performs the actual work
 ## VERY-IMPORTANT ##) ANSIBLE TASK EXECUTION Flow:
 --------------------------------------------------
 
-*)For every task, the control node (Ansible server) transfers the appropriate Ansible module to the managed node (remote server) through SSH. 
-  The module executes locally on the managed node, collect the execution result of a module and then sends the structured result(output) to the control node, 
-  and then the temporary module is removed from the manage node(remote server).
+*)For every task, the control node (Ansible server) transfers the appropriate Ansible module to the managed node (remote server) through SSH,
+  then the module executes locally on the managed node, collect the execution result of a module and then sends the structured result(output) to the control node, 
+  and then the transferred temporary module is removed from the manage node(remote server).
 
 1. Read the playbook.
-
 ↓
-
 2. Parse(Read) the current task.
-
 ↓
-
 3. Read the module name mentioned in the task (eg: yum, shell, service, copy...)
-
 ↓
-
-4. Load that module (eg: yum, shell, service, copy...) from the Ansible module library on the control node (or) Ansible server.
-
+4. Load that module from the Ansible module library on the control node (or) Ansible server.
 ↓
-
 5. Establish an SSH connection to the managed node (or) remote server.
-
 ↓
-
 6. Transfer the loaded module to the managed node (or) remote server.
-
 ↓
-
 7. Execute the module on the managed node (or) remote server.
-
 ↓
-
 8. Collect the execution details and prepare a structured output (dictionary i.e stdout, stderr, rc, changed, failed...)
-
 ↓
-
 9. Send output back to the control node (or) Ansible server.
-
 ↓
-
-10. Delete the transferred temporary module (eg: yum, shell, service, copy...) from the managed node (or) remote server.
-
+10. Delete the transferred temporary module (eg: yum, shell, service, copy...) from the remote server.
 ↓
-
-11. Continue with the next task.
+11. Continue with the next task in the playbook.
 
 
 
 Explanation of Playbook with an example:
 ----------------------------------------
 
-- name: Configure web servers
+- name: Configure web servers 
   hosts: webservers
   tasks:
     - name: Install nginx
@@ -166,8 +132,8 @@ Explanation of Playbook with an example:
 	
 	
 *)Entire file → One PLAYBOOK
-  First - name block → First PLAY
-  Second - name block → Second PLAY
+  First name block → First PLAY
+  Second name block → Second PLAY
 
 
 *)Same hosts/groups unte → same play + multiple tasks. i.e. If the same host group is used, multiple tasks can be written in the same play.
@@ -196,7 +162,10 @@ Explanation of Playbook with an example:
 *)Faster and error-free
 
 
-#)Syntax to run the playbook: ansible-playbook -i inventory-fileName PlayBook-filename.yml
+#)Syntaxes to run the playbook: 
+
+ansible-playbook -i inventory-fileName -e ansible_user=ec2-user -e ansible_password=DevOps321 PlayBook-name
+ansible-playbook -i inventory-fileName PlayBook-filename.yml
 
 
 *)ansible-playbook : runs the playbook
@@ -356,7 +325,7 @@ NOTE:
   
   vars:
 	NAME: Megham
-	RELATION: Soul
+	RELATION: Soul 
 	
   tasks:
   ansible.builtin.debug:
@@ -383,7 +352,7 @@ Example:
   tasks:
   - name: print Husband and wife names
   
-    # Below vars section is task level variables, task variables are limited to only a specific task so   one task varibles cannot be used by other tasks 
+    # Below vars section is task level variables, task variables are limited to only a specific task so one task varibles cannot be used by other tasks 
     vars:
       NAME: Bujji Megham
       HUSBAND: Aaranya
@@ -395,7 +364,10 @@ Example:
 3) vars_files:
 ---------------
 
-*)Used to load variables from an external YAML file into a playbook.
+*) vars_files is used to load variables from an external YAML file into a playbook. 
+   i.e Instead of defining all variables inside the playbook, we can store them in a separate YAML file and load them into the playbook by specifying the file path.
+   
+*)If a playbook contains multiple plays, we need to define 'vars_files' in each play separately to load the required variables from an external YAML file.❤️
 
 *)Use Case: To keep variables separate from the playbook and improve reusability.
 
@@ -421,7 +393,15 @@ Example:
 4. vars_prompt:
 ---------------
 
-*)Asks the user to enter a value during playbook execution. 
+*)Asks the user to enter values during playbook execution. 
+
+vars_prompt:
+-> name and prompt are mandatory keywords. - name → Starts a new list item.
+-> private is optional.
+-> By default, private is true, which hides the input.
+-> private: false → Displays the input while typing.
+-> private: true  → Hides the input while typing.
+
 
 *)Use Case: When values such as username, password, or environment need to be provided at runtime.
 
@@ -446,14 +426,14 @@ Enter username during playbook execution.
     private: true # When you keep it as true it will hide the data on the screen while typing
 
   tasks:
-    - name: print the credentials
-      ansible.builtin.debug:
-        msg: "Hello, user is: {{ USERNAME }}, password is: {{ PASSWORD}}"
+  - name: print the credentials
+    ansible.builtin.debug:
+       msg: "Hello, user is: {{ USERNAME }}, password is: {{ PASSWORD}}"
 
 5) Inventory Variables:
 -----------------------
 
-*)Variables are defined in the inventory file for hosts or groups.
+*)Variables are defined in the inventory file for individual hosts or groups.
 
 *)Use Case: When different hosts require different values.
 
@@ -463,8 +443,9 @@ localhost
 [PROD]
 100.53.132.70
 
-Assume that above two groups or hosts are available in an iventory file(i.e. inventory.ini). If you would like to declare variables for any specific group then 
-you have to declare the variables in below format in the inventory file.
+
+So, To declare variables for a specific group, use the below format:
+
 
 [local:vars]
 WIFE=Megham
@@ -510,7 +491,7 @@ Example:
 
 
 Arguments declaration while running Playbook:
----------------------------------------------
+
 
 NOTE: You have to pass the arguments through command line like below
 
@@ -553,12 +534,34 @@ Variables that are defined for a specific host in the inventory file are availab
 Use Case:
 When different hosts need different values.
 
+Assignment:
+Variables can be assigned directly beside the hostname in the inventory file.
+
 
 # Host Variables assignment format for a specific host in the inventory file
 
 [frontend]
 server1 ansible_host=100.53.132.70 NAME=Aaranya COURSE=Ansible
 server2 ansible_host=100.53.132.71
+
+
+Note:
+
+server1 / server2 → Inventory hostnames (aliases names) used by Ansible to identify managed nodes.
+ansible_host → Ansible inventory variable used to specify the actual IP address or hostname of the managed node.
+100.53.132.70 → Actual IP address of the managed node to which Ansible connects.❤️
+
+*)If u want to use only server 1 then we can use it like below even though it is declared under a group.
+
+- name: Execute only on server1
+  hosts: server1
+  tasks:
+  - name: Display message
+    ansible.builtin.debug:
+       msg: "Executing on server1"
+
+
+
 
 Group Variables:
 -----------------
@@ -580,15 +583,18 @@ HUSBAND=Aaranya
 
 
 
-# Ansible Data Types:
----------------------
+##) Ansible Data Types:
+------------------------
 
 1. String:
 ----------
 
 *)Definition: Stores text or characters.
 
-*)Syntax: variable_name: "value"
+*)Syntax: 
+
+vars:
+  variable_name: "value"
 
 Example: 
 
@@ -599,7 +605,10 @@ Course: "Ansible"
 
 *)Definition: Stores whole numbers without decimal points.
 
-*)Syntax: variable_name: number
+*)Syntax: 
+
+vars:
+  variable_name: number
 
 Example: 
 
@@ -610,7 +619,10 @@ Duration: 120
 
 *)Definition: Stores numbers with decimal points.
 
-*)Syntax: variable_name: decimal_number
+*)Syntax: 
+
+vars:
+  variable_name: decimal_number
 
 Example: 
 
@@ -622,7 +634,10 @@ Version: 2.5
 
 *)Definition: Stores only True or False values.
 
-*)Syntax: variable_name: true/false
+*)Syntax: 
+
+vars:
+  variable_name: true/false
 
 Example: 
 
@@ -636,7 +651,8 @@ Install_Package: true
 
 *)Syntax:
 
-variable_name:
+vars:
+  variable_name:
   - value1
   - value2
   - value3
@@ -657,7 +673,8 @@ Tools:
 
 *)Syntax:
 
-variable_name:
+vars:
+  variable_name:
   key1: value1
   key2: value2
 
@@ -674,7 +691,8 @@ Student:
 
 *)Syntax: 
 
-variable_name: null
+vars:
+  variable_name: null
 
 
 Example:
@@ -699,18 +717,22 @@ Dictionary  -> Key-Value pairs
 
 Null        -> Empty value
 
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
 ##)Conditions:
 --------------
 
 *)Conditions are used to execute tasks only when a specified condition is true. 
 
-*) If the condition is true, the task will be executed. If the condition is false, the task will be skipped.
+*)If the condition is true, the task will be executed. If the condition is false, the task will be skipped.
 
 *)Conditions are written using the "when" keyword.
 
+*)The "when" keyword is used to define conditions in Ansible playbooks.
+
 *)Conditions can be used with variables, facts, and expressions.
 
-*) The "when" keyword is used to define conditions in Ansible playbooks.
 
 Memory Tip:
 -----------
@@ -754,18 +776,21 @@ Example-2:
   become: yes
 
   tasks:
-  - name: Install nginix if OS is Redhat
+  - name: Install nginix if OS is from Redhat family 
     ansible.builtin.dnf:
       name: nginix
       state: latest
     when: ansible_os_family == "RedHat"
 
-  - name: Install nginix if OS is Redhat
+  - name: Install nginix if OS is from Debian family
     ansible.builtin.apt:
       name: nginix
       state: latest
     when: ansible_os_family == "Debian"
 	
+	
+ansible_os_family     → Identifies OS family (RedHat, Debian).
+ansible_distribution → Identifies exact OS distribution (Ubuntu, CentOS, Debian).
 
 Common Operators:
 -----------------
@@ -796,22 +821,24 @@ Common Operators:
 6. Conditions with Loops
 7. Failed/Skipped Conditions
 
+-----------------------------------------------------------------------------------------------------------------------------------------
+
 ##)FACTS:
 ---------
 
-*)Facts are target server information collected automatically by Ansible. 
+*)Facts are target server information that is collected automatically by Ansible. 
   Gathering Facts is the process of collecting that information before executing tasks in a playbook.
   
-*)Facts are used to retrieve server information and make decisions in playbooks using facts.
+*)Facts are used to retrieve server information and make decisions in playbooks using those facts.
 
-*)ansible_facts is a built-in variable that stores all facts collected from the target server.
+*)'ansible_facts' is a built-in variable that stores the facts collected from the target server.
   ansible_facts → Contains all collected server information.
 
 *)ansible_os_family → One specific fact inside the collected facts.
 
-*)The "ansible_" prefix is used to refer the facts collected automatically by Ansible and to avoid conflicts with user-defined variables.
+*)The "ansible_" is the prefix used to access the facts collected by Ansible and to avoid conflicts with user-defined variables.
 
-Ex: ansible_hostnames
+Ex: ansible_hostname
     ansible_distribution
     ansible_os_family
 
@@ -836,18 +863,19 @@ Example-1:
   become: yes
 
   tasks:
-  - name: Install nginix if OS is Redhat
+  - name: Install nginix if OS is from Redhat family
     ansible.builtin.dnf:
       name: nginix
       state: latest
     when: ansible_os_family == "RedHat"
 
-  - name: Install nginix if OS is Redhat
+  - name: Install nginix if OS is from Debian family
     ansible.builtin.apt:
       name: nginix
       state: latest
     when: ansible_os_family == "Debian"
 	
+-----------------------------------------------------------------------------------------------------------------------------------------
 	
 #)LOOPS:
 --------
@@ -920,19 +948,28 @@ Example-2:
 
 *) {{ item.key_name }} is used when the loop contains dictionary (key-value pair) data.
 
+-----------------------------------------------------------------------------------------------------------------------------------------
 
 -------------
 SESSION-24
 -------------
 
-#)Filters:
-----------
+##)Filters:
+------------
+
+*)Filters are used to apply operations on variable values to modify or transform them and get the required output using Jinja2 expressions.
+*)Filters are applied using the pipe (|) condition.
+
+
+*)Jinja2 is a templating engine that is used to generate configuration files dynamically and process variables using expressions and placeholders.
+*)Jinja2 expressions are written inside double curly braces {{ }} and are used to access variables and perform operations on their values.
+
 
 1. default
 -----------
 
 Definition:
-Used to provide a default value if the variable is undefined.
+Used to provide a default value if the variable is undefined so that default value will be displayed.
 
 Syntax:
 {{ variable | default('value') }}
@@ -949,18 +986,28 @@ tasks:
 -----------
 
 Definition:
-Used to split a string into a list using a delimiter.
+The split filter is used to convert a string into a list based on a specified delimiter.
 
 Syntax:
 {{ string | split(',') }}
 
 Example:
 
-tasks:
-  - name: string to list conversion
-    ansible.builtin.debug:
-      msg: "conversion is: {{ Goals | split(',') }}"
+vars:
+  Goals: "Linux,AWS,Ansible"
 
+tasks:
+  - name: Convert string into list
+    ansible.builtin.debug:
+      msg: "{{ Goals | split(',') }}"
+	  
+O/P:
+
+[
+  "Linux",
+  "AWS",
+  "Ansible"
+]
 
 3. dict2items
 --------------
@@ -973,10 +1020,25 @@ Syntax:
 
 Example:
 
+vars:
+  Course:
+    name: Ansible
+    duration: 30 days
+    platform: Udemy
+
 tasks:
-  - name: dictionary/map to list conversion
-    ansible.builtin.debug:
-      msg: "conversion is: {{ Course | dict2items }}"
+- name: Convert dictionary into list
+  ansible.builtin.debug:
+     msg: "{{ Course | dict2items }}"
+	 
+O/P:
+
+- key: name
+  value: Ansible
+- key: duration
+  value: 30 days
+- key: platform
+  value: Udemy
 
 
 4. items2dict
@@ -1000,52 +1062,95 @@ tasks:
 -------------
 
 Definition:
-Used to convert YAML content into an Ansible data structure.
+Used to convert YAML-formatted content into an Ansible data structure (dictionary or list).
 
 Syntax:
 {{ yaml_content | from_yaml }}
 
 Example:
 
+student.yaml:
+
+name: Aaranya
+course: Ansible
+duration: 30 days
+
+
 tasks:
-  - name: read the data and take into a variable
-    ansible.builtin.set_fact:
-      student_yaml: "{{ lookup('file', './18-student.yaml') | from_yaml }}"
+- name: Read YAML data and convert it
+  ansible.builtin.set_fact:
+    student_yaml: "{{ lookup('file', './student.yaml') | from_yaml }}"
+
+- name: Display student details
+  ansible.builtin.debug:
+    msg: "{{ student_yaml }}"
+	
+O/P:
+
+{
+  "name": "Aaranya",
+  "course": "Ansible",
+  "duration": "30 days"
+}
 
 
 6. to_json
 -----------
 
 Definition:
-Used to convert data into JSON format.
+Used to convert ansible data into Single line JSON format.
 
 Syntax:
 {{ variable | to_json }}
 
 Example:
 
+vars:
+  student:
+    name: Aaranya
+    course: Ansible
+
 tasks:
-  - name: yaml to JSON conversion
+  - name: Convert YAML data to JSON
     ansible.builtin.debug:
-      msg: "conversion is: {{ student_yaml | to_json }}"
+      msg: "{{ student | to_json }}"
+
+
+O/P:
+
+"{\"name\": \"Aaranya\", \"course\": \"Ansible\"}"
 
 
 7. to_nice_json
 ----------------
 
 Definition:
-Used to convert data into a human-readable JSON format.
+Used to convert ansible data into a human-readable JSON format.
 
 Syntax:
 {{ variable | to_nice_json }}
 
 Example:
 
+vars:
+  student:
+    name: Aaranya
+    course: Ansible
+    duration: 30 days
+
 tasks:
-  - name: save JSON into a file
+  - name: Convert data into pretty JSON
     ansible.builtin.copy:
       dest: ./student-data.json
-      content: "{{ student_yaml | to_nice_json }}"
+      content: "{{ student | to_nice_json }}"
+	  
+O/P:
+
+{
+    "name": "Aaranya",
+    "course": "Ansible",
+    "duration": "30 days"
+}
 
 
 8. upper
@@ -1059,10 +1164,17 @@ Syntax:
 
 Example:
 
+vars:
+  name: aaranya
+
 tasks:
-  - name: convert to uppercase
+  - name: Convert into uppercase
     ansible.builtin.debug:
-      msg: "conversion is: {{ name | upper }}"
+      msg: "{{ name | upper }}"
+	  
+O/P:
+
+AARANYA
 
 
 9. lower
@@ -1076,13 +1188,60 @@ Syntax:
 
 Example:
 
+vars:
+  name: AARANYA
+
 tasks:
-  - name: convert to lowercase
+  - name: Convert into lowercase
     ansible.builtin.debug:
-      msg: "conversion is: {{ name | lower }}"
+      msg: "{{ name | lower }}"
+	  
+O/P:
+
+aaranya
 
 
-10. ansible.utils.ipv4
+10)Combining Filters:
+----------------------
+
+*)we can apply multiple filters for single expression.
+  We can apply more than one filter to the same variable using the pipe (|) condition. Each filter's output becomes the input for the next filter.
+  
+
+Example:
+
+vars:
+  name: "   aaranya   "
+
+tasks:
+  - name: Remove spaces and convert name into uppercase
+    ansible.builtin.debug:
+      msg: "{{ name | trim | upper }}"
+
+Output:
+AARANYA
+
+Explanation:
+
+- name → "   aaranya   "
+- trim → Removes leading and trailing spaces.
+- upper → Converts the result into uppercase.
+
+Filter Flow:
+
+name
+  ↓
+trim → aaranya
+  ↓
+upper → AARANYA
+  ↓
+Final Output → AARANYA
+
+The output of trim becomes the input to upper.
+
+
+
+11. ansible.utils.ipv4
 ----------------------
 
 
@@ -1102,9 +1261,12 @@ tasks:
 Prerequisite:
 pip3 install netaddr
 
+-----------------------------------------------------------------------------------------------------------------------------------------
 
-#)ANSIBLE COMMAND & SHELL MODULES
-==================================
+
+##)ANSIBLE COMMAND MODULE & SHELL MODULE:
+=========================================
+
 
 1. WHY DO WE USE COMMAND AND SHELL MODULES?
 
@@ -1121,10 +1283,9 @@ Ansible provides many built-in modules such as:
 
 However, sometimes:
 
-1. A dedicated module may not exist.
-2. We need to execute Linux commands directly.
-3. We need to collect system information.
-4. We need to run custom commands/scripts.
+1. A dedicated module may not exist, We need to execute Linux commands directly.
+2. We need to collect system information.
+3. We need to run custom commands/scripts.
 
 In such cases, we use:
 
@@ -1133,14 +1294,11 @@ In such cases, we use:
 
 
 
-##)ANSIBLE COMMAND MODULE
-==========================
+##)ANSIBLE COMMAND MODULE:
+--------------------------
 
-*)Definition:
-
-Used to run a simple Linux command on a remote server.
-
-command module -> a simple command no need of access to shell environment like variables, bash, piping, etc..
+*)Used to run a simple Linux command on a remote server.
+  command module -> a simple command no need of access to shell environment like variables, bash, piping, etc..
 
 *)Syntax:
 
@@ -1169,7 +1327,7 @@ ls -l
 With Register: 
 --------------
 
-*)Register stores the complete output returned by an Ansible module.
+*)Register stores the complete output of a module.
 
 - name: Check hostname
   ansible.builtin.command: hostname
@@ -1238,24 +1396,17 @@ mkdir test && cd test
 
 Command module does NOT use a shell.
 
----------------------------------------------------------------------------------------------------------------------
 
-
-
-
-##)ANSIBLE SHELL MODULE
-======================
-
-**)Definition:
----------------
+##)ANSIBLE SHELL MODULE:
+------------------------
 
 *)Used to run Linux commands through a shell. Use shell module only when you need shell features like |, >, >>, $HOME, &&.
-
-*)When we use the shell module, Ansible establishes an SSH connection to the remote server. It transfers a temporary module, 
-  executes the shell command through the remote shell, collects the command output such as stdout, stderr, and return code, 
-  sends the result back to the control node, and finally cleans up the temporary files.
-  
 *)shell will take remote login -> execute command and comeout (or) login inside the server and execute the command
+
+Syntax:
+
+- name: Run shell command
+  ansible.builtin.shell: <command>
 
 
 
@@ -1280,7 +1431,6 @@ cat /etc/passwd | grep root
 
 *)Meaning: Output of first command becomes input of second command.
 
----------------------------------
 
 2) >   --> Output Redirection
 
@@ -1290,7 +1440,6 @@ hostname > /tmp/logs.txt
 
 *)Meaning: Store output in a file.
 
----------------------------------
 
 3) >>  --> Append Redirection
 
@@ -1300,7 +1449,6 @@ hostname >> /tmp/logs.txt
 
 *)Meaning: Add output to existing file.
 
----------------------------------
 
 4) <   --> Input Redirection
 
@@ -1310,47 +1458,10 @@ wc -l < file.txt
 
 *)Meaning: Take input from a file.
 
----------------------------------
-
-5) $HOME --> Environment Variable
-
-Example:
-
-echo $HOME
-
-*)Meaning: Print home directory path.
-
----------------------------------
-
-6) && --> Command Chaining
-
-Example:
-
-mkdir test && cd test
-
-*)Meaning: Run second command only if first command succeeds.
 
 
 EXAMPLES:
 ---------
-
-*)Examples:
-
-cat /etc/passwd | grep root
-
-hostname > /tmp/logs.txt
-
-echo $HOME
-
-mkdir test && cd test
-
-
-*)Syntax:
-
-- name: Run shell command
-  ansible.builtin.shell: <command>
-
-*)Example:
 
 - name: Check root user
   ansible.builtin.shell: cat /etc/passwd | grep root
@@ -1364,8 +1475,8 @@ mkdir test && cd test
 - name: Print output
   ansible.builtin.debug:
     msg: "{{ root_output.stdout }}"
-
-
+	
+	
 
 MEMORY TRICK
 =============
@@ -1375,7 +1486,7 @@ MEMORY TRICK
 *) shell module = command + pipe + redirection + variables + chaining
 
 
-#)Difference (Interview Style):
+#)Interview Style:
 -------------------------------
 
 *)I use the command module for simple commands like hostname, date, and uptime. If I need shell features such as pipe (|), 
@@ -1389,11 +1500,11 @@ MEMORY TRICK
 ----------------------------------
 
 
-  
 1)ignore_errors:
 ----------------
 
-*)ignore_errors is used to continue the execution of the playbook even if a task fails. used for non-critical errors.
+*)It is used to continue playbook execution even if a task fails. It continues with the next task by ignoring the failed task.
+  Mostly used for non-critical errors.
 
 Syntax:
 -------
@@ -1402,7 +1513,9 @@ Syntax:
   ansible.builtin.command: <command>
   ignore_errors: true
   
-  
+true → Continues playbook execution even if the task fails.
+false → Does not ignore the task failure; playbook execution stops according to normal Ansible failure handling.
+
 Example:
 --------
 
@@ -1423,7 +1536,7 @@ and continue to execute the next task.
 2)failed_when:
 --------------
 
-*)failed_when is used to define a custom condition for task failure. It allows you to decide when a task should be marked as failed.
+*)failed_when method is used to define a custom condition for task failure. It allows you to decide when a task should be marked as failed.
   
 Syntax:
 -------
@@ -1454,13 +1567,12 @@ Example: Validate whether the root user exists in /etc/passwd. If the root user 
 3)changed_when: 
 ---------------
 
-*)changed_when is used when Ansible cannot accurately determine whether a task modified the target system, 
-  especially when using generic modules like " command and shell ".
+*)changed_when method is used when Ansible cannot accurately determine whether a task modified the target system, 
+  especially when using generic modules like " command and shell modules ". We manually control the task's changed status using 'changed_when'
   
 *)changed_when is used to override Ansible's default change detection and specify whether a task should be marked as changed or not after the task is executed.
 
   
-	
 Syntax:
 -------
 
@@ -1468,6 +1580,9 @@ Syntax:
   ansible.builtin.command: <command>
   register: output
   changed_when: false	
+  
+changed_when: true → Marks the task as changed.
+changed_when: false → Marks the task as not changed.
 
 
 Example:
@@ -1500,10 +1615,12 @@ changed_when: false --> It tells Ansible Even though the command ran successfull
 
 
 ## ansible.builtin.replace Module
+----------------------------------
 
-Purpose:
+*)The replace module searches the entire file for the given regular expression (regexp) and replaces every matching occurrence with the value specified in 'replace'.
 
-The replace module searches the entire file for the given regular expression (regexp) and replaces every matching occurrence with the value specified in replace.
+*)use ^(caret) symbol is safer when you want to match only the lines starting with 'regexp' value.
+
 
 Syntax:
 
@@ -1519,26 +1636,45 @@ Parameters:
 path: Specifies the file in which Ansible should perform the replacement.
 
 Example:
-
 path: /etc/redis/redis.conf
 
 
-regexp: Specifies the text or regular expression to search for inside the file.
+regexp: Specifies the pattern that needs to be searched within the file.
 
 Example:
-
-regexp: 127.0.0.1
-or
-regexp: Megham
+regexp: 127.0.0.1 or regexp: Megham
 
 
 replace: Specifies the new text that should replace every matching occurrence.
 
 Example:
+replace: 0.0.0.0 or replace: muddule-muddulu
 
-replace: 0.0.0.0
-or
-replace: muddule-muddulu
+
+Example-1:
+----------
+
+# Input file: /tmp/app.conf
+
+PORT=8080
+DB_PORT=8080
+APP_PORT=8080
+
+
+# Playbook
+
+- name: Replace port number throughout the file
+  ansible.builtin.replace:
+    path: /tmp/app.conf
+    regexp: '8080'
+    replace: '3306'
+
+
+# Output file: /tmp/app.conf
+
+PORT=3306
+DB_PORT=3306
+APP_PORT=3306
 
 ------------------------------------------------------------
 
@@ -1549,28 +1685,10 @@ Step 2: Search the entire file using the regexp.
 Step 3: Replace every matching occurrence with the replace value.
 Step 4: Save the file.
 
-Example:
-
-Input:
-
-Megham
-Megham is my wife
-
-Playbook:
-
-replace:
-  regexp: Megham
-  replace: muddule-muddulu
-
-Output:
-
-muddule-muddulu
-muddule-muddulu is my wife
-
 Observation:
 
 - Searches the entire file.
-- Replaces every matching occurrence.
+- Replaces every matching occurrence. 
 - Replaces only the matched text.
 - Does NOT replace the complete line.
 
@@ -1585,13 +1703,21 @@ Real Example:
 
 Purpose: Replace the default localhost IP with 0.0.0.0 so Redis listens on all available network interfaces.
 
+
 ============================================================
 
 ## ansible.builtin.lineinfile Module
+-------------------------------------
 
-Purpose:
 
-The lineinfile module searches for a matching line using regexp and replaces the entire line with the value specified in line.
+*)The lineinfile module searches the entire file for the given regular expression (regexp) and replaces the entire matching line with the value specified in 'line'.
+  If no matching line is found, it can insert the specified value into the file. If multiple lines match the regexp, it replaces only the last matching line.
+
+*)use ^(caret) symbol is safer when you want to match only the lines starting with 'regexp' value.
+
+
+Example:
+^PORT= → Matches PORT=8080 but not DB_PORT=8080.🫂
 
 Syntax:
 
@@ -1600,35 +1726,57 @@ Syntax:
     path: <file_path>
     regexp: <pattern_to_search>
     line: <new_line>
-
+	
 Parameters:
 -----------
 
 path: Specifies the file in which Ansible should search.
 
 Example:
-
 path: /etc/redis/redis.conf
 
 
-regexp: Specifies the text or regular expression used to identify the matching line.
+regexp: Specifies the pattern that needs to be searched within the file.
 
 Example:
-
-regexp: protected-mode
-or
-regexp: Megham
+regexp: protected-mode or regexp: Megham
 
 
 line: Specifies the complete line that should replace the matching line.
 
 Example:
+line: "protected-mode no" or line: muddule-muddulu	
 
-line: "protected-mode no"
-or
-line: muddule-muddulu
 
-------------------------------------------------------------
+
+Example-1:
+----------
+
+File content:
+
+PORT=8080
+DB_PORT=8080
+APP_PORT=8080
+
+Playbook:
+
+- name: Update application port
+  ansible.builtin.lineinfile:
+    path: /tmp/app.conf
+    regexp: '^PORT='
+    line: 'PORT=3306'
+
+Output:
+
+PORT=3306
+DB_PORT=8080
+APP_PORT=8080
+
+Explanation:
+
+^PORT= matches only lines starting with PORT=. It does not match DB_PORT=8080 or APP_PORT=8080.
+
+
 
 How it works?
 
@@ -1638,7 +1786,8 @@ Step 3: Replace the entire matching line with the line value.
 Step 4: Save the file.
 
 
-Example:
+Example-2:
+----------
 
 Input:
 
@@ -1674,23 +1823,16 @@ Real Example:
 
 Purpose: Find the line containing protected-mode and replace the entire line with protected-mode no.
 
-============================================================
 
-## Understanding regexp
+*)regexp: The responsibility of regexp is only to find the matching pattern but What happens after finding the pattern is depends on the module.
 
-Purpose:
+*)replace module: Replaces every matching occurrence.
 
-The responsibility of regexp is only to find the matching pattern but What happens after finding the pattern is depends on the module.
+*)lineinfile module: Replaces the matching configuration line.
 
-replace module
-↓
-Replaces every matching occurrence.
 
-lineinfile module
-↓
-Replaces the matching configuration line.
 
-*)Ansible Register & Results
+##)Ansible Register & Results
 -----------------------------
 
 1. Ansible module returns output as Dictionary format .
@@ -1851,7 +1993,7 @@ Definition:
   Instead of maintaining all services in one large playbook, we can maintain each service as an individual role.
   
 *)A role can contain directories such as tasks, files, vars, defaults, handlers, and templates. 
-  Ansible automatically looks for main.yml, which acts as the default entry point in directories such as tasks, vars, defaults, handlers, and meta.
+  Ansible automatically looks for main.yml when a role is executed, as it acts as a default entry point in directories such as tasks, vars, defaults, handlers, and meta.
   The files and templates directories contain supporting files, so they don't require a main.yml because their files are referenced by tasks when required.
 
 
@@ -1899,7 +2041,7 @@ A role can contain directories such as:
 
 Definition:
 
-The tasks directory contains the actual automation steps (tasks that we normally write in a playbook) that need to be performed for that particular role. 
+The tasks directory contains the actual automation tasks that we normally write in a playbook that need to be performed for that particular role. 
 These tasks are written in tasks/main.yml, which Ansible uses as the default entry point when the role is executed.
 
 Playbook lo tasks ela rastamo, role lo ave tasks → tasks/main.yml lo rastam.
@@ -1929,8 +2071,8 @@ main.yaml contains tasks
 
 Definition:
 
-The files directory stores static files required for the role. These files are not automatically executed or loaded by Ansible. 
-They are used by a task whenever required, for example, to copy a file to the managed node. This files folder stores ready-made files.
+The files directory stores static files or ready-made files required for the role. These files are not automatically executed or loaded by Ansible. 
+They are used by tasks whenever required. for example, to copy a file to the managed node. 
 
 Example:
 
@@ -1954,16 +2096,13 @@ Here nginx.conf is a ready-made file and Ansible just uses/copies it when the ta
 
 Definition:
 
-*)A handler is a special task that runs only when a task with a 'notify' parameter reports a change.
+*)A handler is a special task that runs only when another task makes a change and notifies the handler.
+  Restarting or reloading a service after a configuration change is one of the most common use cases.
   In a role, handler tasks are written in handlers/main.yml.
   
-*)Handlers are used for actions that should be performed only when another task makes an actual change. 
-  Restarting or reloading a service after a configuration change is one of the most common use cases.
-
-*) The name specified in 'notify' should match the handler task 'name'.
+*) The name specified in 'notify' parameter should match the handler task 'name'.
 
 Tip line: Handler tasks are executed only when another task makes a change and notifies the handler.
----------
 
 
 Important Points:
@@ -1973,7 +2112,7 @@ Important Points:
 
 *) If the task does not make any change, the handler is not notified.
 
-*) If multiple tasks notify the same handler, the handler normally executes only once.
+*) Even if multiple tasks notify the same handler, the handler normally executes only once.
 
 *) A handler is also an Ansible task. The difference is that a normal task executes in the
    normal task flow, whereas a handler executes only when it is notified by a changed task.
@@ -2017,13 +2156,13 @@ At the end of the play, the handler executes. ✅
 
 
 
-##)vars/:
+4)vars/:
 ---------
 
-*)vars/ directory stores the variables that are required for that particular role, so the tasks in that role can use those values instead of hard-coding them.
+*)vars/ directory stores the variables that are required for that particular role, so the tasks in that role can use those values.
 
 *)Instead of hard-coding the same value in multiple tasks, we can store it in a variable and manage it from one place. 
-  If the value changes, we only need to update the variable.
+  If the value changes, we only need to update the variable in vars/main.yaml.
   
 vars/
 └── main.yml
@@ -2065,13 +2204,13 @@ package_name → nginx
 For example, In future if the package/service name changes then we only need to update it in vars/main.yml instead of changing it in every task.
 
 
-##)defaults/
+5)defaults/
 ------------
 
 *)defaults/ directory is also used to define variables, but it stores the default values for variables used by a role. 
-  These are default values. If we provide a different value, the provided value will be used instead of the default value. ✅
+  If we provide a different value, the provided value will be used instead of the default value. ✅
 
-*)understanding liner: use this value unless someone provides a different value.
+*)So it uses the default value unless someone provides a different value.
 
 
 
@@ -2161,16 +2300,16 @@ defaults/main.yml   → http_port = 80     ← Lower priority
 Final value used by Ansible: http_port → 8080
 
 
-#)templates/
--------------
+6) templates/
+--------------
 
 Definition:
 
-*)The templates directory stores template files that contain variables/placeholders.
-  Ansible templates are Jinja2-formatted files that contain placeholders/variables instead of hard-coded values.
-  Ansible takes the template, gets the actual values from variables, and creates the required file on the managed node.
+*) The templates directory stores Jinja2-formatted template files that contain variables/placeholders instead of hard-coded values.
 
-*)Template files are created with the .j2 extension.
+   Ansible takes the template, replaces the placeholders with actual values from variables, and generates the required file on the managed node.
+
+*) Template files are generally created with the .j2 extension.
 
 
 {{ MONGODB_HOST }} → placeholder / variable
@@ -2262,7 +2401,7 @@ files/     → Copy the file as it is.
 templates/ → Generate the file using variables.
 
 
-#)meta/
+7)meta/
 -------
 
 Definition:
@@ -2290,31 +2429,30 @@ So, when the catalogue role is executed, Ansible will execute the common role fi
 and then execute the catalogue role.
 
 
----------------------
-#)SESSION-28
----------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-#) ANSIBLE CONFIGURATION
-------------------------
+
+#)SESSION-28
+-------------
+
+##) ANSIBLE CONFIGURATION
+--------------------------
 
 ---> ansible.cfg
 
 Definition:
 
-*) ansible.cfg is a configuration file which contains the default settings or default configurations
-   that control how Ansible should behave.
+*) ansible.cfg is a configuration file which contains the default settings or default configurations that control how Ansible should behave/configure itself.
 
-*) We use ansible.cfg to define settings that we repeatedly use while working with Ansible instead of specifying them every time
+*) We use ansible.cfg to define settings that we repeatedly use while working with Ansible instead of specifying them every time,
    we can configure them as defaults in ansible.cfg.
 
 Sections in ansible.cfg:
 ------------------------
 
-Ansible configuration file can contain different sections.
-Each section is used to group related configuration settings.
+Ansible configuration file can contain different sections. Each section is used to group its related configuration settings.
 
-[defaults] is one of the sections in ansible.cfg and contains the default
-settings for Ansible.
+[defaults] is one of the sections in ansible.cfg and contains the default settings for Ansible.
 
 Example:
 --------
@@ -2334,7 +2472,7 @@ Some commonly used sections are:
 → General/default Ansible settings.
 
 [privilege_escalation]
-→ Settings related to privilege escalation such as become.
+→ Controls how Ansible gets admin permissions on managed nodes.
 
 [ssh_connection]
 → Settings related to SSH connections.
@@ -2346,8 +2484,8 @@ Some commonly used sections are:
 → Settings related to Ansible output colors.
 
 
-##)Common Settings In ansible.cfg:
-----------------------------------
+Common Settings In ansible.cfg:
+-------------------------------
 
 *)inventory
 → Defines the default inventory file/location.
@@ -2370,8 +2508,11 @@ Example:
 private_key_file = ~/.ssh/roboshop.pem
 
 
-##)Ansible Configuration File Location:
----------------------------------------
+Ansible Configuration File Location:
+------------------------------------
+
+
+*) When you run a playbook, Ansible looks for the ansible.cfg configuration file in the following places.
 
 
 1) ANSIBLE_CONFIG environment variable:
@@ -2396,7 +2537,7 @@ private_key_file = ~/.ssh/roboshop.pem
    → Ansible can use the ansible.cfg present in the current directory.
 
 
-3) ~/.ansible.cfg:
+3) ~/.ansible.cfg:  current user's home directory
 
    Example:
 
@@ -2408,7 +2549,7 @@ private_key_file = ~/.ssh/roboshop.pem
    → This is the ansible.cfg file in the current user's home directory.
 
 
-4) /etc/ansible/ansible.cfg:
+4) /etc/ansible/ansible.cfg: System-level setting
 
    Example:
 
@@ -2417,8 +2558,8 @@ private_key_file = ~/.ssh/roboshop.pem
    → This is the system-level Ansible configuration file.
 
 
-##)Ansible Configuration file Precedence(preference order):
------------------------------------------------------------
+Ansible Configuration file Precedence(preference order):
+--------------------------------------------------------
 
 *) When you run a playbook, Ansible looks for the ansible.cfg configuration file in the following order of preference.
 
@@ -2433,8 +2574,9 @@ ANSIBLE_CONFIG( environment variable ) - First place where ansible searches for 
 Ansible uses the first applicable configuration file it finds.
 
 Core Memory:
+------------
 
-ANSIBLE_CONFIG → Current Directory → Home Directory → /etc/ansible
+ANSIBLE_CONFIG → Current Directory → Current user Home Directory → /etc/ansible
 
 
 Important:
@@ -2443,7 +2585,6 @@ Important:
 The settings in ansible.cfg are defaults. A different value can be provided explicitly which can override the defaults for that particular execution.
 
 Simple memory:
---------------
 
 ansible.cfg → How Ansible should behave/configure itself.
 
@@ -2465,18 +2606,19 @@ ansible.cfg
 [defaults]
 log_path = /var/log/roboshop/ansible.log
 
+
 -----------------------------------------------------------------------------------------------------------------------
 
 
-#) import_role vs include_role modules:
+##) import_role vs include_role modules:
 ---------------------------------------
 
-##)import_role:
----------------
+import_role:
+------------
 
-*) import_role is a static role import.
+*) import_role module is a static role import.
 
-*)import_role → Role tasks are loaded into the playbook BEFORE tasks execution begins.
+*) Role related tasks are loaded into the playbook BEFORE tasks execution begins.
 
 *) Ansible processes/reads the playbook first. When it sees import_role, it loads the tasks
    from the specified role into the playbook's task list.
@@ -2493,7 +2635,7 @@ Playbook:
 3. install dependencies task
 
 
-Here common is a role, If common role contains:
+Here 'common' is a role, If common role contains:
 
 task A
 task B
@@ -2522,14 +2664,15 @@ install dependencies task
 
 
 
-##)include_role:
-----------------
+include_role:
+-------------
 
-*) include_role is a dynamic role inclusion.
+*) include_role module is a dynamic role inclusion.
+
+*) Role tasks are loaded into the playbook AT RUNTIME when Ansible reaches include_role module.
 
 *) Ansible starts executing the playbook tasks one by one. when it reaches the include_role task, it loads the specified role tasks at that point.
 
-*)include_role → Role tasks are loaded into the playbook AT RUNTIME when Ansible reaches include_role.
 
 Example:
 
@@ -2576,7 +2719,8 @@ include_role → Reach the include_role task, load the role tasks, then execute 
 ##) Tags:
 ---------
 
-*) Tags are used to run the specific tasks from a playbook instead of running all the tasks.
+*) Tags are used to run the required tasks from a playbook instead of running all the tasks.
+*) You can give whatever tag name you want, ra. No need to configure or declare it outside the playbook before hand.❤️
 
 Example:
 
@@ -2616,7 +2760,7 @@ ansible-playbook main.yml
 #) --tags:
 ----------
 
-*) We use '--tags' while running the playbook to run tasks with a particular tag.
+*) We use '--tags' while running the playbook to run tasks that are with a particular tag.
 
 Example:
 
@@ -2625,7 +2769,7 @@ ansible-playbook main.yml --tags deployment
 #) --skip-tags:
 ----------------
 
-*)we can also skip the tasks that are with the tags if we don't want to run them So we use '--skip-tags' while running the playbook to skip tasks with a particular tag.
+*)It skip the tasks that are with the 'tags' and run the other tasks in playbook. 
 
 Example:
 
@@ -2697,7 +2841,7 @@ So, the tasks that are with the tag 'config' will be skipped
 1)tags:   → To give a name
 
 tags:
-    - deployment
+   - deployment
 	
 2)--tags  → To Run that specific tag
 
@@ -2712,21 +2856,8 @@ ansible-playbook main.yml --skip-tags config
 -----------------------------------------------------------------------------------------------------------------------
 
 
-#) DYNAMIC INVENTORY
+##)DYNAMIC INVENTORY
 --------------------
-
-*) In static inventory, we manually maintain the hosts/servers in the
-   inventory file.
-
-Example:
-
-[frontend]
-10.0.0.10
-10.0.0.11
-
-[mongodb]
-10.0.0.20
-
 
 *) In dynamic inventory, we don't manually maintain the hosts in the
    inventory file.
@@ -2749,6 +2880,22 @@ Tomorrow:
 frontend → 6 servers
 
 *)Instead of manually updating the inventory file, Ansible can get the current host information from the external source.
+
+
+STATIC INVENTORY:
+-----------------
+
+*) In static inventory, we manually maintain the hosts/servers in the inventory file.
+
+Example:
+
+[frontend]
+10.0.0.10
+10.0.0.11
+
+[mongodb]
+10.0.0.20
+
 
 
 ##) HOW DYNAMIC INVENTORY PROVIDES HOST INFORMATION
@@ -2775,7 +2922,7 @@ Ansible
 2) Inventory Plugin:
 --------------------
 
-*) Modern Ansible uses inventory plugins to get host information dynamically from external sources.
+*) Modern Ansible uses inventory plugins to get host information dynamically from an external sources.
 
 External source
       ↓
@@ -2852,11 +2999,11 @@ O/P:
    - Roboshop_frontend group is created.
    - Expected hosts are present in that group.
 
-*) This command only verifies the inventory. It does not run the playbook.
+*) This command 'ansible-inventory -i Dynamic-inventory-aws.aws_ec2.yaml --graph' only verifies the inventory. It does not run the playbook.
 
 
-2) Run the Playbook using Dynamic Inventory:
---------------------------------------------
+2) Run the Playbook using Dynamic Inventory file:
+-------------------------------------------------
 
 Syntax:
 -------
@@ -2934,16 +3081,13 @@ Ansible
 ##)ANSIBLE VAULT:
 -----------------
 
-Ansible Vault is used to store sensitive data such as passwords
-in encrypted form instead of plain text.
+*)Ansible Vault is used to encrypt sensitive data that is stored in files such as passwords, API keys, and secrets instead of keeping them in plain text.
 
 WHY DO WE USE VAULT?
 --------------------
 
-If we store passwords directly in a YAML file, anyone who can read
-the file can see the password.
-
-Vault encrypts the sensitive data so it is not readable.
+*)If we store passwords directly in a YAML file, anyone who can read the file can see the password.
+  Vault encrypts the sensitive data so it is not readable.
 
 
 CREATING A VAULT FILE and VAULT PASSWORD:
@@ -2980,8 +3124,7 @@ VAULT PASSWORD:
 
 While creating the Vault file, we provide a Vault password.
 
-Ansible uses this Vault password to decrypt the encrypted file
-when the playbook needs to use the variables.
+Ansible uses this Vault password to decrypt the encrypted file when the playbook needs to use the variables.
 
 
 ROLE + VAULT:
@@ -3031,7 +3174,7 @@ roles/mysql/vars/main.yaml
 [defaults]
 vault_password_file = /etc/ansible/mysql_vault_pass.txt
 
-We will only create this 'mysql_vault_pass.txt' file to save the vault password 
+We only create this 'mysql_vault_pass.txt' file to save the vault password 
                     ↓
 
 8) Ansible gets the Vault password from:
@@ -3087,10 +3230,13 @@ ANSIBLE VAULT COMMANDS:
 
 ansible-vault create fileName
 
---> Creates a new file.
---> Add the required data inside the file.
---> After adding the data, we need to set the Vault password.
---> The file will be stored in encrypted format.
+What happens:
+
+1. Creates a new encrypted vault file with the given filename
+2. Ansible asks you to enter a Vault password.
+3. It opens the file in an editor.
+4. You add sensitive data, such as passwords.
+5. When you save and exit, Ansible encrypts the file and stores it
 
 
 2) ENCRYPT:
@@ -3115,8 +3261,7 @@ ansible-vault decrypt fileName
 
 ansible-vault view fileName
 
---> Displays the data from the encrypted file.
---> Need to provide the Vault password to view the data.
+--> Displays the encrypted file data but you need to provide the Vault password to view the data.
 --> The file remains encrypted.
 
 
@@ -3125,8 +3270,7 @@ ansible-vault view fileName
 ansible-vault rekey fileName
 
 --> Changes the Vault password of an encrypted file.
---> Need to provide the current Vault password.
---> Then set the new Vault password.
+--> Need to provide the current Vault password and Then set the new Vault password.
 
 
 6) EDIT:
@@ -3151,9 +3295,56 @@ rm fileName
 ##)AWS SSM PARAMETER STORE:
 ---------------------------
 
-*)AWS SSM Parameter-Store is used to store secrets ( configuration values and sensitive values) such as passwords.
+*)AWS SSM Parameter Store is an AWS service used to centrally store and manage configuration data and sensitive information such as passwords, 
+  API keys, and database connection details. It uses AWS KMS(Key Management Service) to encrypt sensitive data that is stored as SecureString parameters and
+  decrypts the data when retrieved using the decryption option.
+  
+-->SSM Parameter Store stores a password as a SecureString.
+-->AWS KMS provides the encryption keys that are used to encrypt and decrypt that password.
 
-Instead of hardcoding a password directly in Ansible like below:
+  
+Easy way to remember:
+
+- Ansible Vault → File-based encryption.
+- SSM Parameter Store → Centralized AWS parameter and secret management.
+
+
+Ansible Vault (vs) AWS SSM Parameter Store:
+-------------------------------------------
+
+Ansible Vault
+-------------
+
+1. Storage:
+   Stores sensitive data in encrypted files.
+
+2. Encryption:
+   Encrypts file contents using a Vault password.
+
+3. Access:
+   Requires the Vault password to view or decrypt the data.
+
+4. Usage:
+   Mainly used to protect sensitive data in Ansible files.
+   
+AWS SSM Parameter Store
+-----------------------
+
+1. Storage:
+   Stores configuration data and sensitive information centrally in AWS.
+
+2. Encryption:
+   Uses AWS KMS(Key Management Service) to encrypt SecureString parameters.
+
+3. Access:
+   Uses IAM permissions to control access to parameters.
+
+4. Usage:
+   Allows applications, scripts and AWS services to store and retrieve configuration data and secrets.
+   
+
+
+Instead of hardcoding a password directly in Ansible-vault like below:
 
 MYSQL_ROOT_PASS: Roboshop@1
 
@@ -3232,7 +3423,7 @@ STEPS TO CREATE AN AWS SSM PARAMETER
 11. Click "Create parameter".
 
 
-ANsible INTEGRATION:
+Ansible INTEGRATION:
 --------------------
 
 Ansible can retrieve the parameter value from AWS SSM Parameter Store using the 'amazon.aws.aws_ssm lookup' plugin.
@@ -3304,13 +3495,19 @@ MAIN PURPOSE:
 
 *)The main purpose is to avoid hardcoding sensitive values directly inside Ansible files and retrieve them from a centralized AWS
   Parameter Store when required.
-  
---------------------------------------------------------------------------------------------------------------------------
 
-ANSIBLE FORKS:
---------------
+
+  
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+##)ANSIBLE FORKS:
+-----------------
 
 *)Forks define the maximum number of hosts Ansible can process in parallel at the same time.
+  By default, Ansible can process 5 managed hosts in parallel. Ansible can process number of hosts parallelly like 10, 30 and 40 based on control node CPU, RAM, 
+  network capacity and the environment.
 
 *)The forks value is configured in ansible.cfg
 
@@ -3332,7 +3529,7 @@ Host 7
 Host 8
 Host 9
 Host 10
-
+ 
 
 If forks = 3:
 
@@ -3380,7 +3577,8 @@ forks = 3
 Important:
 ----------
 
-It means Ansible can process up to 3 hosts concurrently.
+*)It means Ansible can process up to 3 hosts concurrently as declared but you can give forks as 10,30 and 40 based on the control node CPU, RAM, 
+  network capacity and the environment.
 
 For fixed batches, Ansible has a separate concept called "serial".
 
@@ -3424,8 +3622,8 @@ Batch 4 → Server 7, Server 8
 Batch 5 → Server 9, Server 10
 
 
-If one server finishes early in the current batch, Ansible does not bring another server into that batch.
-It waits until the current batch is completed before moving to the next batch.
+If one server finishes early in the current batch, Ansible does not bring another server into that batch, It waits until the current batch is 
+completed before moving to the next batch.
 
 Q)Why do we use serial?
 
