@@ -12,6 +12,7 @@ SESSION-29:
 *) .tf is the file extension used for Terraform configuration files. These files contain the required configuration to define and manage infrastructure.
    The configuration files written in HCL (HashiCorp Configuration Language). 
 
+*) Execute Terraform commands only in the path where we have .tf files 
 
 Platforms supported by Terraform:
 
@@ -176,3 +177,314 @@ Explanation:
    Example: "t3.micro"
 
 6. nested_block --> Used to define additional configurations inside a resource block.
+
+
+SESSION-30:
+------------
+
+
+##) .gitignore:
+---------------
+
+*) .gitignore is a file used by Git to specify which files and directories should be ignored and not tracked by Git.
+
+Why do we need it?
+
+- To avoid pushing unnecessary files to GitHub.
+- To prevent sensitive files from being uploaded.
+- To keep the repository clean.
+
+Remember this distinction:
+
+- New, untracked files → .gitignore prevents Git from tracking them.
+- Already tracked files → .gitignore alone won't stop Git from tracking them.
+
+Example:
+
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+
+##) Data Types:
+--------------
+
+
+Terraform Data Types:
+
+NOTE:
+
+*)Terraform uses these official data type names when declaring variable types.
+
+Terraform supports the following data types:
+
+1. String:
+   Stores text values.
+
+   Example:
+   name = "terraform"
+
+
+2. Number:
+   Stores numeric values, including integers and decimals.
+
+   Example:
+   instance_count = 2
+   cpu_value      = 2.5
+
+
+3. Bool:
+   Stores either true or false values.
+
+   Example:
+   create_instance = true
+
+
+4. List:
+   Stores multiple values of the same data type in an ordered collection.
+   Each value has a position (index), starting from 0.
+
+   Example:
+   instance_types = ["t2.micro", "t3.micro", "t3.small"]
+
+   Index:
+   0 → t2.micro
+   1 → t3.micro
+   2 → t3.small
+
+
+5. Map:
+   Stores values in key-value pairs.
+   All values must have the same data type.
+
+   Example:
+   instance_types = {
+     dev  = "t2.micro"
+     prod = "t3.micro"
+   }
+
+
+6. Object:
+   Stores multiple named attributes, which can have different data types.
+
+   Example:
+   server = {
+     name    = "web-server"
+     count   = 2
+     enabled = true
+   }
+
+
+------------------------------------------------------------------
+
+less important:
+
+7. Tuple:
+   Stores multiple values of different data types in a fixed structure.
+   Each position has a specific data type.
+
+   Example:
+   details = ["terraform", 10, true]
+
+   Position:
+   0 → String
+   1 → Number
+   2 → Bool
+   
+8. Set:
+   Stores unique values of the same data type.
+   Duplicate values are not allowed.
+
+   Example:
+   availability_zones = toset(["us-east-1a", "us-east-1b"])
+
+------------------------------------------------------------------
+
+Important Differences:
+
+List vs Tuple:
+- List → Same data type, ordered collection.
+- Tuple → Different data types are allowed, fixed structure.
+
+Map vs Object:
+- Map → Key-value pairs with the same value type.
+- Object → Named attributes with different data types.
+
+Number vs Integer:
+- Terraform uses Number as its data type.
+- It supports both whole numbers and decimal numbers.
+
+Bool vs Boolean:
+- Both refer to true/false values.
+- Terraform uses Bool as its official type name.
+
+NOTE:
+
+Terraform uses these official data type names when declaring variable types.
+
+
+
+##) Terraform Variables:
+------------------------
+
+1. What are Variables in Terraform?
+
+Variables are used to pass values to Terraform configurations instead of hardcoding values directly in resource blocks.
+
+Why do we use Variables?
+- To avoid hardcoding values.
+- To reuse the same configuration with different values.
+- To make configuration files easy to maintain.
+- To use different values for DEV, QA and PROD environments.
+
+
+#) Variable Declaration:
+
+We declare variables using the "variable" block that contain variable properties such as type, default, description, etc.
+
+Syntax:
+
+variable "variable_name" {
+
+   arguments
+   
+}   
+
+
+Example: variables.tf
+
+variable "instance_type" {
+  type    = string
+  default = "t3.micro"
+}
+
+Explanation:
+- variable        → Keyword used to declare a variable.
+- instance_type  → Variable name.
+- type           → Specifies the data type.
+- default        → Specifies the default value.
+
+
+NOTE: Also, you can use any filename for variable declaration but make sure it ends with .tf extension because 
+      Terraform automatically reads all .tf files in the working directory.
+
+Examples:
+- main.tf
+- variables.tf
+- bujji.tf
+
+
+
+#) Accessing Variables:
+
+We access variables using the "var" keyword.
+
+Example:
+
+resource "aws_instance" "web" {
+  ami           = "ami-123456"
+  instance_type = var.instance_type
+}
+
+Here, 'var.instance_type' accesses the value of the 'instance_type' variable.
+
+
+
+#) Providing Variable Values:
+-----------------------------
+
+Note: Values provided through these methods override the default values declared in the variable block because Terraform uses the 
+      explicitly provided values when the same variable is assigned through these methods. If no value is provided, Terraform uses the default value.
+
+
+We can provide variable values in different ways. 
+
+
+A.) Using terraform.tfvars:
+
+Syntax:
+
+variable_name = "value"
+
+Example:
+
+instance_type = "t3.large"
+
+The value provided in terraform.tfvars overrides the default value if the same variable is declared .
+
+
+B.) Using CLI argument:
+
+Syntax: 
+
+terraform plan -var "variable_name=value"
+
+Example:
+
+terraform plan -var "instance_type=t3.large"
+
+
+C.) Using Environment Variable:
+
+Syntax:
+
+export TF_VAR_variable_name="value"
+
+Example:
+
+export TF_VAR_instance_type="t3.large"
+
+
+D.) Using Prompt Assignment:
+
+If no default value is defined and no value is provided through other methods, then Terraform prompts the user to enter a value when running terraform plan or apply.
+
+
+
+#) Variable File Names:
+-----------------------
+
+1. terraform.tfvars
+
+- Used to assign values to declared variables. Automatically loaded by Terraform.
+
+2. terraform.tfvars.json
+
+- Used to assign variable values in JSON format. Automatically loaded by Terraform.
+
+3. Custom .tfvars files:
+
+- These Custom .tfvars files are used to assign different values to the same declared variables for different environments.
+- Custom .tfvars files must be explicitly specified using the '-var-file' option when running Terraform commands such as plan or apply.
+
+Examples:
+
+dev.tfvars
+qa.tfvars
+uat.tfvars
+prod.tfvars
+
+Examples:
+
+terraform plan -var-file="dev.tfvars"
+terraform apply -var-file="dev.tfvars"
+
+
+Note:
+
+- Terraform automatically reads all .tf files in the working directory.
+- terraform.tfvars and terraform.tfvars.json are automatically loaded.
+- Custom .tfvars files must be specified using -var-file.
+
+
+Important Arguments inside a variable block:
+---------------------------------------------
+
+type - Specifies the data type of the variable.
+default - Specifies the default value of the variable.
+description - Provides information about the variable.
+sensitive - When set to true, Terraform hides the variable value in normal CLI output.It does not encrypt the value.
+nullable - Controls whether the variable can accept a null value.
+
+

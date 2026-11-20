@@ -11,7 +11,7 @@ resource "aws_instance" "ec2-server" {
 
 resource "aws_security_group" "my-group" {
 
-    name = "terraform-sg"
+    name = "terraform-sg" # security group name 
 
     egress {
         from_port        = 0 # from port 0 to to port 0 means all ports
@@ -29,7 +29,7 @@ resource "aws_security_group" "my-group" {
 
     tags = {
 
-        Name = "my-terr-sg"
+        Name = "my-terr-sg" # this is tage name for the security group
     }
 
 }
