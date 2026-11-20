@@ -401,7 +401,11 @@ Note: Values provided through these methods override the default values declared
 We can provide variable values in different ways. 
 
 
-A.) Using terraform.tfvars:
+1.) Using terraform.tfvars:
+----
+
+*)Used to provide values to declared variables through a terraform.tfvars file.
+  Terraform automatically loads this file when running commands like plan or apply.
 
 Syntax:
 
@@ -414,7 +418,10 @@ instance_type = "t3.large"
 The value provided in terraform.tfvars overrides the default value if the same variable is declared .
 
 
-B.) Using CLI argument:
+2.) Using CLI argument:
+----
+
+*)Used to provide variable values directly through the command line while running Terraform commands.
 
 Syntax: 
 
@@ -425,7 +432,11 @@ Example:
 terraform plan -var "instance_type=t3.large"
 
 
-C.) Using Environment Variable:
+3.) Using Environment Variable:
+-----
+
+*)Used to provide variable values through system environment variables using the 'TF_VAR_' prefix.
+
 
 Syntax:
 
@@ -436,7 +447,8 @@ Example:
 export TF_VAR_instance_type="t3.large"
 
 
-D.) Using Prompt Assignment:
+4.) Using Prompt Assignment:
+-----
 
 If no default value is defined and no value is provided through other methods, then Terraform prompts the user to enter a value when running terraform plan or apply.
 
@@ -445,15 +457,11 @@ If no default value is defined and no value is provided through other methods, t
 #) Variable File Names:
 -----------------------
 
-1. terraform.tfvars
-
-- Used to assign values to declared variables. Automatically loaded by Terraform.
-
-2. terraform.tfvars.json
+1. terraform.tfvars.json
 
 - Used to assign variable values in JSON format. Automatically loaded by Terraform.
 
-3. Custom .tfvars files:
+2. Custom .tfvars files:
 
 - These Custom .tfvars files are used to assign different values to the same declared variables for different environments.
 - Custom .tfvars files must be explicitly specified using the '-var-file' option when running Terraform commands such as plan or apply.
