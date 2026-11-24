@@ -723,7 +723,7 @@ Null        -> Empty value
 ##)Conditions:
 --------------
 
-*)Conditions are used to execute tasks only when a specified condition is true. 
+*)Conditions in Ansible are used to decide whether a task should execute or be skipped based on a given condition.
 
 *)If the condition is true, the task will be executed. If the condition is false, the task will be skipped.
 

@@ -178,6 +178,18 @@ Explanation:
 
 6. nested_block --> Used to define additional configurations inside a resource block.
 
+Terraform – Resource Naming Rules:
+----------------------------------
+
+Same Terraform working folder:
+
+*)Same resource type + same local name → Not allowed
+
+Different Terraform working folders:
+
+*)Same resource type + same local name → Allowed
+
+
 
 SESSION-30:
 ------------
@@ -496,3 +508,117 @@ sensitive - When set to true, Terraform hides the variable value in normal CLI o
 nullable - Controls whether the variable can accept a null value.
 
 
+
+
+##)Terraform Conditions:
+------------------------
+
+Definition:
+Conditions in Terraform are used to choose a value or control
+resource creation based on whether a condition is true or false.
+
+Syntax:
+condition ? true_value : false_value
+
+? = condition true ayithe
+: = condition false ayithe
+
+Meaning:
+- If the condition is true, Terraform returns true_value.
+- If the condition is false, Terraform returns false_value.
+
+Example:
+
+variable "environment" {
+  default = "dev"
+}
+
+locals {
+  instance_type = var.environment == "prod" ? "t3.medium" : "t3.micro"
+}
+
+Explanation:
+- Terraform checks whether environment is equal to "prod".
+- If TRUE → instance_type becomes "t3.medium".
+- If FALSE → instance_type becomes "t3.micro".
+
+Output:
+For environment = "dev"
+instance_type = "t3.micro"
+
+Important:
+Terraform conditional expression uses:
+condition ? value_if_true : value_if_false
+
+It is also called the ternary conditional expression.
+
+
+Terraform Meta-Arguments:
+-------------------------
+
+1. count
+
+count is a meta-argument used to create multiple instances of a resource based on a specified number.
+
+Syntax:
+
+count = number
+
+Example:
+
+resource "aws_instance" "server" {
+  count         = 3
+  ami           = "ami-xxxxxxxx"
+  instance_type = "t2.micro"
+}
+
+How it works:
+- count = 3 → Creates 3 instances.
+- count.index → Special value used to access each instance.
+- count.index starts from 0.
+
+Indexes:
+First instance  → 0
+Second instance → 1
+Third instance  → 2
+
+Usage:
+aws_instance.server[0]
+aws_instance.server[1]
+aws_instance.server[2]
+
+
+2. for_each
+
+for_each is also a meta-argument used to create multiple instances of a resource based on the elements of a map or set.
+
+Syntax:
+
+for_each = map or set
+
+Example:
+
+resource "aws_instance" "server" {
+  for_each      = toset(["web", "app", "db"])
+  ami           = "ami-xxxxxxxx"
+  instance_type = "t2.micro"
+}
+
+How it works:
+
+- Creates one instance for each item in the set.
+- each.key → Represents the current key.
+- each.value → Represents the current value.
+
+Instance references:
+
+aws_instance.server["web"]
+aws_instance.server["app"]
+aws_instance.server["db"]
+
+
+Remember:
+- count and for_each are Terraform meta-arguments.
+- count    → Creates multiple instances of a resource based on a number.
+- for_each → Creates multiple instances of a resource based on a map or set.
+- We cannot use count and for_each together in the same resource block.
