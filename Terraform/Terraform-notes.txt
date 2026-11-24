@@ -558,7 +558,8 @@ Terraform Meta-Arguments:
 
 1. count
 
-count is a meta-argument used to create multiple instances of a resource based on a specified number.
+*)count is a meta-argument used to create multiple instances of a resource based on a specified number.
+  It is commonly used for looping or repetition in Terraform resource creation.
 
 Syntax:
 
@@ -590,7 +591,9 @@ aws_instance.server[2]
 
 2. for_each
 
-for_each is also a meta-argument used to create multiple instances of a resource based on the elements of a map or set.
+*)for_each is also a meta-argument used to create multiple instances of a resource based on the elements of a map or set.
+  It is commonly used for looping or repetition in Terraform resource creation.
+
 
 Syntax:
 
@@ -622,3 +625,33 @@ Remember:
 - count    → Creates multiple instances of a resource based on a number.
 - for_each → Creates multiple instances of a resource based on a map or set.
 - We cannot use count and for_each together in the same resource block.
+
+
+##)Terraform – Output Block:
+----------------------------
+
+Definition:
+An output block is used to display useful information about the resources created by Terraform after execution.
+
+Syntax:
+
+output "OUTPUT_NAME" {
+  value = ...
+}
+
+Example:
+
+output "instance_id" {
+  value = aws_instance.ec2-server.id
+}
+
+Explanation:
+- output is a fixed Terraform keyword.
+- "OUTPUT_NAME" → Output name chosen by us. you can write any meaninful name you want.
+- value → Specifies which information Terraform should display.
+
+Where to write:
+- Output blocks can be written in any .tf file in the same Terraform working directory as Terraform reads all .tf files in the same working directory as one configuration.
+- We can write an output block inside variables.tf.
+- Creating a separate outputs.tf file is not mandatory.
+- outputs.tf is only a naming convention used to organize output blocks.
