@@ -553,16 +553,15 @@ condition ? value_if_true : value_if_false
 It is also called the ternary conditional expression.
 
 
-Terraform Meta-Arguments:
--------------------------
+
+##)Terraform Meta-Arguments:
+----------------------------
 
 1. count
 
 *)count is a meta-argument used to create multiple instances of a resource based on a specified number.
-  It is commonly used for looping or repetition in Terraform resource creation.
 
 Syntax:
-
 count = number
 
 Example:
@@ -575,7 +574,7 @@ resource "aws_instance" "server" {
 
 How it works:
 - count = 3 → Creates 3 instances.
-- count.index → Special value used to access each instance.
+- count.index → Special value used to access the index of each resource instance.
 - count.index starts from 0.
 
 Indexes:
@@ -591,12 +590,10 @@ aws_instance.server[2]
 
 2. for_each
 
-*)for_each is also a meta-argument used to create multiple instances of a resource based on the elements of a map or set.
+*)for_each is a meta-argument used to create multiple instances of a resource based on the elements of a map or set.
   It is commonly used for looping or repetition in Terraform resource creation.
 
-
 Syntax:
-
 for_each = map or set
 
 Example:
@@ -608,10 +605,10 @@ resource "aws_instance" "server" {
 }
 
 How it works:
-
 - Creates one instance for each item in the set.
-- each.key → Represents the current key.
-- each.value → Represents the current value.
+- each.key   → Special value used to access the current key.
+- each.value → Special value used to access the current value.
+- For a set, each.key and each.value both represent the current item.
 
 Instance references:
 
@@ -622,9 +619,12 @@ aws_instance.server["db"]
 
 Remember:
 - count and for_each are Terraform meta-arguments.
-- count    → Creates multiple instances of a resource based on a number.
-- for_each → Creates multiple instances of a resource based on a map or set.
+- count    → Creates multiple instances based on a number.
+- for_each → Creates multiple instances based on a map or set.
+- count uses numerical indexes.
+- for_each uses keys to identify instances.
 - We cannot use count and for_each together in the same resource block.
+
 
 
 ##)Terraform – Output Block:
